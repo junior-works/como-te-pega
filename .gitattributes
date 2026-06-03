@@ -1,0 +1,2 @@
+# Normalizar saltos de línea: evita el drift CRLF/LF entre Windows y Pages.
+* text=auto eol=lf
