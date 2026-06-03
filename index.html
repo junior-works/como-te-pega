@@ -352,6 +352,7 @@
     line-height: 1.55;
   }
   .src strong { color: var(--ink-soft); font-weight: 700; }
+  .src a { color: var(--accent); font-weight: 600; }
   .crumb {
     display: inline-flex;
     align-items: center;
@@ -494,6 +495,193 @@
     transition: background 0.3s;
   }
   .progress span.done { background: var(--accent); }
+
+  /* ============== BALANCE / TIMELINE ============== */
+  .balance-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+  .bal-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px 10px; text-align: center; box-shadow: var(--shadow-sm); }
+  .bal-card .big { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .bal-card .lbl { font-size: 10.5px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+  .bal-card.contra .big { color: var(--hit-strong); }
+  .bal-card.neutral .big { color: var(--ink-mute); }
+  .bal-card.favor .big { color: var(--hit-pos); }
+  .stacked-bar { display: flex; height: 14px; border-radius: 99px; overflow: hidden; background: var(--line-soft); margin-bottom: 18px; box-shadow: var(--shadow-sm); }
+  .stacked-bar > span { transition: flex 0.4s ease; min-width: 0; }
+  .stacked-bar .bar-contra { background: var(--hit-strong); }
+  .stacked-bar .bar-mid { background: var(--hit-mid); }
+  .stacked-bar .bar-soft { background: var(--hit-soft); }
+  .stacked-bar .bar-neutral { background: var(--line); }
+  .stacked-bar .bar-favor { background: var(--hit-pos); }
+  .bal-tip { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 18px; padding: 10px 14px; background: var(--paper-soft); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; line-height: 1.5; }
+  .bal-section-title { font-size: 11px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin: 22px 4px 10px; }
+  .dim-tally { display: flex; flex-direction: column; gap: 8px; }
+  .dim-tally-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .dim-tally-name { flex: 0 0 110px; color: var(--ink); font-weight: 600; display: flex; align-items: center; gap: 5px; font-size: 12.5px; }
+  .dim-tally-bar { flex: 1; height: 10px; background: var(--line-soft); border-radius: 99px; overflow: hidden; display: flex; }
+  .dim-tally-bar .fill { height: 100%; }
+  .dim-tally-bar .fill.neg { background: var(--hit-strong); }
+  .dim-tally-bar .fill.pos { background: var(--hit-pos); }
+  .dim-tally-count { color: var(--ink-mute); font-size: 11px; font-weight: 600; min-width: 44px; text-align: right; }
+  .timeline { border-left: 2px solid var(--line); padding-left: 16px; margin-left: 6px; margin-top: 8px; }
+  .tl-item { position: relative; padding: 12px 14px; margin-bottom: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .tl-item:hover { transform: translateX(2px); box-shadow: var(--shadow); }
+  .tl-item::before { content: ""; position: absolute; left: -23px; top: 18px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink-mute); border: 3px solid var(--bg); }
+  .tl-item.neg::before { background: var(--hit-strong); }
+  .tl-item.midneg::before { background: var(--hit-mid); }
+  .tl-item.softneg::before { background: var(--hit-soft); }
+  .tl-item.neutral::before { background: var(--ink-mute); }
+  .tl-item.pos::before { background: var(--hit-pos); }
+  .tl-date { font-size: 10.5px; color: var(--ink-mute); font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 3px; }
+  .tl-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; line-height: 1.3; }
+  .tl-pill { display: inline-block; font-size: 10.5px; padding: 2px 9px; border-radius: 99px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+  .tl-pill.neg { background: #fee2e2; color: var(--hit-strong); }
+  .tl-pill.midneg { background: #ffedd5; color: var(--hit-mid); }
+  .tl-pill.softneg { background: #fef3c7; color: var(--hit-soft); }
+  .tl-pill.neutral { background: #f3f4f6; color: var(--ink-mute); }
+  .tl-pill.pos { background: #dcfce7; color: var(--hit-pos); }
+  .tl-summary { font-size: 12px; color: var(--ink-mute); margin-top: 4px; }
+  .btn-balance { background: var(--accent); color: white; border: 0; padding: 12px 16px; border-radius: 12px; font-weight: 600; font-size: 13.5px; width: 100%; cursor: pointer; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; font-family: inherit; }
+  .btn-balance:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-balance .bar-mini { display: flex; height: 8px; border-radius: 99px; overflow: hidden; width: 70px; background: rgba(255,255,255,0.2); }
+  .btn-balance .bar-mini span { display: block; height: 100%; }
+
+  /* Donut chart */
+  .donut-wrap {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px 16px 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .donut-svg { display: block; margin: 0 auto 12px; }
+  .donut-center-num {
+    font-size: 36px;
+    font-weight: 800;
+    fill: var(--ink);
+    letter-spacing: -1px;
+  }
+  .donut-center-lbl {
+    font-size: 10px;
+    fill: var(--ink-mute);
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 280px;
+    margin: 8px auto 0;
+  }
+  .donut-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    padding: 6px 10px;
+    background: var(--paper-soft);
+    border-radius: 8px;
+  }
+  .donut-legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .donut-legend-dot.contra { background: var(--hit-strong); }
+  .donut-legend-dot.neutral { background: #c4bfb0; }
+  .donut-legend-dot.favor { background: var(--hit-pos); }
+  .donut-legend-label {
+    flex: 1;
+    text-align: left;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .donut-legend-count {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .donut-legend-pct {
+    color: var(--ink-mute);
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+
+  /* ============== v0.6 — TRENDING ============== */
+  .trending-head { margin-bottom: 6px; }
+  .trending-card { border-color: var(--accent-soft); }
+  .trending-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .cobertura-badge {
+    background: var(--accent); color: #fff; font-weight: 800; font-size: 12px;
+    padding: 3px 10px; border-radius: 99px; letter-spacing: 0.3px; flex-shrink: 0;
+  }
+  .cobertura-badge.sm { font-size: 11px; padding: 2px 8px; }
+  .medio-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+  .medio-badge {
+    min-width: 24px; height: 22px; padding: 0 6px; border-radius: 6px; color: #fff;
+    font-size: 10px; font-weight: 800; display: inline-flex; align-items: center;
+    justify-content: center; letter-spacing: 0.3px;
+  }
+  .measure-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .measure-head h3 { margin: 0 0 6px; }
+  .measure-flags { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .const-icon { font-size: 15px; line-height: 1; }
+
+  /* ============== v0.6 — FILTROS ============== */
+  .filters { margin-bottom: 16px; }
+  .filter-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .filter-lbl { font-size: 10.5px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.6px; flex: 0 0 42px; }
+  .fchips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fchip {
+    border: 1.5px solid var(--line); background: var(--paper); color: var(--ink-soft);
+    border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease; font-family: inherit;
+  }
+  .fchip:hover { border-color: var(--accent); }
+  .fchip.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ============== v0.6 — CONSTITUCIÓN ============== */
+  .const-section { margin-top: 16px; }
+  .const-title { font-size: 13px; font-weight: 800; color: var(--ink); margin: 0 4px 10px; letter-spacing: -0.2px; }
+  .const-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow-sm);
+  }
+  .const-card.const-empty { color: var(--ink-mute); font-size: 13px; background: var(--paper-soft); line-height: 1.5; }
+  .const-art {
+    display: flex; align-items: center; gap: 6px; width: 100%; text-align: left;
+    background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit;
+    color: var(--ink); font-weight: 700; font-size: 14px; margin-bottom: 8px;
+  }
+  .const-art-num { background: var(--accent-mute); color: var(--accent); padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+  .const-art-name { font-weight: 600; color: var(--ink-soft); font-size: 13px; }
+  .const-art-toggle { margin-left: auto; color: var(--ink-mute); font-size: 14px; }
+  .const-art-resumen { font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; background: var(--paper-soft); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .const-estado { display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 11px; border-radius: 99px; margin-bottom: 8px; letter-spacing: 0.2px; }
+  .const-estado.c-amber { background: #fef3c7; color: #a16207; }
+  .const-estado.c-orange { background: #ffedd5; color: #c2410c; }
+  .const-estado.c-red-soft { background: #fee2e2; color: #dc2626; }
+  .const-estado.c-red { background: #b91c1c; color: #fff; }
+  .const-estado.c-green { background: #dcfce7; color: #15803d; }
+  .const-meta { font-size: 11.5px; color: var(--ink-mute); font-weight: 600; margin-bottom: 6px; }
+  .const-resumen { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+  .const-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--accent); }
+  .const-foot { font-size: 11px; color: var(--ink-mute); font-style: italic; line-height: 1.5; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+  /* ============== v0.6 — HISTORIAL ============== */
+  .hist-timeline .tl-item.hist { cursor: pointer; }
+  .tl-item.hist::before { background: var(--ink-mute); }
+  .tl-item.pop-alta::before { background: var(--accent); }
+  .tl-item.pop-media::before { background: #5b8a94; }
+  .tl-item.pop-baja::before { background: #a9c2c6; }
+  .tl-item.pop-nula::before { background: var(--line); }
+  .tl-chips { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .tl-tag { background: var(--accent-mute); color: var(--accent); padding: 2px 9px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
+  .tl-pop { background: var(--ink); color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px; }
 </style>
 </head>
 <body>
@@ -717,7 +905,7 @@
     <button class="btn ghost" id="btnSkip" onclick="show('measures')" style="display: none;">Saltar — quiero ver igual</button>
   </section>
 
-  <!-- ============== MEASURES ============== -->
+  <!-- ============== MEASURES / HOME ============== -->
   <section id="screen-measures" class="screen">
     <div class="crumb" onclick="show('profile')">← Editar perfil</div>
     <div class="perfil-box" id="perfilSummary"><strong>TU PERFIL</strong>—</div>
@@ -725,9 +913,14 @@
       <span>📊 Ver tu balance histórico</span>
       <span class="bar-mini" id="miniBar"></span>
     </button>
-    <h2 class="step">Medidas vigentes</h2>
-    <p class="step-sub">Todas publicadas en el Boletín Oficial y vigentes a junio 2026. Tocá una para ver cómo te toca a <em>vos</em>. Después podés comparar con cómo le pega al resto.</p>
+
+    <div id="trendingSection"></div>
+
+    <h2 class="step">Todas las medidas</h2>
+    <p class="step-sub">Todas publicadas en el Boletín Oficial y vigentes a junio 2026. Tocá una para ver cómo te toca a <em>vos</em>. Filtrá por área o estado.</p>
+    <div id="measureFilters" class="filters"></div>
     <div id="measureList"></div>
+    <button class="btn ghost" onclick="show('historial')" style="margin-top: 12px;">🕑 Ver historial cronológico completo →</button>
   </section>
 
   <!-- ============== IMPACT ============== -->
@@ -740,6 +933,7 @@
       <div style="font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; font-weight: 700;">Te pega así</div>
       <div id="dimList"></div>
     </div>
+    <div id="constitucionBox"></div>
     <button class="btn ghost" onclick="show('compare')">Ver cómo le pega al resto →</button>
     <button class="btn ghost" onclick="show('sectores')" style="margin-top: 8px;">Ver cómo le pega a cada clase social →</button>
     <button class="btn ghost" onclick="show('balance')" style="margin-top: 8px;">📊 Ver tu balance histórico</button>
@@ -776,8 +970,17 @@
     <div class="card" id="sectoresList"></div>
   </section>
 
+  <!-- ============== HISTORIAL CRONOLÓGICO ============== -->
+  <section id="screen-historial" class="screen">
+    <div class="crumb" onclick="show('measures')">← Volver a medidas</div>
+    <h2 class="step">Historial cronológico</h2>
+    <p class="step-sub">Todas las medidas publicadas en el Boletín Oficial, de las más recientes a las más viejas (desde dic-2023). El punto indica cuánto la discutieron los medios; <em>⚖️</em> marca que tiene observaciones constitucionales. Tocá una para ver cómo te pega.</p>
+    <div id="histFilters" class="filters"></div>
+    <div class="timeline hist-timeline" id="histTimeline"></div>
+  </section>
+
   <footer class="foot">
-    <strong>Prototipo v0.5 · clases sociales</strong> · junio 2026<br>
+    <strong>Prototipo v0.6 · datos desde Supabase</strong> · junio 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
@@ -785,1012 +988,37 @@
   </footer>
 </div>
 
-<script>
-// ============== LABELS ==============
-const FIELD_LABELS = {
-  ocupacion: {
-    empleado_priv: "Empleado privado", empleado_pub: "Empleado público",
-    monotrib: "Monotributista", autonomo: "Autónomo",
-    trab_informal: "Trabajo informal", domestica_reg: "Doméstica reg.",
-    domestica_no_reg: "Doméstica no reg.", jubilado_min: "Jubilado mínima",
-    jubilado_med: "Jubilado media-alta", pensionado: "Pensionado",
-    estudiante: "Estudiante", desempleado: "Desempleado",
-    ama_casa: "Cuidado hogar", pyme: "PyME"
-  },
-  zona: {
-    caba: "CABA", gba_norte: "GBA Norte", gba_sur: "GBA Sur", gba_oeste: "GBA Oeste",
-    laplata: "La Plata", cba_cap: "Córdoba cap.", cba_int: "Córdoba int.",
-    rosario: "Rosario", santafe_int: "Santa Fe int.",
-    mendoza: "Mendoza", tucuman: "Tucumán",
-    nea: "NEA", noa: "NOA", cuyo: "Cuyo", patagonia: "Patagonia", pueblo: "Pueblo chico"
-  },
-  vivienda: {
-    alquila: "Alquila", propio: "Propia", propio_credito: "Propia c/crédito",
-    familiar: "Con familia", alquila_renta: "Alquila + renta", ocupada: "Informal"
-  },
-  ingreso: {
-    "hasta_700k": "≤$700k", "700k_1.5m": "$700k–1,5M",
-    "1.5m_3m": "$1,5M–3M", "3m_6m": "$3M–6M",
-    "6m_15m": "$6M–15M", "mas_15m": "+$15M"
-  },
-  pareja: {
-    si_ambos_trab: "Pareja, ambos trabajan", si_uno_trab: "Pareja, uno trabaja",
-    si_ninguno: "Pareja, ninguno trabaja", no: "Sin pareja"
-  },
-  hijos: { "0": "Sin hijos", "1": "1 hijo", "2": "2 hijos", "3mas": "3+ hijos" },
-  adultos: { "0": "", "1": "1 adulto a cargo", "2mas": "2+ adultos a cargo" },
-  extra: {
-    no: "Sin extras", plataforma: "Plataforma (Uber/Rappi)",
-    segundo: "Segundo empleo", changas: "Changas", renta: "Renta"
-  },
-  transporte: {
-    "2colectivos": "2 colectivos/día", combinacion: "Colectivo+tren/subte",
-    tren: "Solo tren", auto: "Auto", moto: "Moto",
-    cerca: "A pie/bici", mixto: "Mixto", solo_finde: "Solo finde"
-  },
-  salud: {
-    hosp_pub: "Hospital público", os_sindical: "Obra social", pami: "PAMI",
-    prepaga: "Prepaga bolsillo", prepaga_aporte: "Prepaga c/aporte OS", mixta: "Mixta"
-  },
-  discapacidad: {
-    no: "Sin discapacidad", propia_cud: "Propia c/CUD", propia_sin_cud: "Propia s/CUD",
-    familiar_cud: "Familiar c/CUD", familiar_sin_cud: "Familiar s/CUD"
-  },
-  asistencia: {
-    auh: "AUH", embarazo: "Embarazo", alimentar: "Alimentar", progresar: "Progresar",
-    potenciar: "Potenciar", pnc_vejez: "PNC vejez", pnc_discap: "PNC discap.",
-    pnc_madre: "Madre 7 hijos", sub_pami: "Sub. PAMI", tarifa_sube: "Tarifa SUBE",
-    sef: "SEF energético", procrear: "Plan vivienda", ninguno: "Sin asistencia"
-  }
-};
+<!-- UI (script clásico: expone funciones globales para los onclick) -->
+<script src="js/render.js"></script>
 
-// ============== MEASURES ==============
-const MEASURES = [
-  {
-    id: "alquileres",
-    date: "2023-12-21",
-    title: "Cayó la Ley de Alquileres",
-    meta: "DNU 70/2023 · arts. 249-251 · 21-dic-2023 · ratificado por Ley Bases 27.742",
-    desc: "Se derogó la Ley 27.551. Los contratos se pactan libres: plazo (mínimo 2 años), índice, moneda. No hay tope ICL. Conviven 3 regímenes según fecha del contrato.",
-    tags: ["Vivienda", "Plata", "Estabilidad"],
-    fuente: "Boletín Oficial — DNU 70/2023 arts. 249-251. Ratificación parcial Ley 27.742. Datos de mercado: Reporte Inmobiliario, Inquilinos Agrupados, CESO 2025.",
-    impact: function(p) {
-      const dims = [];
-      const inUrban = ["caba","gba_norte","gba_sur","gba_oeste","laplata","cba_cap","rosario","mendoza","tucuman"].includes(p.zona);
-      const isInquilino = p.vivienda === "alquila";
-      const isRentista = p.vivienda === "alquila_renta";
-      const isInformal = p.vivienda === "ocupada";
-
-      if (isInquilino) {
-        if (p.zona === "caba" || p.zona === "gba_norte") {
-          dims.push({ name: "Vivienda", icon: "🏠", level: "strong",
-            body: "En CABA/GBA Norte la mediana del alquiler supera el <strong>50% del ingreso</strong> (CESO 2025). Renovás sin tope, con ajuste IPC <em>trimestral</em> en la mayoría de los contratos nuevos. La oferta de alquileres subió +150% (Reporte Inmobiliario 2024), pero el costo inicial también." });
-        } else if (inUrban) {
-          dims.push({ name: "Vivienda", icon: "🏠", level: "mid",
-            body: "Mercado urbano grande: contratos 2 años, ajuste trimestral o cuatrimestral. La incidencia sobre el ingreso ronda <strong>25-40%</strong>." });
-        } else {
-          dims.push({ name: "Vivienda", icon: "🏠", level: "soft",
-            body: "En ciudades chicas / interior la oferta es mayor y los aumentos más moderados, pero igualmente firmás sin tope ICL." });
-        }
-      } else if (isRentista) {
-        dims.push({ name: "Vivienda", icon: "🏠", level: "pos",
-          body: "Como propietario ganaste flexibilidad: pactás índice, plazo, moneda. La renta real probablemente subió. Si también alquilás, te aplica lo del inquilino." });
-      } else if (isInformal) {
-        dims.push({ name: "Vivienda", icon: "🏠", level: "strong",
-          body: "Tu situación habitacional queda fuera del régimen formal de alquileres. No estás protegido y, si te formalizás, entrás al mercado caótico." });
-      } else {
-        dims.push({ name: "Vivienda", icon: "🏠", level: "none",
-          body: "Por ahora no te toca directamente. Si te mudás a alquilar en los próximos 12 meses, el mercado es más caro y volátil que en 2023." });
-      }
-
-      if (isInquilino) {
-        let porc = "30-45%";
-        if (p.ingreso === "hasta_700k") porc = "más del 60%";
-        else if (p.ingreso === "700k_1.5m") porc = "40-55%";
-        else if (p.ingreso === "6m_15m" || p.ingreso === "mas_15m") porc = "10-20%";
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: `El alquiler se come <strong>${porc}</strong> de un ingreso del hogar como el tuyo en zona urbana. Sin tope, el ajuste tiende a ir más rápido que las paritarias.` });
-      }
-
-      if (isInquilino) {
-        dims.push({ name: "Carga mental", icon: "🧠", level: "strong",
-          body: "Inquilinos Agrupados (2025): <strong>57% de inquilinos reportan alta ansiedad financiera</strong> asociada a la renovación. Ajuste trimestral = revisás presupuesto 4 veces por año." });
-        dims.push({ name: "Tiempo", icon: "⏰", level: "soft",
-          body: "Tiempo en buscar / comparar / renegociar es mayor que con la ley anterior: 8-15 horas extra al año si renovás o cambiás." });
-      }
-
-      if (isInquilino && (p.hijos === "1" || p.hijos === "2" || p.hijos === "3mas")) {
-        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "mid",
-          body: "Con hijos en colegio/club, mudarse es más costoso. El nuevo régimen aumenta la rotación. Vacaciones y salidas suelen ser lo primero que se recorta cuando sube el alquiler." });
-      }
-
-      if (isInquilino && p.discapacidad !== "no" && p.discapacidad) {
-        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
-          body: "Con un miembro con discapacidad la mudanza es más compleja (adaptación, accesibilidad, redes locales de salud). La rotación habitacional impone un costo emocional y operativo mayor." });
-      }
-
-      if (isInquilino && (p.ingreso === "hasta_700k" || p.ingreso === "700k_1.5m") && p.salud === "hosp_pub") {
-        dims.push({ name: "Salud", icon: "❤️", level: "soft",
-          body: "La inestabilidad habitacional se asocia a peor sueño y más estrés crónico. Evidencia indirecta — pero presente." });
-      }
-
-      return dims;
-    },
-    compareProfiles: [
-      { name: "Inquilino joven CABA, $1,8M, soltero", sub: "Empleado privado, alquila, sin hijos", badges: { Vivienda: "strong", Plata: "strong", Tiempo: "soft", "Carga mental": "strong", Familia: "soft", Salud: "soft" } },
-      { name: "Familia inquilina Tucumán, 2 hijos", sub: "Empleado público provincial + monotributo, $2,2M", badges: { Vivienda: "mid", Plata: "mid", Tiempo: "soft", "Carga mental": "mid", Familia: "mid", Salud: "soft" } },
-      { name: "Propietario PyME mendocino, 3 deptos renta", sub: "Empresario, alquila + renta", badges: { Vivienda: "pos", Plata: "pos", Tiempo: "none", "Carga mental": "soft", Familia: "none", Salud: "none" } },
-      { name: "Jubilada mínima CABA, casa propia", sub: "Jubilada mínima, propio, sin hijos a cargo", badges: { Vivienda: "none", Plata: "none", Tiempo: "none", "Carga mental": "none", Familia: "none", Salud: "none" } },
-      { name: "Estudiante GBA, pensión compartida", sub: "Estudiante, alquila, sin ingresos fijos", badges: { Vivienda: "mid", Plata: "strong", Tiempo: "soft", "Carga mental": "mid", Familia: "soft", Salud: "soft" } },
-      { name: "Familia con hijo con CUD, alquila", sub: "Empleados, 1 hijo con discap., $2M", badges: { Vivienda: "strong", Plata: "strong", Tiempo: "mid", "Carga mental": "strong", Familia: "strong", Salud: "mid" } }
-    ]
-  },
-
-  {
-    id: "transporte",
-    date: "2024-05-22",
-    title: "Subió fuerte la SUBE",
-    meta: "Decretos 446/2024, 280/2024 + Resoluciones SETOP · vigente",
-    desc: "Quita gradual del subsidio al transporte. AMBA con aumentos por Res. SETOP; interior con quita del Fondo Compensador (DNU 280/2024). Tarifa Social SUBE mantiene -55%.",
-    tags: ["Plata", "Tiempo", "Movilidad"],
-    fuente: "Boletín Oficial — Decreto 446/2024, DNU 280/2024, Resoluciones SETOP 2024-2026. Cuadros tarifarios CNRT junio 2026: colectivo nacional AMBA $728,28 | CABA exclusiva $788,28 | PBA $1.015,61 | tren AMBA $379 | subte $1.558.",
-    impact: function(p) {
-      const dims = [];
-      const inAMBA = ["caba","gba_norte","gba_sur","gba_oeste","laplata"].includes(p.zona);
-      const tieneTarifaSocial = (p.asistencia || []).includes("tarifa_sube");
-
-      if (inAMBA && (p.transporte === "2colectivos" || p.transporte === "combinacion")) {
-        const viajes = p.transporte === "combinacion" ? 88 : 44;
-        const tarifaUnit = tieneTarifaSocial ? 328 : 728;
-        const tarifaAntes = tieneTarifaSocial ? 35 : 76;
-        const gastoHoy = viajes * tarifaUnit;
-        const gastoAntes = viajes * tarifaAntes;
-        const dif = gastoHoy - gastoAntes;
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: `Hacés ~${viajes} viajes/mes. ${tieneTarifaSocial ? "<em>Con Tarifa Social SUBE</em>, " : ""}gastás <strong>$${gastoHoy.toLocaleString('es-AR')}</strong> vs <strong>$${gastoAntes.toLocaleString('es-AR')}</strong> en dic-23. Diferencia: <strong>+$${dif.toLocaleString('es-AR')}/mes</strong>.` });
-      } else if (inAMBA && p.transporte === "tren") {
-        dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Tren AMBA SUBE registrada ~$379. Subió respecto de 2023 pero menos que el colectivo." });
-      } else if (inAMBA && p.transporte === "auto") {
-        dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "Sin SUBE, pero el combustible también subió por quita de subsidios y devaluación. Peajes urbanos también ajustaron." });
-      } else if (p.transporte === "cerca") {
-        dims.push({ name: "Plata", icon: "💰", level: "pos",
-          body: "Andás cerca: el aumento casi no te toca. Posición fuerte en este escenario." });
-      }
-
-      if (!inAMBA && (p.transporte === "2colectivos" || p.transporte === "combinacion" || p.transporte === "tren")) {
-        dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Tu provincia, con la quita del Fondo Compensador (DNU 280/2024), recibe menos subsidio nacional. Los aumentos varían por jurisdicción pero todos suben." });
-      }
-
-      if (inAMBA && (p.transporte === "2colectivos" || p.transporte === "combinacion")) {
-        dims.push({ name: "Tiempo", icon: "⏰", level: "mid",
-          body: "Encuestas 2024-25: muchos usuarios cambiaron a recorridos más largos pero más baratos (1 colectivo en vez de 2). Suma <strong>20-40 min/día</strong> = ~10 hs/mes." });
-      }
-
-      if (p.extra === "plataforma") {
-        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-          body: "Hacés Uber/Rappi: el combustible es tu insumo principal, subió fuerte (quita subsidio + devaluación). La Reforma Laboral 2026 te formalizó como monotributista — ahora tenés aportes pero ganás cobertura mínima." });
-      }
-
-      if (inAMBA && (p.transporte === "2colectivos" || p.transporte === "combinacion") && (p.hijos === "1" || p.hijos === "2" || p.hijos === "3mas")) {
-        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "mid",
-          body: "Encuesta UCA 2024-25: hogares vulnerables redujeron -22% la movilidad recreativa. Salidas con hijos a CABA caen primero." });
-      }
-
-      if (inAMBA && (p.ocupacion === "jubilado_min" || p.ocupacion === "pensionado") && (p.transporte === "2colectivos" || p.transporte === "combinacion")) {
-        dims.push({ name: "Salud", icon: "❤️", level: "mid",
-          body: "Hay reportes de adultos mayores postergando turnos médicos por el costo del viaje. Si tenés Tarifa Social SUBE el golpe es menor, pero igual subió de imperceptible a 3-4% del haber." });
-      }
-
-      if (p.discapacidad === "propia_cud" || p.discapacidad === "familiar_cud") {
-        dims.push({ name: "Movilidad", icon: "♿", level: "soft",
-          body: "Con CUD podés acceder a Pase Libre de Transporte (gratuito en líneas autorizadas). Verificá que tu CUD esté vigente y los recorridos cubiertos." });
-      }
-
-      return dims;
-    },
-    compareProfiles: [
-      { name: "Empleado Lanús, 2 colectivos + tren", sub: "Empleado privado, GBA, $1,5M", badges: { Plata: "strong", Tiempo: "mid", Familia: "mid", Salud: "soft" } },
-      { name: "Jubilada CABA con Tarifa Social SUBE", sub: "Jubilada mínima, 2 colectivos/sem al médico", badges: { Plata: "mid", Tiempo: "soft", Familia: "soft", Salud: "mid" } },
-      { name: "Monotributista Caballito + Uber noche", sub: "Monotributista, auto, plataforma", badges: { Plata: "mid", Tiempo: "soft", Familia: "soft", Trabajo: "mid" } },
-      { name: "Familia interior Salta, 2 hijos", sub: "Empleado público + ama de casa", badges: { Plata: "mid", Tiempo: "soft", Familia: "soft", Salud: "soft" } },
-      { name: "Estudiante GBA con SUBE estudiantil", sub: "Estudiante, combinación, GBA", badges: { Plata: "mid", Tiempo: "mid", Familia: "soft", Salud: "none" } },
-      { name: "Empresario PyME interior, auto", sub: "PyME, Córdoba, auto particular", badges: { Plata: "soft", Tiempo: "none", Familia: "none", Trabajo: "soft" } }
-    ]
-  },
-
-  {
-    id: "ganancias",
-    date: "2024-07-08",
-    title: "Volvió Ganancias para asalariados",
-    meta: "Ley 27.743 · Título V · 8-jul-2024 · vigente",
-    desc: "Restitución del impuesto a las Ganancias 4ª categoría. MNI anual $5.151.802 (RG ARCA 5759/2025). Actualización semestral por IPC. Deducción específica para jubilados = 8 SMVM.",
-    tags: ["Plata", "Carga mental", "Trabajo"],
-    fuente: "Boletín Oficial — Ley 27.743 (08-jul-2024) Título V. RG ARCA 5759/2025. AFIP/ARCA escalas y deducciones (Dto 953/2024 creó ARCA).",
-    impact: function(p) {
-      const dims = [];
-
-      if (p.ocupacion === "empleado_priv" || p.ocupacion === "empleado_pub") {
-        if (p.ingreso === "3m_6m") {
-          const conHijos = (p.hijos === "1" || p.hijos === "2" || p.hijos === "3mas");
-          dims.push({ name: "Plata", icon: "💰", level: "strong",
-            body: `Estás en zona alcanzada. ${conHijos ? "Con hijos a cargo el MNI sube y la mordida es algo menor." : "Soltero/a sin hijos, el descuento mensual ronda $200k-$500k según escala."} Indexación IPC semestral.` });
-        } else if (p.ingreso === "6m_15m" || p.ingreso === "mas_15m") {
-          dims.push({ name: "Plata", icon: "💰", level: "strong",
-            body: "Estás claramente alcanzado. Descuento mensual estimado: $500k-$1,5M+ según escala y deducciones. Representa 15-25% del bruto." });
-        } else if (p.ingreso === "1.5m_3m") {
-          dims.push({ name: "Plata", icon: "💰", level: "soft",
-            body: "Estás en el filo. Si sos soltero/a y tu bruto supera ~$3M empezás a tributar; con hijos o pareja sin trabajo el MNI sube y probablemente no te alcanza todavía." });
-        } else {
-          dims.push({ name: "Plata", icon: "💰", level: "none",
-            body: "Tu ingreso está por debajo del MNI. No te toca este impuesto." });
-        }
-      } else if (p.ocupacion === "jubilado_med") {
-        dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Haberes altos pueden quedar alcanzados, pero la <strong>deducción específica para jubilados (8 SMVM, ~$2,86M/mes a abr-26)</strong> tapa la mayoría. Si tenés rentas adicionales (alquiler, dividendos), perdés esa específica y entrás a la escala general." });
-      } else if (p.ocupacion === "monotrib" || p.ocupacion === "autonomo") {
-        dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "Monotributo puro no toca esta cuarta categoría. Si cruzaste el tope K ($108,3M/año en 2025) y pasaste a régimen general, la carga sube ~30-40 puntos." });
-      } else {
-        dims.push({ name: "Plata", icon: "💰", level: "none",
-          body: "Por tu ocupación, este impuesto no te alcanza." });
-      }
-
-      if ((p.ocupacion === "empleado_priv" || p.ocupacion === "empleado_pub") &&
-          (p.ingreso === "3m_6m" || p.ingreso === "6m_15m" || p.ingreso === "mas_15m" || p.ingreso === "1.5m_3m")) {
-        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
-          body: "Volvés a armar deducciones por SiRADIG: alquiler (10%), prepaga, hijos, cónyuge, empleada doméstica, servicio doméstico. Si sos pluri-empleado o tenés extras, declarás vos." });
-        dims.push({ name: "Tiempo", icon: "⏰", level: "soft",
-          body: "Declaración SiRADIG + revisión anual: 3-5 hs/año (más si tu situación es compleja). En 2023 con MNI alto no era necesario para la mayoría." });
-      }
-
-      if (p.extra === "plataforma" || p.extra === "segundo" || p.extra === "renta") {
-        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-          body: "Con ingresos extra el cálculo se complica: tenés que sumar todo para declarar Ganancias bien. Pluri-empleo = pluri-retención = pluri-trámite." });
-      }
-
-      return dims;
-    },
-    compareProfiles: [
-      { name: "Empleado priv $1M soltero", sub: "Empleado privado, $700k-1,5M, sin hijos", badges: { Plata: "none", "Carga mental": "none", Tiempo: "none", Trabajo: "none" } },
-      { name: "Empleado priv $2M con 2 hijos", sub: "Empleado privado, $1,5M-3M, 2 hijos", badges: { Plata: "soft", "Carga mental": "soft", Tiempo: "soft", Trabajo: "none" } },
-      { name: "Empleado priv $4M soltero", sub: "Empleado privado, $3M-6M, sin hijos", badges: { Plata: "strong", "Carga mental": "mid", Tiempo: "soft", Trabajo: "soft" } },
-      { name: "Empleado público $2M", sub: "Empleado público, 1 hijo, $1,5M-3M", badges: { Plata: "soft", "Carga mental": "mid", Tiempo: "soft", Trabajo: "none" } },
-      { name: "Jubilado haber medio + renta", sub: "Jubilado media-alta, renta", badges: { Plata: "mid", "Carga mental": "mid", Tiempo: "soft", Trabajo: "soft" } },
-      { name: "Monotributista que cruzó tope K", sub: "Autónomo régimen general", badges: { Plata: "strong", "Carga mental": "strong", Tiempo: "mid", Trabajo: "strong" } }
-    ]
-  },
-
-  {
-    id: "subsidios_energeticos",
-    date: "2025-10-15",
-    title: "Cambió el subsidio a la luz y el gas",
-    meta: "Decreto 943/2025 · Subsidio Energético Focalizado · vigente",
-    desc: "Reemplazó el sistema N1/N2/N3. Ahora el subsidio se asigna por ingreso del hogar bajo un umbral (~$3,77M actualizable). Sobre el umbral, tarifa plena.",
-    tags: ["Plata", "Servicios"],
-    fuente: "Boletín Oficial — Decreto 943/2025. ENRE / ENARGAS cuadros tarifarios 2025-2026. Padrón RASE.",
-    impact: function(p) {
-      const dims = [];
-      const tieneSEF = (p.asistencia || []).includes("sef");
-      const umbralIngreso = ["hasta_700k","700k_1.5m","1.5m_3m"].includes(p.ingreso);
-
-      if (tieneSEF || umbralIngreso) {
-        dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "Por ingresos, probablemente mantengás el SEF (factura subsidiada). El subsidio cubre los primeros consumos esenciales — el excedente paga tarifa plena. Estimar tu factura completa según consumo mensual." });
-      } else {
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: "Por nivel de ingresos quedás fuera del SEF. La factura plena de luz puede ser <strong>2-4x mayor</strong> que con N1/N2 anterior. Gas natural: ajustes ENARGAS." });
-      }
-
-      if (p.discapacidad !== "no" && p.discapacidad) {
-        dims.push({ name: "Servicios", icon: "🔌", level: "soft",
-          body: "Hogares con CUD pueden acceder a regímenes especiales tarifarios (electrodependientes con certificación, tarifa diferencial). Verificá en EDENOR/EDESUR o tu distribuidora." });
-      }
-
-      if (p.ocupacion === "jubilado_min" || p.ocupacion === "pensionado") {
-        dims.push({ name: "Plata", icon: "💰", level: "pos",
-          body: "Jubilación mínima y pensiones quedan bajo el umbral de SEF — mantenés el subsidio. Aplica también si tu hogar suma poco más allá del haber." });
-      }
-
-      if ((p.hijos === "2" || p.hijos === "3mas") && (p.ingreso === "hasta_700k" || p.ingreso === "700k_1.5m")) {
-        dims.push({ name: "Carga mental", icon: "🧠", level: "soft",
-          body: "Hogares con muchos hijos consumen más luz / gas. Aún con SEF, el excedente sobre el consumo cubierto pega fuerte en invierno." });
-      }
-
-      if (p.vivienda === "ocupada") {
-        dims.push({ name: "Servicios", icon: "🔌", level: "strong",
-          body: "Vivienda informal suele tener conexiones irregulares de servicios. El cambio normativo no te afecta directamente, pero si vas a regularizar te encontrás con tarifas plenas." });
-      }
-
-      return dims;
-    },
-    compareProfiles: [
-      { name: "Familia clase media CABA, $4M, sin SEF", sub: "Empleados, hijos, propia", badges: { Plata: "strong", Servicios: "soft", "Carga mental": "soft" } },
-      { name: "Jubilada mínima CABA con SEF", sub: "Jubilada mínima, propia", badges: { Plata: "pos", Servicios: "none", "Carga mental": "none" } },
-      { name: "Familia GBA con AUH y SEF", sub: "Cuidadora hogar, 2 hijos, $1M", badges: { Plata: "soft", Servicios: "soft", "Carga mental": "soft" } },
-      { name: "Empresario PyME, sin SEF", sub: "PyME, ingreso alto", badges: { Plata: "mid", Servicios: "soft", "Carga mental": "none" } },
-      { name: "Hogar con electrodependiente (CUD)", sub: "Familia, hijo con discapacidad", badges: { Plata: "soft", Servicios: "pos", "Carga mental": "mid" } }
-    ]
-  },
-
-  {
-    id: "jubilaciones",
-    date: "2024-03-22",
-    title: "Nueva movilidad jubilatoria",
-    meta: "Decreto 274/2024 + Ley 27.756 vetada · vigente",
-    desc: "Fórmula de movilidad ahora se ajusta mensualmente por IPC del INDEC. Se mantiene un bono de $70.000 congelado desde su creación (sin actualización en 28 meses).",
-    tags: ["Plata", "Salud", "Carga mental"],
-    fuente: "Boletín Oficial — DNU 274/2024. Ley 27.756 vetada por el PEN. ANSES — Haber mínimo jun-2026: $403.318 + bono $70.000 = $473.318.",
-    impact: function(p) {
-      const dims = [];
-
-      if (p.ocupacion === "jubilado_min") {
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: `<strong>Haber jun-2026: $403.318 + bono congelado $70.000 = $473.318</strong>. El bono no se actualiza desde su creación (28 meses): perdió ~70% de poder de compra. La movilidad mensual sigue el IPC pero <em>siempre con un mes de delay</em>.` });
-        dims.push({ name: "Salud", icon: "❤️", level: "strong",
-          body: "PAMI con vademécum reducido (restitución parcial vía amparo mar-2026). Adherencia a medicamentos cae cuando el copago supera el 4% del haber." });
-        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
-          body: "Defensoría 2025: <strong>14% de jubilados</strong> no completaron trámites por dificultades digitales (renovación Subsidio Social PAMI, etc.)." });
-      } else if (p.ocupacion === "jubilado_med") {
-        dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Haberes medios-altos: ajuste IPC mensual mantiene poder de compra mejor que el haber mínimo, pero el bono sigue siendo cero (sin bono para haberes por encima del mínimo)." });
-      } else if (p.ocupacion === "pensionado") {
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: "Las pensiones no contributivas siguen el régimen pero <em>quedan más rezagadas</em> en revalorización efectiva. Suelen sufrir más cuando se demoran las altas (auditoría de padrones 2024-25)." });
-      }
-
-      if (p.salud === "pami" && (p.ocupacion === "jubilado_min" || p.ocupacion === "pensionado")) {
-        dims.push({ name: "Salud", icon: "❤️", level: "mid",
-          body: "PAMI tuvo restitución parcial del vademécum tras amparos. El acceso depende del centro médico y de tener Subsidio Social tramitado." });
-      }
-
-      if (p.adultos === "1" || p.adultos === "2mas") {
-        dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "mid",
-          body: "Si tenés adultos mayores a cargo, la caída real del haber mínimo + bono congelado se traduce en mayor presión económica sobre vos. Suelen aparecer ayudas extra del entorno." });
-      }
-
-      return dims;
-    },
-    compareProfiles: [
-      { name: "Jubilada mínima CABA, sin obra social privada", sub: "Solo PAMI, propia", badges: { Plata: "strong", Salud: "strong", "Carga mental": "mid", Familia: "soft" } },
-      { name: "Jubilado haber medio, prepaga", sub: "PAMI + prepaga, $1,5M", badges: { Plata: "mid", Salud: "soft", "Carga mental": "soft", Familia: "none" } },
-      { name: "Pensión no contributiva por discapacidad", sub: "Pensionado PNC, familiar a cargo", badges: { Plata: "strong", Salud: "strong", "Carga mental": "mid", Familia: "mid" } },
-      { name: "Hijo/a sostiene a padre jubilado mínima", sub: "Empleado priv + adulto a cargo", badges: { Plata: "mid", Salud: "soft", "Carga mental": "mid", Familia: "strong" } },
-      { name: "Pareja jubilada (ambos mínima)", sub: "Dos haberes mínimos + 2 bonos", badges: { Plata: "strong", Salud: "strong", "Carga mental": "mid", Familia: "none" } }
-    ]
-  },
-
-  {
-    id: "monotributo_plataformas",
-    date: "2026-02-12",
-    title: "Reforma laboral: Uber, Rappi y Pedidos Ya entran al Monotributo",
-    meta: "Ley de Modernización Laboral · feb-2026 · vigente",
-    desc: "Trabajadores de plataformas (Uber, Rappi, Pedidos Ya, Cabify) ahora están formalmente reconocidos como independientes y deben estar inscriptos en Monotributo. Aportes mínimos y obra social mínima.",
-    tags: ["Trabajo", "Plata", "Salud"],
-    fuente: "Boletín Oficial — Ley de Modernización Laboral feb-2026. ARCA — categorías Monotributo 2026.",
-    impact: function(p) {
-      const dims = [];
-
-      if (p.extra === "plataforma") {
-        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-          body: "Tu actividad ahora es formal: necesitás inscripción Monotributo activa. Las plataformas verifican CUIT. Ganaste cobertura mínima (jubilación, obra social), pero te impacta el costo de la cuota." });
-        dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Cuota Monotributo (categoría más común para plataformas): ~$70-150k/mes según escala. Si ya pagabas Monotributo como actividad principal, la suma de ingresos te puede empujar a categoría superior." });
-        dims.push({ name: "Salud", icon: "❤️", level: "pos",
-          body: "Ahora accedés a obra social vía Monotributo. Cobertura limitada pero existe — antes era cobertura cero." });
-        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
-          body: "Tenés que recategorizar cada 6 meses según facturación. Si combinás otro Monotributo o sueldo, el cálculo se complica." });
-      }
-
-      if (p.ocupacion === "monotrib" && p.extra === "plataforma") {
-        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
-          body: "Como ya estabas en el sistema, la Reforma te formaliza el ingreso adicional. Riesgo: si tu cat. principal está cerca del tope, el ingreso plataforma te empuja arriba." });
-      }
-
-      if (p.ocupacion === "trab_informal" && p.extra === "plataforma") {
-        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
-          body: "Si tu única actividad es plataforma y estabas en negro, ahora la formalización es obligatoria. Es un cambio fuerte: requiere AFIP/ARCA, alta, monotributo. La obra social compensa, el costo administrativo no." });
-      }
-
-      if (p.extra !== "plataforma" && p.ocupacion !== "monotrib") {
-        dims.push({ name: "Trabajo", icon: "🛠️", level: "none",
-          body: "Por ahora no te toca. Si en el futuro complementás con Uber/Rappi, la formalización ya es ley." });
-      }
-
-      return dims;
-    },
-    compareProfiles: [
-      { name: "Conductor Uber full-time, antes informal", sub: "Trab. informal → monotrib obligatorio", badges: { Trabajo: "strong", Plata: "mid", Salud: "pos", "Carga mental": "mid" } },
-      { name: "Monotrib + Uber complemento", sub: "Monotributista cat D + plataforma", badges: { Trabajo: "mid", Plata: "soft", Salud: "pos", "Carga mental": "mid" } },
-      { name: "Empleado privado que hace Rappi finde", sub: "Empleado + plataforma part-time", badges: { Trabajo: "mid", Plata: "soft", Salud: "soft", "Carga mental": "soft" } },
-      { name: "Repartidor Rappi solo, sin otro ingreso", sub: "Único ingreso plataforma", badges: { Trabajo: "strong", Plata: "mid", Salud: "pos", "Carga mental": "strong" } },
-      { name: "Estudiante que hace Pedidos Ya algunas horas", sub: "Estudiante + plataforma", badges: { Trabajo: "mid", Plata: "soft", Salud: "soft", "Carga mental": "mid" } }
-    ]
-  }
-];
-
-// ============== STATE ==============
-const state = { perfil: { asistencia: [] }, measure: null };
-
-function show(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + screenId).classList.add('active');
-  if (screenId === 'measures') { renderMeasures(); updateMiniBar(); }
-  if (screenId === 'profile') updateProfileSummary();
-  if (screenId === 'impact') updateProfileSummary();
-  if (screenId === 'compare') renderCompare();
-  if (screenId === 'sectores') renderSectores();
-  if (screenId === 'balance') { updateProfileSummary(); renderBalance(); }
-  window.scrollTo(0, 0);
-}
-
-// ============== CHIPS ==============
-document.querySelectorAll('.chips').forEach(group => {
-  const field = group.dataset.field;
-  const multi = group.dataset.multi === 'true';
-  group.querySelectorAll('.chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (multi) {
-        const v = btn.dataset.v;
-        if (!state.perfil[field]) state.perfil[field] = [];
-        if (v === "ninguno") {
-          state.perfil[field] = ["ninguno"];
-          group.querySelectorAll('.chip').forEach(o => o.classList.remove('sel-multi','sel'));
-          btn.classList.add('sel-multi');
-        } else {
-          // unselect "ninguno" if any other selected
-          state.perfil[field] = state.perfil[field].filter(x => x !== "ninguno");
-          group.querySelector('[data-v="ninguno"]')?.classList.remove('sel-multi','sel');
-          if (state.perfil[field].includes(v)) {
-            state.perfil[field] = state.perfil[field].filter(x => x !== v);
-            btn.classList.remove('sel-multi');
-          } else {
-            state.perfil[field].push(v);
-            btn.classList.add('sel-multi');
-          }
-        }
-      } else {
-        group.querySelectorAll('.chip').forEach(o => o.classList.remove('sel'));
-        btn.classList.add('sel');
-        state.perfil[field] = btn.dataset.v;
-      }
-      checkProfileComplete();
-    });
-  });
-});
-
-function checkProfileComplete() {
-  // mínimos necesarios para que el cálculo funcione razonable
-  const required = ['ocupacion', 'zona', 'vivienda', 'ingreso', 'transporte'];
-  const complete = required.every(f => state.perfil[f]);
-  document.getElementById('btnGoMeasures').disabled = !complete;
-  document.getElementById('btnSkip').style.display = complete ? 'none' : 'block';
-}
-
-function updateProfileSummary() {
-  const p = state.perfil;
-  const parts = [];
-  if (p.ocupacion) parts.push(FIELD_LABELS.ocupacion[p.ocupacion]);
-  if (p.zona) parts.push(FIELD_LABELS.zona[p.zona]);
-  if (p.ingreso) parts.push(FIELD_LABELS.ingreso[p.ingreso]);
-  if (p.vivienda) parts.push(FIELD_LABELS.vivienda[p.vivienda]);
-  if (p.hijos && p.hijos !== "0") parts.push(FIELD_LABELS.hijos[p.hijos]);
-  if (p.adultos && p.adultos !== "0") parts.push(FIELD_LABELS.adultos[p.adultos]);
-  if (p.extra && p.extra !== "no") parts.push(FIELD_LABELS.extra[p.extra]);
-  if (p.discapacidad && p.discapacidad !== "no") parts.push(FIELD_LABELS.discapacidad[p.discapacidad]);
-  if (Array.isArray(p.asistencia) && p.asistencia.length && !p.asistencia.includes("ninguno")) {
-    parts.push(p.asistencia.map(a => FIELD_LABELS.asistencia[a]).join(" + "));
-  }
-  const summary = parts.join(' · ') || '—';
-  // Clase social DERIVADA del ingreso (no la elige el usuario).
-  // "El ingreso te dice dónde estás parado; la objetividad evita que la
-  //  gente se crea de otra clase." Por eso la inferimos, no la preguntamos.
-  let claseChip = '';
-  if (p.ingreso && typeof window.calcularClaseSocial === 'function') {
-    const clase = window.calcularClaseSocial(p.ingreso);
-    if (clase) claseChip = ` <span class="clase-chip" title="Derivada del ingreso del hogar (CBT INDEC) · ${clase.aam} · ${clase.quintil}">${clase.label}</span>`;
-  }
-  const html = `<strong>TU PERFIL</strong>${summary}${claseChip}`;
-  document.getElementById('perfilSummary').innerHTML = html;
-  document.getElementById('perfilSummary2').innerHTML = html;
-  const p3 = document.getElementById('perfilSummary3');
-  if (p3) p3.innerHTML = html;
-}
-
-// ============== MEASURES ==============
-function renderMeasures() {
-  updateProfileSummary();
-  const list = document.getElementById('measureList');
-  list.innerHTML = '';
-  MEASURES.forEach(m => {
-    const card = document.createElement('div');
-    card.className = 'card measure';
-    const tagsHtml = m.tags.map(t => `<span class="measure-tag">${t}</span>`).join('');
-    card.innerHTML = `
-      <h3>${m.title}</h3>
-      <div class="meta">${m.meta}</div>
-      <div class="desc">${m.desc}</div>
-      <div class="measure-tags">${tagsHtml}</div>
-    `;
-    card.onclick = () => { state.measure = m; renderImpact(); show('impact'); };
-    list.appendChild(card);
-  });
-}
-
-// ============== IMPACT ==============
-function renderImpact() {
-  const m = state.measure;
-  if (!m) return;
-  document.getElementById('measureTitle').textContent = m.title;
-  document.getElementById('measureMeta').textContent = m.meta;
-  document.getElementById('sourceBox').innerHTML = '<strong>FUENTE:</strong> ' + m.fuente;
-
-  const dims = m.impact(state.perfil);
-  const dimList = document.getElementById('dimList');
-  dimList.innerHTML = '';
-  if (!dims.length) {
-    dimList.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">Con este perfil no detectamos impacto directo de esta medida.</div>';
-    return;
-  }
-  dims.forEach(d => {
-    const card = document.createElement('div');
-    card.className = 'dim-card hit-' + d.level;
-    const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos: "Positivo", none: "No aplica" }[d.level];
-    card.innerHTML = `
-      <div class="dim-head">
-        <div class="dim-name"><span class="dim-icon">${d.icon || "•"}</span>${d.name}</div>
-        <div class="dim-tag tag-${d.level}">${tagText}</div>
-      </div>
-      <div class="dim-body">${d.body}</div>
-    `;
-    dimList.appendChild(card);
-  });
-}
-
-// ============== COMPARE ==============
-function renderCompare() {
-  const m = state.measure;
-  if (!m) return;
-  document.getElementById('compareTitle').textContent = `Cómo le pega "${m.title}" al resto`;
-  const list = document.getElementById('compareList');
-  list.innerHTML = '';
-  m.compareProfiles.forEach(p => {
-    const row = document.createElement('div');
-    row.className = 'compare-row';
-    let badges = '';
-    Object.keys(p.badges).forEach(k => {
-      const lvl = p.badges[k];
-      const initials = k.length > 4 ? k.substring(0, 3) : k.substring(0, 3);
-      badges += `<span class="badge ${lvl}" title="${k}: ${lvl}">${initials.toUpperCase()}</span>`;
-    });
-    row.innerHTML = `
-      <div class="name">${p.name}<small>${p.sub}</small></div>
-      <div class="badge-row">${badges}</div>
-    `;
-    list.appendChild(row);
-  });
-}
-</script>
-
-<style>
-  /* ============== BALANCE / TIMELINE ============== */
-  .balance-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
-  .bal-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px 10px; text-align: center; box-shadow: var(--shadow-sm); }
-  .bal-card .big { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -0.5px; margin-bottom: 4px; }
-  .bal-card .lbl { font-size: 10.5px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
-  .bal-card.contra .big { color: var(--hit-strong); }
-  .bal-card.neutral .big { color: var(--ink-mute); }
-  .bal-card.favor .big { color: var(--hit-pos); }
-  .stacked-bar { display: flex; height: 14px; border-radius: 99px; overflow: hidden; background: var(--line-soft); margin-bottom: 18px; box-shadow: var(--shadow-sm); }
-  .stacked-bar > span { transition: flex 0.4s ease; min-width: 0; }
-  .stacked-bar .bar-contra { background: var(--hit-strong); }
-  .stacked-bar .bar-mid { background: var(--hit-mid); }
-  .stacked-bar .bar-soft { background: var(--hit-soft); }
-  .stacked-bar .bar-neutral { background: var(--line); }
-  .stacked-bar .bar-favor { background: var(--hit-pos); }
-  .bal-tip { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 18px; padding: 10px 14px; background: var(--paper-soft); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; line-height: 1.5; }
-  .bal-section-title { font-size: 11px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin: 22px 4px 10px; }
-  .dim-tally { display: flex; flex-direction: column; gap: 8px; }
-  .dim-tally-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-  .dim-tally-name { flex: 0 0 110px; color: var(--ink); font-weight: 600; display: flex; align-items: center; gap: 5px; font-size: 12.5px; }
-  .dim-tally-bar { flex: 1; height: 10px; background: var(--line-soft); border-radius: 99px; overflow: hidden; display: flex; }
-  .dim-tally-bar .fill { height: 100%; }
-  .dim-tally-bar .fill.neg { background: var(--hit-strong); }
-  .dim-tally-bar .fill.pos { background: var(--hit-pos); }
-  .dim-tally-count { color: var(--ink-mute); font-size: 11px; font-weight: 600; min-width: 44px; text-align: right; }
-  .timeline { border-left: 2px solid var(--line); padding-left: 16px; margin-left: 6px; margin-top: 8px; }
-  .tl-item { position: relative; padding: 12px 14px; margin-bottom: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
-  .tl-item:hover { transform: translateX(2px); box-shadow: var(--shadow); }
-  .tl-item::before { content: ""; position: absolute; left: -23px; top: 18px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink-mute); border: 3px solid var(--bg); }
-  .tl-item.neg::before { background: var(--hit-strong); }
-  .tl-item.midneg::before { background: var(--hit-mid); }
-  .tl-item.softneg::before { background: var(--hit-soft); }
-  .tl-item.neutral::before { background: var(--ink-mute); }
-  .tl-item.pos::before { background: var(--hit-pos); }
-  .tl-date { font-size: 10.5px; color: var(--ink-mute); font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 3px; }
-  .tl-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; line-height: 1.3; }
-  .tl-pill { display: inline-block; font-size: 10.5px; padding: 2px 9px; border-radius: 99px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
-  .tl-pill.neg { background: #fee2e2; color: var(--hit-strong); }
-  .tl-pill.midneg { background: #ffedd5; color: var(--hit-mid); }
-  .tl-pill.softneg { background: #fef3c7; color: var(--hit-soft); }
-  .tl-pill.neutral { background: #f3f4f6; color: var(--ink-mute); }
-  .tl-pill.pos { background: #dcfce7; color: var(--hit-pos); }
-  .tl-summary { font-size: 12px; color: var(--ink-mute); margin-top: 4px; }
-  .btn-balance { background: var(--accent); color: white; border: 0; padding: 12px 16px; border-radius: 12px; font-weight: 600; font-size: 13.5px; width: 100%; cursor: pointer; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; font-family: inherit; }
-  .btn-balance:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
-  .btn-balance .bar-mini { display: flex; height: 8px; border-radius: 99px; overflow: hidden; width: 70px; background: rgba(255,255,255,0.2); }
-  .btn-balance .bar-mini span { display: block; height: 100%; }
-
-  /* Donut chart */
-  .donut-wrap {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 20px 16px 18px;
-    margin-bottom: 14px;
-    box-shadow: var(--shadow-sm);
-    text-align: center;
-  }
-  .donut-svg { display: block; margin: 0 auto 12px; }
-  .donut-center-num {
-    font-size: 36px;
-    font-weight: 800;
-    fill: var(--ink);
-    letter-spacing: -1px;
-  }
-  .donut-center-lbl {
-    font-size: 10px;
-    fill: var(--ink-mute);
-    letter-spacing: 0.8px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .donut-legend {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 280px;
-    margin: 8px auto 0;
-  }
-  .donut-legend-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    padding: 6px 10px;
-    background: var(--paper-soft);
-    border-radius: 8px;
-  }
-  .donut-legend-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-  .donut-legend-dot.contra { background: var(--hit-strong); }
-  .donut-legend-dot.neutral { background: #c4bfb0; }
-  .donut-legend-dot.favor { background: var(--hit-pos); }
-  .donut-legend-label {
-    flex: 1;
-    text-align: left;
-    color: var(--ink-soft);
-    font-weight: 500;
-  }
-  .donut-legend-count {
-    color: var(--ink);
-    font-weight: 700;
-    font-size: 14px;
-  }
-  .donut-legend-pct {
-    color: var(--ink-mute);
-    font-size: 11px;
-    font-weight: 600;
-    margin-left: 4px;
-  }
-</style>
-
-<script>
-// ============== BALANCE FEATURE ==============
-const LEVEL_WEIGHT = { pos: 1, none: 0, soft: -1, mid: -2, strong: -3 };
-
-function scoreMeasure(m) {
-  if (!state.perfil.ocupacion) return { score: 0, dims: [], bucket: 'neutral' };
-  let dims;
-  try { dims = m.impact(state.perfil); } catch (e) { dims = []; }
-  let score = 0;
-  dims.forEach(d => { score += (LEVEL_WEIGHT[d.level] || 0); });
-  let bucket = 'neutral';
-  if (score > 0) bucket = 'pos';
-  else if (score <= -6) bucket = 'neg';
-  else if (score <= -3) bucket = 'midneg';
-  else if (score < 0) bucket = 'softneg';
-  return { score, dims, bucket };
-}
-
-function bucketLabel(b) {
-  return { neg: "EN CONTRA", midneg: "MEDIO", softneg: "LEVE", neutral: "NEUTRA", pos: "A FAVOR" }[b] || "";
-}
-
-function formatDate(iso) {
-  const [y, mm, d] = iso.split('-');
-  const meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
-  return `${parseInt(d)}-${meses[parseInt(mm) - 1]}-${y}`;
-}
-
-function aggregateDims(scored) {
-  const tally = {};
-  scored.forEach(s => {
-    s.dims.forEach(d => {
-      if (!tally[d.name]) tally[d.name] = { icon: d.icon || "•", pos: 0, neg: 0, items: 0 };
-      tally[d.name].items += 1;
-      if (d.level === "pos") tally[d.name].pos += 1;
-      else if (d.level !== "none") tally[d.name].neg += 1;
-    });
-  });
-  return tally;
-}
-
-function renderBalance() {
-  if (!state.perfil.ocupacion) return;
-  const scored = MEASURES.map(m => ({ m, ...scoreMeasure(m) }));
-
-  let contra = 0, neutral = 0, favor = 0;
-  let byBucket = { neg: 0, midneg: 0, softneg: 0, neutral: 0, pos: 0 };
-  scored.forEach(s => {
-    byBucket[s.bucket]++;
-    if (s.bucket === 'pos') favor++;
-    else if (s.bucket === 'neutral') neutral++;
-    else contra++;
-  });
-
-  document.getElementById('balContra').textContent = contra;
-  document.getElementById('balNeutral').textContent = neutral;
-  document.getElementById('balFavor').textContent = favor;
-
-  const stacked = document.getElementById('stackedBar');
-  stacked.innerHTML = '';
-  const seq = [
-    { cls: 'bar-contra', n: byBucket.neg },
-    { cls: 'bar-mid', n: byBucket.midneg },
-    { cls: 'bar-soft', n: byBucket.softneg },
-    { cls: 'bar-neutral', n: byBucket.neutral },
-    { cls: 'bar-favor', n: byBucket.pos }
-  ];
-  seq.forEach(s => {
-    if (s.n > 0) {
-      const span = document.createElement('span');
-      span.className = s.cls;
-      span.style.flex = s.n;
-      stacked.appendChild(span);
-    }
-  });
-
-  const total = scored.length;
-  let tip;
-  if (contra > favor * 2) tip = `<strong>Mayoría de medidas con impacto negativo en tu perfil:</strong> ${contra} de ${total}. ${favor} con impacto positivo, ${neutral} no te tocan.`;
-  else if (favor > contra) tip = `<strong>Mayoría de medidas con impacto positivo en tu perfil:</strong> ${favor} de ${total}. ${contra} con impacto negativo, ${neutral} no te tocan.`;
-  else if (contra === favor) tip = `<strong>Balance parejo en tu perfil:</strong> ${favor} con impacto positivo, ${contra} con impacto negativo, ${neutral} no te tocan.`;
-  else tip = `<strong>${contra} medidas con impacto negativo, ${favor} con impacto positivo</strong> en tu perfil. La mayoría con magnitud leve a media.`;
-  document.getElementById('balTip').innerHTML = tip;
-
-  const tally = aggregateDims(scored);
-  const dimList = Object.entries(tally).sort((a, b) => (b[1].neg + b[1].pos) - (a[1].neg + a[1].pos));
-  const tallyEl = document.getElementById('dimTally');
-  tallyEl.innerHTML = '';
-  if (!dimList.length) {
-    tallyEl.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);">Sin impacto detectado en este perfil.</div>';
-  } else {
-    const maxHits = Math.max(...dimList.map(([_, d]) => d.neg + d.pos));
-    dimList.forEach(([name, d]) => {
-      const negPct = (d.neg / maxHits * 100);
-      const posPct = (d.pos / maxHits * 100);
-      const row = document.createElement('div');
-      row.className = 'dim-tally-row';
-      row.innerHTML = `<div class="dim-tally-name"><span>${d.icon}</span>${name}</div><div class="dim-tally-bar"><span class="fill neg" style="width: ${negPct}%"></span><span class="fill pos" style="width: ${posPct}%"></span></div><div class="dim-tally-count">${d.neg ? "-" + d.neg : ""}${d.pos ? " +" + d.pos : ""}</div>`;
-      tallyEl.appendChild(row);
-    });
-  }
-
-  const sorted = scored.slice().sort((a, b) => b.m.date.localeCompare(a.m.date));
-  const timeline = document.getElementById('timeline');
-  timeline.innerHTML = '';
-  sorted.forEach(s => {
-    const item = document.createElement('div');
-    item.className = 'tl-item ' + s.bucket;
-    const label = bucketLabel(s.bucket);
-    const negDims = s.dims.filter(d => d.level !== 'none' && d.level !== 'pos').map(d => d.name).slice(0, 3);
-    const posDims = s.dims.filter(d => d.level === 'pos').map(d => d.name);
-    let summary = '';
-    if (negDims.length) summary += `Pega en: ${negDims.join(', ')}`;
-    if (posDims.length) summary += (summary ? ' · ' : '') + `Beneficia: ${posDims.join(', ')}`;
-    if (!summary) summary = 'Sin impacto directo en tu perfil.';
-    item.innerHTML = `<div class="tl-date">${formatDate(s.m.date)}</div><div class="tl-title">${s.m.title}</div><span class="tl-pill ${s.bucket}">${label}</span><div class="tl-summary">${summary}</div>`;
-    item.onclick = () => { state.measure = s.m; renderImpact(); show('impact'); };
-    timeline.appendChild(item);
-  });
-}
-
-function updateMiniBar() {
-  const bar = document.getElementById('miniBar');
-  if (!bar) return;
-  if (!state.perfil.ocupacion) { bar.innerHTML = ''; return; }
-  const scored = MEASURES.map(m => scoreMeasure(m));
-  let contra = 0, neutral = 0, favor = 0;
-  scored.forEach(s => {
-    if (s.bucket === 'pos') favor++;
-    else if (s.bucket === 'neutral') neutral++;
-    else contra++;
-  });
-  bar.innerHTML = '';
-  [
-    { color: 'var(--hit-strong)', n: contra },
-    { color: 'rgba(255,255,255,0.35)', n: neutral },
-    { color: 'var(--hit-pos)', n: favor }
-  ].forEach(seg => {
-    if (seg.n > 0) {
-      const s = document.createElement('span');
-      s.style.background = seg.color;
-      s.style.flex = seg.n;
-      bar.appendChild(s);
-    }
-  });
-}
-
-// Inject balance screen DOM dynamically (avoids a giant HTML Edit)
-(function injectBalanceScreen() {
-  const measuresScreen = document.getElementById('screen-measures');
-  if (!measuresScreen) return;
-  const sec = document.createElement('section');
-  sec.id = 'screen-balance';
-  sec.className = 'screen';
-  sec.innerHTML = `
-    <div class="crumb" onclick="show('measures')">← Volver a medidas</div>
-    <div class="perfil-box" id="perfilSummary3"><strong>TU PERFIL</strong>—</div>
-    <h2 class="step">Tu balance histórico</h2>
-    <p class="step-sub">Suma del impacto de las medidas vigentes en tu perfil — desde <strong>dic-2023 hasta hoy</strong>. Por dimensión y por línea de tiempo. <em>Misma fórmula para cualquier gobierno.</em></p>
-    <div class="donut-wrap">
-      <div id="donutSvg"></div>
-      <div id="donutLegend" class="donut-legend"></div>
-    </div>
-    <div class="balance-summary">
-      <div class="bal-card contra"><div class="big" id="balContra">—</div><div class="lbl">En contra</div></div>
-      <div class="bal-card neutral"><div class="big" id="balNeutral">—</div><div class="lbl">Neutras</div></div>
-      <div class="bal-card favor"><div class="big" id="balFavor">—</div><div class="lbl">A favor</div></div>
-    </div>
-    <div style="font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin: 18px 4px 6px; font-weight: 700;">Intensidad de los impactos en contra</div>
-    <div class="stacked-bar" id="stackedBar"></div>
-    <div class="bal-tip" id="balTip">—</div>
-    <div class="bal-section-title">Dónde te pegaron más</div>
-    <div class="dim-tally" id="dimTally"></div>
-    <div class="bal-section-title">Línea de tiempo</div>
-    <div class="timeline" id="timeline"></div>
-  `;
-  measuresScreen.parentNode.insertBefore(sec, measuresScreen.nextSibling);
-})();
-
-// Donut chart builder
-function buildDonut(contra, neutral, favor) {
-  const total = contra + neutral + favor;
-  const svgEl = document.getElementById('donutSvg');
-  const legendEl = document.getElementById('donutLegend');
-  if (!svgEl || !legendEl) return;
-  if (total === 0) {
-    svgEl.innerHTML = '<div style="padding:30px;color:var(--ink-mute);font-size:13px;">Sin datos para mostrar</div>';
-    legendEl.innerHTML = '';
-    return;
-  }
-  const cx = 110, cy = 110, r = 78, sw = 28;
-  function polar(deg) {
-    const rad = (deg - 90) * Math.PI / 180;
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-  }
-  let offset = 0;
-  const segs = [
-    { value: contra, color: '#b91c1c', label: 'En contra', cls: 'contra' },
-    { value: neutral, color: '#c4bfb0', label: 'Neutras', cls: 'neutral' },
-    { value: favor, color: '#15803d', label: 'A favor', cls: 'favor' }
-  ];
-  let paths = '';
-  segs.forEach(s => {
-    if (s.value === 0) return;
-    const angle = (s.value / total) * 360;
-    // Avoid full-circle edge case
-    const drawAngle = angle >= 359.99 ? 359.99 : angle;
-    const start = polar(offset);
-    const end = polar(offset + drawAngle);
-    const largeArc = drawAngle > 180 ? 1 : 0;
-    paths += `<path d="M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}" stroke="${s.color}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
-    offset += angle;
-  });
-  const svg = `<svg class="donut-svg" viewBox="0 0 220 220" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-    ${paths}
-    <text class="donut-center-num" x="110" y="118" text-anchor="middle">${total}</text>
-    <text class="donut-center-lbl" x="110" y="138" text-anchor="middle">MEDIDAS</text>
-  </svg>`;
-  svgEl.innerHTML = svg;
-
-  let legend = '';
-  segs.forEach(s => {
-    const pct = total ? Math.round((s.value / total) * 100) : 0;
-    legend += `<div class="donut-legend-row">
-      <div class="donut-legend-dot ${s.cls}"></div>
-      <div class="donut-legend-label">${s.label}</div>
-      <div class="donut-legend-count">${s.value}<span class="donut-legend-pct">${pct}%</span></div>
-    </div>`;
-  });
-  legendEl.innerHTML = legend;
-}
-
-// Wrap renderBalance to call buildDonut
-const _origRenderBalance = renderBalance;
-renderBalance = function() {
-  _origRenderBalance.call(this);
-  if (!state.perfil.ocupacion) return;
-  const scored = MEASURES.map(m => scoreMeasure(m));
-  let c = 0, n = 0, f = 0;
-  scored.forEach(s => {
-    if (s.bucket === 'pos') f++;
-    else if (s.bucket === 'neutral') n++;
-    else c++;
-  });
-  buildDonut(c, n, f);
-};
-
-// ============== SECTORES SOCIALES ==============
-// Para la medida actual, corremos su impact() sobre el perfil arquetípico de
-// cada clase social (definidos en js/clases-sociales.js) y mostramos los badges
-// de intensidad por dimensión. La clase se DERIVA del ingreso: el ingreso te
-// dice dónde estás parado; la objetividad evita que la gente se crea de otra clase.
-function renderSectores() {
-  const m = state.measure;
-  if (!m) return;
-  document.getElementById('sectoresTitle').textContent = `Cómo le pega "${m.title}" a cada clase social`;
-  const list = document.getElementById('sectoresList');
-  list.innerHTML = '';
-  const clases = window.CLASES_SOCIALES || [];
-  const perfiles = window.PERFILES_ARQUETIPICOS || {};
-  if (!clases.length) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">Para esta vista hay que servir la app por HTTP (no abrir el archivo directo): el módulo de clases sociales no carga bajo file://.</div>';
-    return;
-  }
-  clases.forEach(c => {
-    const perfil = perfiles[c.id];
-    let dims = [];
-    try { dims = perfil ? m.impact(perfil) : []; } catch (e) { dims = []; }
-    const row = document.createElement('div');
-    row.className = 'compare-row';
-    let badges = '';
-    dims.forEach(d => {
-      const initials = d.name.substring(0, 3).toUpperCase();
-      badges += `<span class="badge ${d.level}" title="${d.name}: ${d.level}">${initials}</span>`;
-    });
-    if (!badges) badges = '<span class="badge none" title="Sin impacto directo en este perfil">—</span>';
-    row.innerHTML = `<div class="name">${c.label}<small>${c.aam} · ${c.quintil}</small></div><div class="badge-row">${badges}</div>`;
-    list.appendChild(row);
-  });
-}
-</script>
-
+<!-- Bootstrap de módulos: clases sociales + capa de datos (Supabase). -->
 <script type="module">
-  // Puente: js/clases-sociales.js es un ES module (export). Lo importamos y
-  // exponemos en window para que el script clásico (con onclick globales)
-  // pueda usar calcularClaseSocial / CLASES_SOCIALES / PERFILES_ARQUETIPICOS.
   import { calcularClaseSocial, CLASES_SOCIALES, PERFILES_ARQUETIPICOS } from './js/clases-sociales.js';
+  import { loadData } from './js/data.js';
+
+  // Puente para el script clásico (onclick globales).
   window.calcularClaseSocial = calcularClaseSocial;
   window.CLASES_SOCIALES = CLASES_SOCIALES;
   window.PERFILES_ARQUETIPICOS = PERFILES_ARQUETIPICOS;
-  // Si ya había un ingreso cargado, re-render del resumen para que aparezca
-  // el chip de clase social apenas el módulo termina de cargar.
-  if (typeof window.updateProfileSummary === 'function') {
-    try { window.updateProfileSummary(); } catch (_) {}
-  }
+
+  (async () => {
+    let res;
+    try {
+      res = await loadData();
+    } catch (e) {
+      console.warn('[ctp] loadData lanzó:', e);
+      res = { measures: [], medios: [], source: 'error' };
+    }
+    window.MEASURES = res.measures || [];
+    window.MEDIOS = res.medios || [];
+    window.CTP_SOURCE = res.source;
+    console.info('[ctp] datos:', res.source, (res.measures || []).length, 'medidas');
+    if (typeof window.initApp === 'function') window.initApp();
+  })();
 </script>
 
+<!-- Service worker (PWA) -->
 <script>
-  // Registro del service worker (PWA). Path relativo → scope correcto en
-  // GitHub Pages (/como-te-pega/) y en dev local (raíz).
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./service-worker.js').catch(() => {});

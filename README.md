@@ -42,10 +42,48 @@ npx serve .
 
 Después abrí `http://localhost:8080/`.
 
+## Datos
+
+Desde **v0.6** el catálogo de medidas se sirve desde **Supabase** (proyecto
+`nqwnanfdpaesojuyaztm`), con fallback al catálogo hardcodeado del v0.5 si el
+fetch falla (offline OK tras el primer load).
+
+**Config:** `config.js` (raíz) exporta `SUPABASE_URL` y `SUPABASE_ANON_KEY`. La
+anon key es *publishable* (pública, protegida por Row Level Security), por eso
+va commiteada.
+
+**Capa de datos** (`js/data.js`): al cargar hace `Promise.all` de
+`medidas_con_popularidad`, `cobertura_mediatica`,
+`observaciones_constitucionales`, `articulos_constitucion` y `medios`. Cachea el
+payload crudo en `localStorage` con TTL de **6 horas**. Orden de resolución:
+cache fresco → red → cache viejo → fallback v0.5.
+
+**Schema relevante (Supabase):**
+
+| Tabla | Para qué |
+|---|---|
+| `medidas` / vista `medidas_con_popularidad` | datos editoriales (titulo, descripcion, tags, area, estado) + `popularidad_medios` / `nivel_popularidad` |
+| `cobertura_mediatica` | qué medios cubrieron cada medida (alimenta el *trending* ≥ 5/6) |
+| `observaciones_constitucionales` | procesos judiciales reales por medida (apartado ⚖️) |
+| `articulos_constitucion` | artículos CN referenciados por las observaciones |
+| `medios` | los 6 medios que seguimos |
+| `parametros_medida` | valores computables numéricos (tarifas, haberes, MNI…) — uso pleno en v0.7 |
+| `clases_sociales` / `perfiles_arquetipos` | derivación de clase y perfiles por sector |
+
+**Fuentes de datos:** BORA (Boletín Oficial), ARCA, INDEC, BCRA, ANSES y las
+fuentes citadas por medida.
+
+Las **reglas de impacto** (`impact(perfil)`) y los `compareProfiles` siguen
+hardcodeados en `js/medidas-base.js` — migran a la tabla `reglas_impacto` en
+v0.7. La fecha de cada norma también vive ahí (la tabla `medidas` no tiene
+columna de fecha calendario todavía).
+
+El seed inicial de las 6 medidas del v0.5 está en
+`migrations/seed_initial_medidas.sql` (idempotente, no destructivo).
+
 ## Estado
 
-Prototipo **v0.5** — rebrand a *Cómo Te Pega* + clase social derivada + vista
-"cómo te pega por sector social". El catálogo de medidas está hardcodeado y se
-va a actualizar con los datos del **BORA** (Boletín Oficial) más adelante; los
-perfiles arquetípicos y los umbrales de CBT se moverán a config dinámica /
-Supabase.
+Prototipo **v0.6** — fetch desde Supabase + trending mediático
+("lo que están discutiendo todos") + historial cronológico + apartado
+constitucional por medida. Construido sobre el v0.5 (rebrand, clase social
+derivada y vista por sector social).
