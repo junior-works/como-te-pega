@@ -164,7 +164,7 @@ const state = {
   histArea: null, histAnio: null,
   // v0.7: filtros de la pantalla de medidas + paginación
   filtersOpen: false,
-  filters: { areas: AREA_KEYS.slice(), estados: [], popKeys: [], fecha: "todas", busqueda: "" },
+  filters: { areas: [], estados: [], popKeys: [], fecha: "todas", busqueda: "" },
   list: { items: [], total: 0, loading: false },
   listLoaded: false,
   searchTimer: null
@@ -325,7 +325,7 @@ function openMeasure(id) {
 function activeFilterCount() {
   const f = state.filters;
   let n = 0;
-  if (f.areas.length < AREA_KEYS.length) n++;
+  n += f.areas.length;     // multi-select: nada marcado = todas (sin filtro)
   n += f.estados.length;
   n += f.popKeys.length;
   if (f.fecha !== "todas") n++;
@@ -340,7 +340,7 @@ function toggleFilters() {
 window.toggleFilters = toggleFilters;
 
 function clearFilters() {
-  state.filters = { areas: AREA_KEYS.slice(), estados: [], popKeys: [], fecha: "todas", busqueda: "" };
+  state.filters = { areas: [], estados: [], popKeys: [], fecha: "todas", busqueda: "" };
   renderFilters();
   loadFirstPage();
 }
@@ -376,8 +376,7 @@ function renderFilters() {
     `<button class="fchip ${f.popKeys.includes(x.key) ? 'sel' : ''}" data-kind="pop" data-v="${x.key}">${x.label}</button>`).join('');
 
   el.innerHTML = `
-    <div class="filter-group"><h4 class="filter-h">Área</h4><div class="fchips">
-      <button class="fchip ${f.areas.length === AREA_KEYS.length ? 'sel' : ''}" data-kind="area-all" data-v="">Todas</button>${areaChips}</div></div>
+    <div class="filter-group"><h4 class="filter-h">Área</h4><div class="fchips">${areaChips}</div></div>
     <div class="filter-group"><h4 class="filter-h">Fecha</h4><div class="fchips">${fechaChips}</div></div>
     <div class="filter-group"><h4 class="filter-h">Estado</h4><div class="fchips">${estadoChips}</div></div>
     <div class="filter-group"><h4 class="filter-h">Cobertura mediática</h4><div class="fchips">${popChips}</div></div>
@@ -387,13 +386,9 @@ function renderFilters() {
   el.querySelectorAll('.fchip').forEach(b => {
     b.onclick = () => {
       const v = b.dataset.v, kind = b.dataset.kind;
-      if (kind === 'area-all') {
-        f.areas = AREA_KEYS.slice();
-      } else if (kind === 'area') {
-        // Desde el estado por defecto (todas activas), el primer click filtra
-        // SOLO a esa área. Después se comporta como multi-select (toggle).
-        if (f.areas.length === AREA_KEYS.length) f.areas = [v];
-        else f.areas = f.areas.includes(v) ? f.areas.filter(x => x !== v) : [...f.areas, v];
+      if (kind === 'area') {
+        // Multi-select: nada marcado = todas. Toggle como Estado/Cobertura.
+        f.areas = f.areas.includes(v) ? f.areas.filter(x => x !== v) : [...f.areas, v];
       } else if (kind === 'fecha') {
         f.fecha = v; // single-select
       } else if (kind === 'estado') {
@@ -430,8 +425,7 @@ function escapeAttr(s) {
 function buildFilterPayload(offset, limit) {
   const f = state.filters;
   const payload = { offset: offset || 0, limit: limit != null ? limit : 15 };
-  if (f.areas.length === 0) payload.areas = ['__nomatch__'];           // nada seleccionado → 0 resultados
-  else if (f.areas.length < AREA_KEYS.length) payload.areas = f.areas.slice();
+  if (f.areas.length) payload.areas = f.areas.slice();       // vacío = sin filtro (todas)
   if (f.estados.length) payload.estados = f.estados.slice(); // ya son valores crudos de DB
   const pop = f.popKeys.flatMap(k => (POP_FILTERS.find(p => p.key === k) || {}).vals || []);
   if (pop.length) payload.popularidades = pop;
