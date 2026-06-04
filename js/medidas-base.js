@@ -1778,6 +1778,380 @@ export const MEASURES_BASE = [
       { name: "Comerciante de electrónica continente", sub: "PyME · CABA · Retail", badges: { Plata: "pos" } },
       { name: "Consumidor familiar ingreso medio", sub: "Empleado priv. · $1,5-3M · Hijos", badges: { Plata: "pos", Salud: "soft" } }
     ]
+  },
+  {
+    id: "cepo_cambiario_levantamiento",
+    title: "Se levantó el cepo al dólar (Fase 3)",
+    date: "2025-04-14",
+    meta: "Comunicaciones BCRA \"A\" 8226 y \"A\" 8227 · 14-abr-2025 · vigente",
+    desc: "El 14-abr-2025 el Banco Central terminó con el cepo para las personas: cayó el límite de USD 200 por mes y podés comprar dólares libremente. El dólar pasó a flotar dentro de una banda de $1.000 a $1.400 (que se mueve 1% por mes). Las empresas pueden volver a girar ganancias al exterior por los ejercicios desde 2025 y se eliminó el dólar 'blend' que beneficiaba al agro (liquidaban 20% al dólar paralelo). Todo bajo un nuevo acuerdo con el FMI por USD 20.000 millones.",
+    tags: ["Plata", "Cambiario", "País"],
+    fuente: "Boletín Oficial / BCRA — Comunicaciones \"A\" 8226 y \"A\" 8227 (14-abr-2025), Programa de Estabilización Fase 3. Acuerdo EFF FMI USD 20.000M. Ámbito, Infobae, BCRA.gob.ar.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoMedioAlto = p.ingreso === '1.5m_3m' || p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      const ingresoAlto = p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      const ingresoBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m';
+      if (ingresoMedioAlto) {
+        dims.push({ name: "Ahorro", icon: "🐷", level: "pos",
+          body: "Si tenías pesos para ahorrar, ahora podés comprar dólares sin el tope de USD 200 mensuales y sin el recargo del 30% que tenía el dólar ahorro. Por primera vez en años el dólar al que comprás es básicamente el mismo que ves en la pantalla, sin desdoblamientos." });
+      }
+      if (ingresoAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Sos el perfil que más gana con la apertura: dolarizás ahorros sin límite, comprás afuera con tarjeta a un tipo de cambio más barato y, si tenés acciones o empresa, podés mover capital al exterior sin pedir permiso. La brecha entre dólar oficial y paralelo se achicó de ~50% a casi cero." });
+      }
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Las PyMEs pueden pagar importaciones desde el despacho de origen (antes esperabas hasta 4 cuotas a 30/60/90/120 días). Acceso al dólar para insumos sin la cola del SIRA. Las empresas con socios del exterior vuelven a poder girarles dividendos por los balances desde 1-ene-2025." });
+      }
+      if (p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cba_int' || p.zona === 'santafe_int' || p.zona === 'pueblo' || p.zona === 'cuyo') {
+        if (p.ocupacion === 'pyme' || p.ocupacion === 'autonomo') {
+          dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+            body: "Si tu ingreso depende del campo, perdés: al eliminarse el dólar 'blend' (liquidaban 80% oficial / 20% paralelo) el exportador agro cobra menos pesos por la misma cosecha. Es una quita de competitividad de hasta 20% sobre la parte que antes liquidaban al dólar más alto." });
+        }
+      }
+      if (ingresoBajo) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Si vivís al día y tu plata es toda en pesos, la apertura cambiaria casi no te suma: no tenés excedente para dolarizar. Y quedás expuesto del lado malo: si el dólar se va al techo de la banda ($1.400), arrastra los precios de la góndola. El beneficio directo del fin del cepo es para quien ya podía ahorrar en dólares." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "Tu ingreso es 100% en pesos, así que cualquier salto del dólar dentro de la banda te golpea sin colchón. La previsibilidad para importar y producir es buena para la economía, pero a vos te llega recién si baja la inflación." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El esquema descansa en los USD 20.000M del FMI y en que el dólar se quede dentro de la banda. Da previsibilidad para importar y para invertir, pero deja al Banco Central más expuesto: si hay una corrida hacia el techo, tiene que vender reservas para defender los $1.400." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Ahorrista que compraba dólar blue", sub: "Empleado priv. · $3-6M · CABA", badges: { Plata: "pos_strong", Ahorro: "pos" } },
+      { name: "Inversor con acciones / empresa", sub: "Autónomo · +$15M", badges: { Plata: "pos_strong", Ahorro: "pos" } },
+      { name: "PyME que importa insumos", sub: "PyME · Santa Fe int.", badges: { Plata: "pos" } },
+      { name: "Productor agroexportador", sub: "PyME · Córdoba int. · Campo", badges: { Trabajo: "mid" } },
+      { name: "Familia que vive al día en pesos", sub: "Trabajo informal · ≤$700k", badges: { Estabilidad: "soft" } }
+    ]
+  },
+  {
+    id: "monotributo_reforma_2024",
+    title: "Reforma del Monotributo: subieron mucho los topes",
+    date: "2024-07-08",
+    meta: "Ley 27.743 Título IV · BORA 8-jul-2024 · reglam. Decreto 593/2024 · vigente 1-ene-2024",
+    desc: "La Ley 27.743 (paquete fiscal) subió los topes de facturación del monotributo entre 300% y 330%, retroactivo a enero 2024. La categoría más chica (A) pasó a $6,45M anuales y la más alta (K) a $68M. El precio máximo por producto subió a $385.000. Lo más importante: ahora los que prestan servicios (profesionales, freelancers, trabajadores de apps) también pueden llegar a la categoría K; antes su tope era la H. Sirve para no quedar expulsado del régimen simple solo porque la inflación te infló la facturación.",
+    tags: ["Plata", "Trabajo", "Impuestos"],
+    fuente: "Boletín Oficial — Ley 27.743 Título IV (8-jul-2024), Decreto reglamentario 593/2024. AFIP/ARCA, La Nación, Infobae.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'monotrib') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Tus topes subieron 300-330% de golpe: la facturación que antes te echaba del monotributo (y te mandaba al régimen general, con IVA y Ganancias) ahora entra cómoda. Concretamente, podés facturar hasta $68M al año y seguir siendo monotributista pleno." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos",
+          body: "Si prestás servicios (diseñador, programador, kinesiólogo, contador chico), antes tu techo era la categoría H. Ahora podés llegar hasta la K igual que un comerciante. Dejás de tener que partir tu facturación o pasarte a un régimen mucho más caro para crecer." });
+        if (p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m') {
+          dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
+            body: "Para el monotributista chico, el alivio es no caer en recategorizaciones que te suban la cuota por encima de lo que ganás. La recategorización pasó a ser semestral (agosto y febrero), lo que da algo más de previsibilidad." });
+        }
+      }
+      if (p.ocupacion === 'autonomo') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Con los topes más altos, a muchos autónomos del régimen general les vuelve a convenir el monotributo: pagás una cuota fija en vez de IVA + Ganancias + autónomos. Conviene rehacer el número con un contador." });
+      }
+      if (p.ocupacion === 'trab_informal' && (p.extra === 'plataforma' || p.extra === 'changas')) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+          body: "Si laburás en apps (Uber, Rappi, PedidosYa) o de changas, el monotributo más amplio te permite formalizarte sin que el primer mes de buena facturación te tire a una categoría impagable. Con monotributo tenés aporte jubilatorio y obra social." });
+      }
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Si sos PyME del régimen general competís con monotributistas que ahora facturan hasta $68M sin pagar IVA. Es una desventaja de costos frente a quien presta el mismo servicio bajo el régimen simple." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Freelance de servicios que crecía", sub: "Monotributista · $1,5-3M", badges: { Plata: "pos", Trabajo: "pos" } },
+      { name: "Profesional independiente", sub: "Monotributista · $3-6M · CABA", badges: { Plata: "pos", Trabajo: "pos" } },
+      { name: "Repartidor de apps que se formaliza", sub: "Trabajo informal · Plataforma", badges: { Trabajo: "pos_soft" } },
+      { name: "Autónomo del régimen general", sub: "Autónomo · $1,5-3M", badges: { Plata: "pos_soft" } },
+      { name: "PyME formal que paga IVA", sub: "PyME · $6-15M", badges: { Plata: "soft" } }
+    ]
+  },
+  {
+    id: "fin_impuesto_pais",
+    title: "Se terminó el Impuesto PAÍS",
+    date: "2024-12-23",
+    meta: "Ley 27.541 · venció 22-dic-2024 sin prórroga del Congreso · RG ARCA 5602/2024",
+    desc: "El Impuesto PAÍS, que cobraba hasta 17,5% sobre importaciones y encarecía el dólar de viajes y servicios del exterior, venció el 22-dic-2024 y el Gobierno no lo prorrogó. Resultado: importar bienes salió 7,5% a 17,5% más barato; el dólar tarjeta para turismo y compras en el exterior bajó del 60% al 30% de recargo (solo quedó el 30% a cuenta de Ganancias); y servicios como Netflix o Spotify dejaron de pagar ese impuesto. Para el Estado es una pérdida grande: equivale a 1,1% del PBI (unos $5,4 billones según el Presupuesto 2025).",
+    tags: ["Plata", "Impuestos", "País", "Cambiario"],
+    fuente: "Boletín Oficial — Ley 27.541 (vencimiento sin prórroga, 22-dic-2024). RG ARCA 5602/2024 (eliminó pago a cuenta 95% de importaciones, 25-nov-2024). Presupuesto 2025. Infobae, Ámbito.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoMedioAlto = p.ingreso === '1.5m_3m' || p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      dims.push({ name: "Plata", icon: "💰", level: "pos",
+        body: "Todo lo importado bajó entre 7,5% y 17,5% por el solo hecho de que ese impuesto dejó de cobrarse. Lo notás en electrónica, repuestos, insumos y productos que vienen de afuera. Es una baja directa de precios, sin trámite." });
+      if (ingresoMedioAlto) {
+        dims.push({ name: "Vacaciones", icon: "🏖️", level: "pos",
+          body: "Viajar al exterior con tarjeta es bastante más barato: el recargo total bajó del 60% al 30%. Si planeabas un viaje o comprás afuera con tarjeta, pagás 30 puntos menos sobre el gasto en dólares." });
+      }
+      dims.push({ name: "Ocio", icon: "🎭", level: "pos_soft",
+        body: "Netflix, Spotify, Steam, apps y suscripciones del exterior dejaron de pagar el Impuesto PAÍS. La factura mensual de esos servicios baja sin que hagas nada." });
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si importás insumos o mercadería, el costo de reposición bajó de entrada. Antes el Impuesto PAÍS se sumaba a todo lo que traías de afuera; ahora ese sobrecosto no está." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Si tu PyME fabrica algo que compite con lo importado, perdés: el producto de afuera ahora llega más barato y te aprieta el margen. La baja de costos importadores es buena para el que compra y mala para el que produce localmente." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "El Tesoro resigna ingresos por 1,1% del PBI (unos $5,4 billones). Es una baja de impuestos real, pero implica que esa plata tiene que salir de otro lado: más ajuste de gasto o más presión sobre otros tributos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Familia que viaja al exterior", sub: "Empleado priv. · $3-6M", badges: { Plata: "pos", Vacaciones: "pos", Ocio: "pos_soft" } },
+      { name: "Comprador de electrónica importada", sub: "Empleado priv. · $1,5-3M", badges: { Plata: "pos", Ocio: "pos_soft" } },
+      { name: "Importador / comercio", sub: "PyME · CABA · Importa", badges: { Plata: "pos" } },
+      { name: "PyME que compite con importados", sub: "PyME · Santa Fe int. · Fabrica", badges: { Trabajo: "soft" } },
+      { name: "Suscriptor de streaming", sub: "Estudiante · ≤$700k", badges: { Ocio: "pos_soft" } }
+    ]
+  },
+  {
+    id: "dnu70_cuotas_sindicales_solidarias",
+    title: "Cuota sindical: ahora hay que autorizarla por escrito",
+    date: "2023-12-21",
+    meta: "DNU 70/2023 arts. 73 y 86 · BORA 21-dic-2023 · con fallos de inconstitucionalidad",
+    desc: "Los artículos 73 y 86 del DNU 70/2023 establecieron que para descontarte del sueldo la cuota sindical o la 'cuota solidaria' tenés que firmar una autorización expresa. Antes, la cuota solidaria se le descontaba a todos los trabajadores del convenio —afiliados o no— como aporte al sindicato que negoció el acuerdo. Ahora solo te la pueden descontar si firmaste. Está judicializado: el Juzgado Federal N°2 de Azul (juez Martín Bava) declaró inconstitucionales esos artículos, y hay otras cautelares; por eso la aplicación es parcial según jurisdicción y convenio.",
+    tags: ["Trabajo", "Plata", "Estabilidad"],
+    fuente: "Boletín Oficial — DNU 70/2023 arts. 73 y 86 (21-dic-2023). Fallo Juzgado Federal N°2 de Azul (juez Bava, 2025) y cautelares varias. Palabras del Derecho, Microjuris.",
+    impact: function(p) {
+      const dims = [];
+      const esAsalariado = p.ocupacion === 'empleado_priv' || p.ocupacion === 'empleado_pub' || p.ocupacion === 'domestica_reg';
+      if (esAsalariado) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Si estás bajo convenio pero no estás afiliado, dejaron de poder descontarte automáticamente la cuota solidaria. Eso te devuelve entre 1% y 3% del básico por mes (lo que antes se iba al sindicato sin que lo hayas autorizado)." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "El otro lado de la moneda: tu sindicato se queda con menos recursos. Algunos gremios reportan caídas de 40% a 70% de los aportes. Eso debilita la capacidad de negociar paritarias, sostener la obra social sindical y bancar conflictos. Si dependés de esa obra social o de la fuerza del gremio, te afecta indirectamente." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "La situación es jurídicamente incierta: hay fallos que declararon inconstitucionales los artículos. Según tu provincia y tu convenio, te pueden seguir descontando o no. Conviene revisar el recibo de sueldo." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Trabajador no afiliado bajo convenio", sub: "Empleado priv. · $1,5-3M", badges: { Plata: "pos_soft", Estabilidad: "soft" } },
+      { name: "Afiliado que usa la obra social sindical", sub: "Empleado priv. · $700k-1,5M", badges: { Trabajo: "mid", Salud: "soft" } },
+      { name: "Delegado / activista gremial", sub: "Empleado pub. · $1,5-3M", badges: { Trabajo: "mid" } },
+      { name: "Empleado público de convenio", sub: "Empleado pub. · $1,5-3M", badges: { Plata: "pos_soft", Trabajo: "mid" } }
+    ]
+  },
+  {
+    id: "dnu70_alquileres_tierras_rurales",
+    title: "Cayó el límite a extranjeros sobre tierras rurales",
+    date: "2023-12-21",
+    meta: "DNU 70/2023 · BORA 21-dic-2023 · derogó la Ley 26.737 de Tierras Rurales",
+    desc: "El DNU 70/2023 derogó la Ley 26.737 (de 2011), que protegía la propiedad nacional sobre el suelo rural. Con esa derogación cayó el tope del 15% de tierras rurales que podían estar en manos extranjeras, el límite de 1.000 hectáreas continuas por persona extranjera y la prohibición de que extranjeros fueran dueños de campos con cuerpos de agua importantes. También perdió fuerza el Registro Nacional de Tierras Rurales como herramienta de control. Para las locaciones rurales en general: sin plazo mínimo obligatorio, se puede pactar en dólares y sin índice fijo de ajuste.",
+    tags: ["Trabajo", "Estabilidad", "Vivienda", "País"],
+    fuente: "Boletín Oficial — DNU 70/2023 (21-dic-2023), derogación de la Ley 26.737 (Régimen de Protección al Dominio Nacional sobre Tierras Rurales). También derogó la Ley 27.551 de locaciones.",
+    impact: function(p) {
+      const dims = [];
+      const zonaRural = p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cba_int' || p.zona === 'santafe_int' || p.zona === 'pueblo' || p.zona === 'cuyo' || p.zona === 'patagonia';
+      if (zonaRural && (p.ocupacion === 'trab_informal' || p.ocupacion === 'autonomo' || p.ocupacion === 'pyme')) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si arrendás campo para producir (agricultura familiar, chacra, tambo chico), ahora firmás sin plazo mínimo, sin techo de ajuste y eventualmente en dólares. Quedás más expuesto a que te suban el arrendamiento o no te renueven, porque el dueño tiene total libertad contractual." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "Sin la Ley 26.737, los fondos de inversión y compradores extranjeros pueden quedarse con grandes extensiones sin el tope de 1.000 hectáreas ni el límite del 15%. Eso presiona el precio de la tierra hacia arriba y empuja al productor chico al desplazamiento." });
+      }
+      if (zonaRural && p.vivienda === 'alquila') {
+        dims.push({ name: "Vivienda", icon: "🏠", level: "soft",
+          body: "En el ámbito rural el alquiler de la vivienda asociada al campo también quedó sin las protecciones de la ley derogada: sin plazo mínimo garantizado y con ajuste libre." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Cae el control estatal sobre quién es dueño del suelo rural, incluso en zonas de frontera y con recursos hídricos estratégicos. Es una ganancia de libertad para invertir, pero una pérdida de herramientas de soberanía territorial sobre tierra y agua." });
+      if ((p.ingreso === '6m_15m' || p.ingreso === 'mas_15m') && (p.ocupacion === 'pyme' || p.ocupacion === 'autonomo')) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Si sos gran propietario rural o inversor agro/forestal, ganás libertad: podés vender o arrendar a quien quieras, en la moneda que quieras y sin el tope de hectáreas. La tierra como activo se vuelve más líquida y revalorizable." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Arrendatario chico / agricultura familiar", sub: "Trabajo informal · NEA · Campo", badges: { Trabajo: "mid", Estabilidad: "mid" } },
+      { name: "Productor que alquila campo", sub: "PyME · Córdoba int.", badges: { Trabajo: "mid", Vivienda: "soft" } },
+      { name: "Gran propietario / inversor agro", sub: "PyME · +$15M · Campo", badges: { Plata: "pos_soft" } },
+      { name: "Habitante de zona de frontera", sub: "Autónomo · Patagonia", badges: { Estabilidad: "mid" } }
+    ]
+  },
+  {
+    id: "impsa_privatizacion",
+    title: "Privatización de IMPSA (turbinas, Mendoza)",
+    date: "2025-02-11",
+    meta: "Ley 27.742 art. 7° inc. b · BORA 8-jul-2024 · adjudicación a ARC Energy, traspaso 11-feb-2025",
+    desc: "IMPSA (Industrias Metalúrgicas Pescarmona, Mendoza) fabrica turbinas hidroeléctricas y aerogeneradores: es un proveedor estratégico de energía. La Ley Bases 27.742 la puso en la lista de empresas a privatizar; el 11-feb-2025 se traspasaron las acciones al grupo estadounidense ARC Energy por unos USD 27 millones (quedó con el 84,9% de las acciones clase C). Era 21% del Estado Nacional, 21% de Mendoza y 58% de acreedores, y emplea alrededor de 650-700 personas. Fue la primera privatización concretada de la gestión Milei. El comprador se comprometió a mantener los puestos, pero queda el riesgo de reestructuración.",
+    tags: ["Trabajo", "Estabilidad", "País"],
+    fuente: "Boletín Oficial — Ley 27.742 (Ley Bases) art. 7° inc. b (8-jul-2024). Adjudicación y traspaso de acciones a ARC Energy (11-feb-2025), USD 27M. Infobae, Los Andes, El Economista.",
+    impact: function(p) {
+      const dims = [];
+      const enMendoza = p.zona === 'mendoza' || p.zona === 'cuyo';
+      if (enMendoza && (p.ocupacion === 'empleado_priv' || p.ocupacion === 'pyme' || p.ocupacion === 'trab_informal')) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si trabajás en IMPSA o le proveés (metalúrgicas, talleres, logística mendocina), el cambio de dueño abre incertidumbre. El comprador prometió mantener los ~650 puestos, pero una empresa que venía deficitaria y con USD 576M de deuda en renegociación suele entrar en reestructuración. La cadena de proveedores locales depende de que la planta siga activa." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "Pasás de tener al Estado (Nación + Mendoza tenían 42%) como socio que sostenía el empleo por motivos estratégicos, a un dueño privado extranjero que decide por rentabilidad. Más eficiencia posible, menos red de contención si las cosas se complican." });
+      }
+      if (enMendoza) {
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "Mendoza pierde una palanca de desarrollo industrial propia. IMPSA daba trabajo calificado (ingeniería, metalurgia) que sostiene movilidad ascendente en la provincia. Su futuro pasa a depender de decisiones tomadas afuera." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado deja de controlar un fabricante estratégico de equipos de energía (turbinas para represas, aerogeneradores). El Tesoro cobra el precio de venta y se saca de encima una empresa deficitaria, pero el país resigna capacidad tecnológica soberana en un sector clave." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Operario / técnico de IMPSA", sub: "Empleado priv. · Mendoza", badges: { Trabajo: "mid", Estabilidad: "mid" } },
+      { name: "Proveedor metalúrgico mendocino", sub: "PyME · Mendoza", badges: { Trabajo: "mid", "Movilidad social": "soft" } },
+      { name: "Habitante de Mendoza", sub: "Empleado pub. · Mendoza", badges: { "Movilidad social": "soft" } },
+      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "cierre_inadi",
+    title: "Cerró el INADI",
+    date: "2024-08-06",
+    meta: "Decreto 696/2024 · BORA 6-ago-2024 · funciones a la Subsecretaría de DDHH",
+    desc: "El Decreto 696/2024 disolvió el INADI (Instituto Nacional contra la Discriminación, la Xenofobia y el Racismo). Sus funciones pasaron a la Subsecretaría de Derechos Humanos del Ministerio de Justicia, una estructura mucho más chica. Trabajaban allí cerca de 400 personas. En la práctica desaparece la vía administrativa específica y rápida para tramitar una denuncia por discriminación: ahora la víctima tiene que ir a la Justicia o a la órbita reducida de DDHH del Ministerio.",
+    tags: ["Estabilidad", "País", "Salud"],
+    fuente: "Boletín Oficial — Decreto 696/2024 (6-ago-2024), disolución del INADI. Chequeado, El Litoral, Argentina.gob.ar.",
+    impact: function(p) {
+      const dims = [];
+      const tieneDiscap = p.discapacidad && p.discapacidad !== 'no';
+      if (tieneDiscap) {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "Las personas con discapacidad eran de las que más usaban el INADI para denunciar discriminación (en el trabajo, en el acceso a servicios, en la cobertura de salud). Perdés esa vía administrativa rápida y gratuita: ahora el reclamo va a la Justicia, que es más lenta y costosa." });
+      }
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Si trabajabas en el INADI, tu puesto está en riesgo: el cierre afectó a cerca de 400 trabajadores estatales, con funciones absorbidas por una estructura más chica que no necesita la misma dotación." });
+      }
+      dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+        body: "Para cualquiera que sufra discriminación (por origen, identidad, religión, condición de salud), se pierde el organismo que tramitaba esas denuncias de forma específica y orientaba a la víctima. Queda la Justicia o una oficina de DDHH mucho más reducida." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El ahorro fiscal es marginal (del orden de $5.000M anuales). El efecto concreto es menos capacidad estatal especializada para atender discriminación: las funciones siguen formalmente, pero con mucha menos estructura para ejecutarlas." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Persona con discapacidad y CUD", sub: "Empleado priv. · Discap. propia", badges: { Estabilidad: "mid" } },
+      { name: "Trabajador del INADI", sub: "Empleado pub. · CABA", badges: { Trabajo: "soft", Estabilidad: "soft" } },
+      { name: "Persona migrante", sub: "Trabajo informal · GBA Sur", badges: { Estabilidad: "soft" } },
+      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "eliminacion_fonid",
+    title: "Se eliminó el FONID (incentivo docente)",
+    date: "2024-03-27",
+    meta: "DNU 280/2024 · BORA mar-2024 · sacó del Presupuesto los fondos del FONID",
+    desc: "El FONID (Fondo Nacional de Incentivo Docente, creado por la Ley 25.053 en 1998) era una suma fija que la Nación sumaba al sueldo de TODOS los docentes del país. Venció en enero de 2024 y el Gobierno no lo prorrogó: el DNU 280/2024 sacó del Presupuesto los recursos previstos para pagarlo ($276.262 millones del Presupuesto 2023 prorrogado). Resultado: los docentes pierden el incentivo nacional (en promedio ~10% del sueldo de bolsillo) salvo que su provincia lo absorba. Las provincias más pobres no pueden absorberlo.",
+    tags: ["Trabajo", "Plata", "Estabilidad"],
+    fuente: "Boletín Oficial — DNU 280/2024 (mar-2024), elimina del Presupuesto los fondos del FONID (Ley 25.053). Chequeado, DIB, Tiempo Argentino.",
+    impact: function(p) {
+      const dims = [];
+      const esDocente = p.ocupacion === 'empleado_pub';
+      if (esDocente) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si sos docente, perdés el FONID: en promedio cae cerca del 10% de tu sueldo de bolsillo (la cifra exacta varía por provincia). Es plata que recibías todos los meses y que la Nación dejó de mandar. Para que no la pierdas, tu provincia tiene que ponerla de su bolsillo." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Afecta a más de 1,2 millones de docentes en todo el país. El reclamo se trasladó a las provincias, que en muchos casos no tienen plata para reemplazarlo, lo que alimenta conflictos salariales y paros." });
+        if (p.zona === 'nea' || p.zona === 'noa') {
+          dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+            body: "En el NEA y el NOA el golpe es mayor: son provincias con menos recursos propios, que no pueden absorber el FONID. Ahí la pérdida del incentivo se siente entera en el sueldo y deja el salario docente expuesto a la inflación sin colchón nacional." });
+        }
+      }
+      if (p.hijos && p.hijos !== '0' && (p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m')) {
+        dims.push({ name: "Educación", icon: "📚", level: "soft",
+          body: "Si tus hijos van a la escuela pública, el conflicto docente derivado de la quita del FONID se traduce en paros, rotación de maestros y menos previsibilidad en el ciclo lectivo. La calidad educativa se resiente cuando el salario docente queda golpeado." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Docente de provincia pobre", sub: "Empleado pub. · NOA", badges: { Plata: "strong", Estabilidad: "strong", Trabajo: "mid" } },
+      { name: "Docente de provincia rica", sub: "Empleado pub. · CABA", badges: { Plata: "strong", Trabajo: "mid" } },
+      { name: "Familia con hijos en escuela pública", sub: "Trabajo informal · ≤$700k · Hijos", badges: { Educación: "soft" } },
+      { name: "Contribuyente que mira el ajuste", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "regimen_penal_tributario_reforma",
+    title: "Reforma penal tributaria: subieron los pisos para que evadir sea delito",
+    date: "2024-07-08",
+    meta: "Ley 27.743 Título III · BORA 8-jul-2024 · reglam. Decreto 608/2024",
+    desc: "La Ley 27.743 subió fuerte los montos a partir de los cuales evadir impuestos se vuelve un delito penal (no solo una infracción administrativa). La evasión simple pasó de $1.500.000 a $100.000.000 por tributo y por año; la evasión agravada saltó a unos $1.000.000.000. Son aumentos de hasta 67 veces. En la práctica, mucha evasión que antes podía terminar en una causa penal ahora solo genera reclamo administrativo de ARCA. Beneficia a contribuyentes medianos y grandes; debilita el efecto disuasorio para el mediano plazo.",
+    tags: ["Plata", "Impuestos", "Estabilidad"],
+    fuente: "Boletín Oficial — Ley 27.743 Título III (Régimen Penal Tributario, 8-jul-2024), modifica la Ley 27.430 / 24.769. Reglam. Decreto 608/2024. Derecho Penal Online, UCIP.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoAlto = p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      const ingresoMedioAlto = p.ingreso === '3m_6m';
+      if ((p.ocupacion === 'pyme' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib') && (ingresoAlto || ingresoMedioAlto)) {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos",
+          body: "Si tenés un negocio o facturás fuerte, baja muchísimo el riesgo penal: hace falta evadir más de $100M (antes $1,5M) para que sea delito. Una diferencia con ARCA que antes te podía abrir una causa penal ahora, en general, se resuelve pagando en el plano administrativo." });
+      }
+      if (ingresoAlto && (p.ocupacion === 'pyme' || p.ocupacion === 'autonomo')) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Menos exposición penal también significa menos costo en defensa legal y más margen de maniobra para los grandes contribuyentes que estaban en la 'zona gris' con los montos viejos, ya licuados por la inflación." });
+      }
+      if (p.ocupacion === 'empleado_priv' || p.ocupacion === 'empleado_pub' || p.ocupacion === 'monotrib') {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "Si sos asalariado o monotributista chico que cumple, esto te toca indirecto: el Estado pierde una herramienta para disuadir a los grandes evasores, lo que a mediano plazo significa menos recaudación y una competencia más desleal frente al que ahora puede evadir sin riesgo penal." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Actualizar montos congelados desde 2017 era razonable por la inflación, pero el salto (hasta 67x) deja sin amenaza penal a una franja amplia de evasión mediana. Menos miedo a la cárcel puede traducirse en más evasión y menos recaudación con el tiempo." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empresario / gran contribuyente", sub: "PyME · +$15M", badges: { Estabilidad: "pos", Plata: "pos_soft" } },
+      { name: "Profesional de altos ingresos", sub: "Autónomo · $6-15M", badges: { Estabilidad: "pos", Plata: "pos_soft" } },
+      { name: "Comercio mediano", sub: "PyME · $3-6M", badges: { Estabilidad: "pos" } },
+      { name: "Asalariado que cumple", sub: "Empleado priv. · $1,5-3M", badges: { Estabilidad: "soft" } },
+      { name: "Monotributista chico", sub: "Monotributista · ≤$700k", badges: { Estabilidad: "soft" } }
+    ]
+  },
+  {
+    id: "subsidios_energeticos_reduccion_adicional",
+    title: "Más quita de subsidios: la luz y el gas suben",
+    date: "2024-06-01",
+    meta: "Resoluciones SE 90/2024 (electricidad) y 91/2024 (gas) · jun-2024 · sobre segmentación N1/N2/N3",
+    desc: "Sobre la segmentación de subsidios (N1 ingresos altos, N2 bajos, N3 medios), el Gobierno profundizó la quita. Los N1 pasaron a pagar el 100% del costo de la energía. A los N2 (ingresos bajos) les subsidian solo los primeros tramos de consumo y el resto va a precio pleno; a los N3 (medios) les achicaron el tope subsidiado (de 400 a 250 kWh de electricidad por mes). Con los reajustes mensuales atados a la inflación y al precio mayorista, las boletas acumularon subas reales muy fuertes en 2024-2025, sobre todo para N1 y parte de N3.",
+    tags: ["Plata", "Vivienda", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Resoluciones Secretaría de Energía 90/2024 (electricidad) y 91/2024 (gas), jun-2024, sobre la segmentación del Decreto 332/22. Chequeado, Ámbito, EconoJournal.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoAlto = p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      const ingresoMedio = p.ingreso === '1.5m_3m';
+      const ingresoBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m';
+      const usaSubsidio = Array.isArray(p.asistencia) && (p.asistencia.includes('sef') || p.asistencia.includes('tarifa_sube'));
+      if (ingresoAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si tu hogar quedó como N1 (ingresos altos), pagás el 100% del costo de la energía, sin subsidio. La boleta de luz subió entre 200% y 400% en términos reales en el acumulado 2024-2025. Es uno de los gastos fijos que más se te disparó." });
+      }
+      if (ingresoMedio) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Como hogar N3 (ingresos medios) te recortaron el tope subsidiado: la electricidad ahora se subsidia solo hasta 250 kWh por mes (antes 400) y el resto lo pagás a precio pleno. Si tu casa consume más que eso (aire, electrodomésticos, familia grande), la boleta pega un salto." });
+        dims.push({ name: "Vivienda", icon: "🏠", level: "soft",
+          body: "El costo de mantener la casa (luz + gas) creció muy por encima de los sueldos. Para la clase media urbana de CABA y GBA, donde el shock tarifario fue mayor, las expensas y servicios se comen una porción creciente del ingreso." });
+      }
+      if (ingresoBajo && !usaSubsidio) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Aunque seas N2 (ingresos bajos) y conserves subsidio sobre los primeros tramos, todo lo que consumas por encima va a precio pleno. Si no te reinscribiste en el registro (RASE) a tiempo, podés haber perdido el beneficio y estar pagando de más." });
+      }
+      if (ingresoBajo && usaSubsidio) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Mantenés subsidio sobre los primeros tramos de consumo (la base subsidiada para N2), pero el excedente lo pagás pleno. El alivio existe solo si cuidás el consumo dentro del tope." });
+      }
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "Muchos jubilados quedaron sin calificar como N2 por superar apenas el umbral de ingreso, y enfrentan boletas a precio cada vez más cercano al costo pleno con un haber que no acompaña. El servicio es el mismo, pero pesa mucho más en el bolsillo." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El objetivo fiscal es real: los subsidios energéticos bajaron de ~2,3% a cerca de 0,5% del PBI. Eso ordena las cuentas del Estado, pero traslada el costo a las boletas de los hogares, sobre todo a la clase media urbana." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Hogar de ingresos altos (N1)", sub: "Empleado priv. · $6-15M · CABA", badges: { Plata: "strong" } },
+      { name: "Familia de clase media (N3)", sub: "Empleado priv. · $1,5-3M · CABA", badges: { Plata: "mid", Vivienda: "soft" } },
+      { name: "Jubilado que no califica N2", sub: "Jubilado media-alta · GBA Norte", badges: { "Calidad de servicios": "mid", Plata: "mid" } },
+      { name: "Hogar de ingresos bajos con subsidio", sub: "Trabajo informal · ≤$700k · SEF", badges: { Plata: "soft" } },
+      { name: "Hogar bajo que perdió el beneficio", sub: "Trabajo informal · $700k-1,5M", badges: { Plata: "mid" } }
+    ]
   }
 ];
 
