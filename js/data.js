@@ -15,7 +15,7 @@
 import { SUPABASE_REST, SUPABASE_HEADERS } from "../config.js";
 import { MEASURES_BASE, MEASURES_BASE_BY_ID } from "./medidas-base.js";
 
-const CACHE_KEY = "ctp-data-v0.6.1";
+const CACHE_KEY = "ctp-data-v0.7.0";
 const TTL_MS = 6 * 60 * 60 * 1000; // 6 horas
 
 // Endpoints de solo-lectura. select explícito = payload chico y estable.
@@ -131,6 +131,7 @@ function buildMeasures(db) {
       desc: row.descripcion ?? (base ? base.desc : ""),
       tags: (Array.isArray(row.tags) && row.tags.length) ? row.tags : (base ? base.tags : []),
       area: capitalizeArea(row.area),
+      areaRaw: row.area || "otros", // valor crudo para filtrar (la DB guarda snake_case)
       estado: row.estado || "vigente",
       fuente: row.fuente_descripcion || (base ? base.fuente : null),
       fuenteUrl: row.fuente_url || null,
@@ -155,6 +156,7 @@ function buildMeasures(db) {
 function buildFallback() {
   const measures = MEASURES_BASE.map(m => ({
     ...m,
+    areaRaw: String(m.area || "otros").toLowerCase(), // best-effort offline (las 6 del base mapean 1:1)
     hasRules: typeof m.impact === "function",
     fuenteUrl: null,
     popularidad: null,
@@ -168,22 +170,155 @@ function buildFallback() {
   return { measures, medios: [] };
 }
 
+// Store del catálogo COMPLETO (las 68) ya hidratado. Lo usan:
+//   - el balance histórico, el trending y el historial (necesitan todo),
+//   - queryMeasures() para enriquecer las filas paginadas y como fallback
+//     offline cuando el fetch con filtros falla.
+let _store = { measures: [], byId: {} };
+
+function setStore(measures) {
+  _store = {
+    measures: measures || [],
+    byId: Object.fromEntries((measures || []).map(m => [m.id, m]))
+  };
+}
+
+// Medida "liviana" a partir de una fila cruda de la vista. Se usa cuando una
+// fila devuelta por la query paginada no está en el store completo (p. ej.
+// cache parcial/desfasado): así la tarjeta se muestra igual en vez de perderse.
+// No trae cobertura/observaciones detalladas (la query liviana no las pide),
+// pero sí el conteo de popularidad para el badge.
+function buildLightMeasure(row) {
+  const base = MEASURES_BASE_BY_ID[row.id];
+  const hasRules = !!(base && typeof base.impact === "function");
+  return {
+    id: row.id,
+    date: row.fecha_bora || (row.created_at || "").slice(0, 10) || "",
+    title: row.titulo || (base ? base.title : row.id),
+    meta: base ? base.meta : [row.tipo_norma, row.numero].filter(Boolean).join(" ") || "—",
+    desc: row.descripcion ?? (base ? base.desc : ""),
+    tags: (Array.isArray(row.tags) && row.tags.length) ? row.tags : (base ? base.tags : []),
+    area: capitalizeArea(row.area),
+    areaRaw: row.area || "otros",
+    estado: row.estado || "vigente",
+    fuente: row.fuente_descripcion || (base ? base.fuente : null),
+    fuenteUrl: row.fuente_url || null,
+    impact: hasRules ? base.impact : NOIMPACT,
+    hasRules,
+    compareProfiles: base ? base.compareProfiles : [],
+    popularidad: row.popularidad_medios ?? 0,
+    nivelPopularidad: row.nivel_popularidad ?? null,
+    cobertura: [],
+    coberturaTotal: 6,
+    observaciones: [],
+    hasDb: true
+  };
+}
+
+// Resuelve una fila contra el store; si falta, la construye y la registra
+// (mutando el array compartido, que ES window.MEASURES) para que openMeasure()
+// la encuentre después.
+function resolveRow(row) {
+  let m = _store.byId[row.id];
+  if (!m) {
+    m = buildLightMeasure(row);
+    _store.byId[row.id] = m;
+    _store.measures.push(m);
+  }
+  return m;
+}
+
 /* loadData()
  * Devuelve { measures, medios, source } donde source ∈
  *   "cache" | "network" | "cache-stale" | "fallback".
+ * Carga el catálogo completo una vez (balance/trending/historial + offline).
  */
 export async function loadData() {
   const cached = readCache();
+  let result;
   if (isFresh(cached)) {
-    return { ...buildMeasures(cached.db), source: "cache" };
+    result = { ...buildMeasures(cached.db), source: "cache" };
+  } else {
+    try {
+      const db = await fetchAll();
+      writeCache(db);
+      result = { ...buildMeasures(db), source: "network" };
+    } catch (err) {
+      console.warn("[ctp] fetch Supabase falló:", err?.message || err);
+      if (cached) result = { ...buildMeasures(cached.db), source: "cache-stale" };
+      else result = { ...buildFallback(), source: "fallback" };
+    }
   }
+  setStore(result.measures);
+  return result;
+}
+
+// ---- query con filtros + paginación (pantalla de medidas) -----------------
+// Construye la URL PostgREST con .in()/.gte()/.lt()/.ilike() + limit/offset.
+function buildQueryUrl(f) {
+  const sel = "select=id,fecha_bora,titulo,descripcion,tags,area,estado,vigente," +
+              "tipo_norma,numero,fuente_url,fuente_descripcion,popularidad_medios," +
+              "nivel_popularidad,created_at";
+  const parts = [sel, "order=fecha_bora.desc"];
+  if (f.areas && f.areas.length)
+    parts.push(`area=in.(${f.areas.map(encodeURIComponent).join(",")})`);
+  if (f.estados && f.estados.length)
+    parts.push(`estado=in.(${f.estados.map(encodeURIComponent).join(",")})`);
+  if (f.popularidades && f.popularidades.length)
+    parts.push(`popularidad_medios=in.(${f.popularidades.join(",")})`);
+  if (f.fechaDesde) parts.push(`fecha_bora=gte.${f.fechaDesde}`);
+  if (f.fechaHasta) parts.push(`fecha_bora=lt.${f.fechaHasta}`);
+  if (f.busqueda && f.busqueda.trim()) {
+    const t = encodeURIComponent("*" + f.busqueda.trim() + "*");
+    parts.push(`or=(titulo.ilike.${t},descripcion.ilike.${t})`);
+  }
+  parts.push(`limit=${f.limit != null ? f.limit : 15}`);
+  parts.push(`offset=${f.offset || 0}`);
+  return `${SUPABASE_REST}/medidas_con_popularidad?${parts.join("&")}`;
+}
+
+// Mismo filtrado que el server, pero client-side sobre el store (fallback / offline).
+function clientQuery(f) {
+  let arr = _store.measures.slice();
+  if (f.areas && f.areas.length) arr = arr.filter(m => f.areas.includes(m.areaRaw));
+  if (f.estados && f.estados.length) arr = arr.filter(m => f.estados.includes(m.estado));
+  if (f.popularidades && f.popularidades.length)
+    arr = arr.filter(m => f.popularidades.includes(m.popularidad ?? (m.cobertura?.length || 0)));
+  if (f.fechaDesde) arr = arr.filter(m => String(m.date) >= f.fechaDesde);
+  if (f.fechaHasta) arr = arr.filter(m => String(m.date) < f.fechaHasta);
+  if (f.busqueda && f.busqueda.trim()) {
+    const t = f.busqueda.trim().toLowerCase();
+    arr = arr.filter(m =>
+      (m.title || "").toLowerCase().includes(t) || (m.desc || "").toLowerCase().includes(t));
+  }
+  arr.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const total = arr.length;
+  const offset = f.offset || 0;
+  const limit = f.limit != null ? f.limit : 15;
+  return { medidas: arr.slice(offset, offset + limit), total, source: "offline" };
+}
+
+/* queryMeasures(filters)
+ * filters: { areas[], estados[], popularidades[], fechaDesde, fechaHasta,
+ *            busqueda, limit, offset }  (todos opcionales)
+ * Devuelve { medidas, total, source }. Las filas vienen de la DB pero se
+ * enriquecen contra el store completo (cobertura/observaciones/reglas), así
+ * las tarjetas son idénticas a las del catálogo. Si el fetch falla, filtra
+ * el store client-side (offline).
+ */
+export async function queryMeasures(filters = {}) {
   try {
-    const db = await fetchAll();
-    writeCache(db);
-    return { ...buildMeasures(db), source: "network" };
+    const res = await fetch(buildQueryUrl(filters), {
+      headers: { ...SUPABASE_HEADERS, Prefer: "count=exact" }
+    });
+    if (!res.ok) throw new Error(`Supabase ${res.status}`);
+    const rows = await res.json();
+    const cr = res.headers.get("content-range") || "";
+    const total = parseInt((cr.split("/")[1] || ""), 10);
+    const medidas = rows.map(resolveRow);
+    return { medidas, total: Number.isFinite(total) ? total : medidas.length, source: "network" };
   } catch (err) {
-    console.warn("[ctp] fetch Supabase falló:", err?.message || err);
-    if (cached) return { ...buildMeasures(cached.db), source: "cache-stale" };
-    return { ...buildFallback(), source: "fallback" };
+    console.warn("[ctp] queryMeasures cayó a offline:", err?.message || err);
+    return clientQuery(filters);
   }
 }

@@ -672,9 +672,6 @@
   .const-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--accent); }
   .const-foot { font-size: 11px; color: var(--ink-mute); font-style: italic; line-height: 1.5; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
 
-  /* Medida real sin reglas de impacto cargadas todavía. */
-  .impact-prep { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; padding: 14px 16px; background: var(--paper-soft); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; }
-
   /* ============== v0.6 — HISTORIAL ============== */
   .hist-timeline .tl-item.hist { cursor: pointer; }
   .tl-item.hist::before { background: var(--ink-mute); }
@@ -685,6 +682,75 @@
   .tl-chips { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
   .tl-tag { background: var(--accent-mute); color: var(--accent); padding: 2px 9px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
   .tl-pop { background: var(--ink); color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px; }
+
+  /* ============== v0.7 — FILTROS COLAPSABLES + PAGINACIÓN ============== */
+  .filterbar {
+    position: sticky; top: 86px; z-index: 4; background: var(--bg);
+    padding: 8px 0; margin-bottom: 10px; border-bottom: 1px solid var(--line-soft);
+  }
+  .filterbar-head { display: flex; align-items: center; gap: 10px; }
+  .filter-toggle {
+    display: inline-flex; align-items: center; gap: 7px; font-family: inherit;
+    border: 1.5px solid var(--line); background: var(--paper); color: var(--ink);
+    border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .filter-toggle:hover { border-color: var(--accent); }
+  .filter-toggle.open { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-toggle::before { content: "⚙"; font-size: 14px; }
+  .filter-count {
+    background: var(--accent); color: #fff; min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 99px; font-size: 11px; font-weight: 800; display: none;
+    align-items: center; justify-content: center; line-height: 1;
+  }
+  .filter-toggle.open .filter-count { background: #fff; color: var(--accent); }
+  .filter-count.on { display: inline-flex; }
+  .filter-clear {
+    font-family: inherit; background: none; border: 0; color: var(--accent);
+    font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 6px 4px; margin-left: auto;
+  }
+  .filter-clear:hover { text-decoration: underline; }
+  .filters { padding-top: 12px; }
+  .filters .filter-row { align-items: flex-start; }
+  .filter-search {
+    width: 100%; box-sizing: border-box; font-family: inherit; font-size: 13px;
+    border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px;
+    color: var(--ink); background: var(--paper); margin-top: 2px;
+  }
+  .filter-search:focus { outline: none; border-color: var(--accent); }
+  .result-count {
+    font-size: 12px; color: var(--ink-mute); font-weight: 600; margin: 2px 4px 12px;
+    letter-spacing: 0.2px;
+  }
+  .result-count strong { color: var(--ink); }
+  .list-loading { font-size: 13px; color: var(--ink-mute); padding: 18px 0; text-align: center; }
+
+  /* ============== v0.7 — IMPACTO SIEMPRE ÚTIL ============== */
+  .measure-areachips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .area-chip { background: var(--accent-mute); color: var(--accent); padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+  .estado-pill { padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; letter-spacing: 0.2px; }
+  .estado-pill.e-vigente { background: #dcfce7; color: #15803d; }
+  .estado-pill.e-suspendida { background: #ffedd5; color: #c2410c; }
+  .estado-pill.e-derogada { background: #f3f4f6; color: var(--ink-mute); }
+  .estado-pill.e-vetada { background: #fee2e2; color: #b91c1c; }
+  .estado-pill.e-convalidada { background: var(--accent-mute); color: var(--accent); }
+  .impact-desc {
+    font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 18px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 18px; box-shadow: var(--shadow-sm);
+  }
+  .cob-section { margin-bottom: 16px; }
+  .cob-title { font-size: 13px; font-weight: 800; color: var(--ink); margin: 0 4px 10px; letter-spacing: -0.2px; }
+  .cob-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow-sm); }
+  .cob-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cob-empty { color: var(--ink-mute); font-size: 13px; line-height: 1.5; }
+  .cob-foot { font-size: 11px; color: var(--ink-mute); font-style: italic; line-height: 1.5; margin-top: 10px; }
+  .impact-divider { height: 1px; background: var(--line); margin: 22px 0 18px; }
+  .impact-notice {
+    font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; padding: 16px 18px;
+    background: var(--paper-soft); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0;
+  }
+  .impact-notice strong { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -920,9 +986,21 @@
     <div id="trendingSection"></div>
 
     <h2 class="step">Todas las medidas</h2>
-    <p class="step-sub">Todas publicadas en el Boletín Oficial y vigentes a junio 2026. Tocá una para ver cómo te toca a <em>vos</em>. Filtrá por área o estado.</p>
-    <div id="measureFilters" class="filters"></div>
+    <p class="step-sub">Todas publicadas en el Boletín Oficial desde dic-2023. Tocá una para ver cómo te toca a <em>vos</em>. Filtrá por área, fecha, estado, cobertura mediática o texto libre.</p>
+
+    <div class="filterbar">
+      <div class="filterbar-head">
+        <button class="filter-toggle" id="filterToggle" onclick="toggleFilters()">
+          <span>Filtros</span><span class="filter-count" id="filterCount"></span>
+        </button>
+        <button class="filter-clear" id="filterClear" onclick="clearFilters()" style="display:none;">Limpiar filtros</button>
+      </div>
+      <div id="measureFilters" class="filters" hidden></div>
+    </div>
+
+    <div class="result-count" id="resultCount"></div>
     <div id="measureList"></div>
+    <button class="btn ghost" id="btnLoadMore" onclick="loadMoreMeasures()" style="display:none;">Mostrar 15 más</button>
     <button class="btn ghost" onclick="show('historial')" style="margin-top: 12px;">🕑 Ver historial cronológico completo →</button>
   </section>
 
@@ -931,14 +1009,21 @@
     <div class="crumb" onclick="show('measures')">← Otras medidas</div>
     <div class="perfil-box" id="perfilSummary2"><strong>TU PERFIL</strong>—</div>
     <h2 class="step" id="measureTitle"></h2>
-    <p class="step-sub" id="measureMeta"></p>
-    <div class="card" style="padding: 16px 18px;">
-      <div style="font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; font-weight: 700;">Te pega así</div>
-      <div id="dimList"></div>
-    </div>
+    <p class="step-sub" id="measureMeta" style="margin-bottom:10px;"></p>
+    <div class="measure-areachips" id="measureAreaChips"></div>
+    <div class="impact-desc" id="measureDesc"></div>
+    <div id="coberturaBox"></div>
     <div id="constitucionBox"></div>
-    <button class="btn ghost" id="btnCompare" onclick="show('compare')">Ver cómo le pega al resto →</button>
-    <button class="btn ghost" id="btnSectores" onclick="show('sectores')" style="margin-top: 8px;">Ver cómo le pega a cada clase social →</button>
+    <div class="impact-divider"></div>
+    <div id="impactAnalysis">
+      <div class="card" style="padding: 16px 18px;">
+        <div style="font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; font-weight: 700;">Te pega así</div>
+        <div id="dimList"></div>
+      </div>
+      <button class="btn ghost" id="btnCompare" onclick="show('compare')">Ver cómo le pega al resto →</button>
+      <button class="btn ghost" id="btnSectores" onclick="show('sectores')" style="margin-top: 8px;">Ver cómo le pega a cada clase social →</button>
+    </div>
+    <div id="impactNotice"></div>
     <button class="btn ghost" onclick="show('balance')" style="margin-top: 8px;">📊 Ver tu balance histórico</button>
     <div class="src" id="sourceBox" style="margin-top: 14px;"></div>
   </section>
@@ -983,7 +1068,7 @@
   </section>
 
   <footer class="foot">
-    <strong>Prototipo v0.6 · datos desde Supabase</strong> · junio 2026<br>
+    <strong>Prototipo v0.7 · datos desde Supabase</strong> · junio 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
@@ -997,12 +1082,13 @@
 <!-- Bootstrap de módulos: clases sociales + capa de datos (Supabase). -->
 <script type="module">
   import { calcularClaseSocial, CLASES_SOCIALES, PERFILES_ARQUETIPICOS } from './js/clases-sociales.js';
-  import { loadData } from './js/data.js';
+  import { loadData, queryMeasures } from './js/data.js';
 
   // Puente para el script clásico (onclick globales).
   window.calcularClaseSocial = calcularClaseSocial;
   window.CLASES_SOCIALES = CLASES_SOCIALES;
   window.PERFILES_ARQUETIPICOS = PERFILES_ARQUETIPICOS;
+  window.queryMeasures = queryMeasures;
 
   (async () => {
     let res;

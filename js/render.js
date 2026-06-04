@@ -94,8 +94,77 @@ const CONST_ESTADO = {
   convalidada_congreso:           { label: "Veto rechazado por Congreso (norma vigente)",    cls: "c-green" }
 };
 
+// ============== v0.7 — FILTROS (config) ==============
+// 14 áreas de la DB (valor crudo → etiqueta sobria).
+const AREA_LABELS = {
+  vivienda: "Vivienda", transporte: "Transporte", fiscal: "Fiscal", energia: "Energía",
+  previsional: "Previsional", laboral: "Laboral", salud: "Salud", educacion: "Educación",
+  comercio_exterior: "Comercio exterior", plataformas: "Plataformas",
+  privatizaciones: "Privatizaciones", comunicaciones: "Comunicaciones",
+  agroindustria: "Agroindustria", otros: "Otros"
+};
+const AREA_KEYS = Object.keys(AREA_LABELS);
+
+// Estado: cada botón mapea a uno o más valores crudos de la columna `estado`.
+const ESTADO_FILTERS = [
+  { key: "vigente",     label: "Vigente",                  estados: ["vigente"] },
+  { key: "suspendida",  label: "Suspendida judicialmente", estados: ["suspendida_judicialmente"] },
+  { key: "derogada",    label: "Derogada",                 estados: ["derogada_parcial", "derogada_total"] },
+  { key: "vetada",      label: "Vetada",                   estados: ["vetada"] },
+  { key: "convalidada", label: "Convalidada",              estados: ["convalidada_congreso"] }
+];
+
+// Popularidad mediática: los datos reales topean en 4/6 (ninguna medida llega
+// a 5-6), así que los buckets se ajustan a la distribución real.
+const POP_FILTERS = [
+  { key: "trending", label: "Trending (3+)",     vals: [3, 4, 5, 6] },
+  { key: "media",    label: "Media (2)",         vals: [2] },
+  { key: "baja",     label: "Baja (1)",          vals: [1] },
+  { key: "sin",      label: "Sin cobertura (0)", vals: [0] }
+];
+
+// Fecha: single-select. Los relativos se calculan en runtime (no se hardcodean).
+const FECHA_FILTERS = [
+  { key: "todas",   label: "Todas" },
+  { key: "mes",     label: "Último mes",       months: 1 },
+  { key: "3meses",  label: "Últimos 3 meses",  months: 3 },
+  { key: "anio",    label: "Último año",       months: 12 },
+  { key: "2024",    label: "2024", desde: "2024-01-01", hasta: "2025-01-01" },
+  { key: "2025",    label: "2025", desde: "2025-01-01", hasta: "2026-01-01" },
+  { key: "2026",    label: "2026", desde: "2026-01-01", hasta: "2027-01-01" }
+];
+
+function isoMonthsAgo(months) {
+  const d = new Date();
+  d.setMonth(d.getMonth() - months);
+  return d.toISOString().slice(0, 10);
+}
+
+// Estado crudo → pill (clase de color + etiqueta) para la pantalla de impacto.
+function estadoPill(estado) {
+  const map = {
+    vigente:                  { c: "e-vigente",     l: "Vigente" },
+    suspendida_judicialmente: { c: "e-suspendida",  l: "Suspendida judicialmente" },
+    derogada_parcial:         { c: "e-derogada",    l: "Derogada (parcial)" },
+    derogada_total:           { c: "e-derogada",    l: "Derogada" },
+    vetada:                   { c: "e-vetada",      l: "Vetada" },
+    convalidada_congreso:     { c: "e-convalidada", l: "Convalidada por el Congreso" }
+  };
+  return map[estado] || { c: "e-vigente", l: estado || "—" };
+}
+
 // ============== STATE ==============
-const state = { perfil: { asistencia: [] }, measure: null, filterArea: null, filterEstado: null, histArea: null, histAnio: null };
+const state = {
+  perfil: { asistencia: [] },
+  measure: null,
+  histArea: null, histAnio: null,
+  // v0.7: filtros de la pantalla de medidas + paginación
+  filtersOpen: false,
+  filters: { areas: AREA_KEYS.slice(), estadoKeys: [], popKeys: [], fecha: "todas", busqueda: "" },
+  list: { items: [], total: 0, loading: false },
+  listLoaded: false,
+  searchTimer: null
+};
 
 function getMeasures() { return window.MEASURES || []; }
 
@@ -192,13 +261,13 @@ function renderHome() {
   updateProfileSummary();
   const measures = getMeasures();
 
-  // --- Trending: "Lo que están discutiendo todos" (cobertura ≥ 5/6) ---
+  // --- Trending: "Lo que están discutiendo todos" ---
+  // Brief pedía cobertura ≥ 5/6, pero los datos reales topean en 4/6 (ninguna
+  // medida llega a 5). Umbral ajustado a ≥ 3/6 = la franja más cubierta.
   const trendingEl = document.getElementById('trendingSection');
   if (trendingEl) {
-    // "Lo que están discutiendo todos": las más cubiertas por los 6 medios que
-    // seguimos. Top 10 por popularidad (≥ 2 medios), de mayor a menor.
     const trending = measures
-      .filter(m => (m.popularidad || 0) >= 2)
+      .filter(m => (m.popularidad || 0) >= 3)
       .sort((a, b) => ((b.popularidad || 0) - (a.popularidad || 0)) || String(b.date).localeCompare(String(a.date)))
       .slice(0, 10);
     if (!trending.length) {
@@ -233,7 +302,10 @@ function renderHome() {
   }
 
   renderFilters();
-  renderMeasureList();
+  // Si ya cargamos una página antes (p. ej. el usuario volvió de una medida),
+  // re-renderizamos lo que había para preservar cuántas tarjetas se veían.
+  if (!state.listLoaded) loadFirstPage();
+  else { renderResultCount(); renderMeasureCards(); updateLoadMore(); }
   updateMiniBar();
 }
 
@@ -245,53 +317,184 @@ function openMeasure(id) {
   show('impact');
 }
 
+// ============== v0.7 — FILTROS COLAPSABLES ==============
+function activeFilterCount() {
+  const f = state.filters;
+  let n = 0;
+  if (f.areas.length < AREA_KEYS.length) n++;
+  n += f.estadoKeys.length;
+  n += f.popKeys.length;
+  if (f.fecha !== "todas") n++;
+  if (f.busqueda.trim()) n++;
+  return n;
+}
+
+function toggleFilters() {
+  state.filtersOpen = !state.filtersOpen;
+  renderFilters();
+}
+window.toggleFilters = toggleFilters;
+
+function clearFilters() {
+  state.filters = { areas: AREA_KEYS.slice(), estadoKeys: [], popKeys: [], fecha: "todas", busqueda: "" };
+  renderFilters();
+  loadFirstPage();
+}
+window.clearFilters = clearFilters;
+
 function renderFilters() {
   const el = document.getElementById('measureFilters');
+  const toggle = document.getElementById('filterToggle');
+  const countEl = document.getElementById('filterCount');
+  const clearEl = document.getElementById('filterClear');
   if (!el) return;
-  const measures = getMeasures();
-  const areas = [...new Set(measures.map(m => m.area).filter(Boolean))].sort();
-  const estados = [...new Set(measures.map(m => m.estado).filter(Boolean))].sort();
+  const f = state.filters;
+  const n = activeFilterCount();
 
-  const areaChips = areas.map(a =>
-    `<button class="fchip ${state.filterArea === a ? 'sel' : ''}" data-kind="area" data-v="${a}">${a}</button>`).join('');
-  const estadoChips = estados.map(e =>
-    `<button class="fchip ${state.filterEstado === e ? 'sel' : ''}" data-kind="estado" data-v="${e}">${estadoLabel(e)}</button>`).join('');
+  if (toggle) toggle.classList.toggle('open', state.filtersOpen);
+  if (countEl) { countEl.textContent = n; countEl.classList.toggle('on', n > 0); }
+  if (clearEl) clearEl.style.display = n > 0 ? '' : 'none';
+
+  el.hidden = !state.filtersOpen;
+  if (!state.filtersOpen) return;
+
+  const areaChips = AREA_KEYS.map(k =>
+    `<button class="fchip ${f.areas.includes(k) ? 'sel' : ''}" data-kind="area" data-v="${k}">${AREA_LABELS[k]}</button>`).join('');
+  const fechaChips = FECHA_FILTERS.map(x =>
+    `<button class="fchip ${f.fecha === x.key ? 'sel' : ''}" data-kind="fecha" data-v="${x.key}">${x.label}</button>`).join('');
+  const estadoChips = ESTADO_FILTERS.map(x =>
+    `<button class="fchip ${f.estadoKeys.includes(x.key) ? 'sel' : ''}" data-kind="estado" data-v="${x.key}">${x.label}</button>`).join('');
+  const popChips = POP_FILTERS.map(x =>
+    `<button class="fchip ${f.popKeys.includes(x.key) ? 'sel' : ''}" data-kind="pop" data-v="${x.key}">${x.label}</button>`).join('');
 
   el.innerHTML = `
     <div class="filter-row"><span class="filter-lbl">Área</span><div class="fchips">
-      <button class="fchip ${!state.filterArea ? 'sel' : ''}" data-kind="area" data-v="">Todas</button>${areaChips}</div></div>
-    <div class="filter-row"><span class="filter-lbl">Estado</span><div class="fchips">
-      <button class="fchip ${!state.filterEstado ? 'sel' : ''}" data-kind="estado" data-v="">Todos</button>${estadoChips}</div></div>`;
+      <button class="fchip ${f.areas.length === AREA_KEYS.length ? 'sel' : ''}" data-kind="area-all" data-v="">Todas</button>${areaChips}</div></div>
+    <div class="filter-row"><span class="filter-lbl">Fecha</span><div class="fchips">${fechaChips}</div></div>
+    <div class="filter-row"><span class="filter-lbl">Estado</span><div class="fchips">${estadoChips}</div></div>
+    <div class="filter-row"><span class="filter-lbl">Medios</span><div class="fchips">${popChips}</div></div>
+    <div class="filter-row"><span class="filter-lbl">Buscar</span>
+      <input class="filter-search" id="filterSearch" type="text" placeholder="Título o descripción…" value="${escapeAttr(f.busqueda)}"></div>`;
 
   el.querySelectorAll('.fchip').forEach(b => {
     b.onclick = () => {
-      const v = b.dataset.v || null;
-      if (b.dataset.kind === 'area') state.filterArea = v;
-      else state.filterEstado = v;
+      const v = b.dataset.v, kind = b.dataset.kind;
+      if (kind === 'area-all') {
+        f.areas = AREA_KEYS.slice();
+      } else if (kind === 'area') {
+        // Desde el estado por defecto (todas activas), el primer click filtra
+        // SOLO a esa área. Después se comporta como multi-select (toggle).
+        if (f.areas.length === AREA_KEYS.length) f.areas = [v];
+        else f.areas = f.areas.includes(v) ? f.areas.filter(x => x !== v) : [...f.areas, v];
+      } else if (kind === 'fecha') {
+        f.fecha = v; // single-select
+      } else if (kind === 'estado') {
+        f.estadoKeys = f.estadoKeys.includes(v) ? f.estadoKeys.filter(x => x !== v) : [...f.estadoKeys, v];
+      } else if (kind === 'pop') {
+        f.popKeys = f.popKeys.includes(v) ? f.popKeys.filter(x => x !== v) : [...f.popKeys, v];
+      }
       renderFilters();
-      renderMeasureList();
+      loadFirstPage();
     };
   });
+
+  const search = document.getElementById('filterSearch');
+  if (search) {
+    search.oninput = () => {
+      f.busqueda = search.value;
+      if (state.searchTimer) clearTimeout(state.searchTimer);
+      state.searchTimer = setTimeout(() => {
+        const cnt = document.getElementById('filterCount');
+        if (cnt) { const n2 = activeFilterCount(); cnt.textContent = n2; cnt.classList.toggle('on', n2 > 0); }
+        const cl = document.getElementById('filterClear');
+        if (cl) cl.style.display = activeFilterCount() > 0 ? '' : 'none';
+        loadFirstPage();
+      }, 300);
+    };
+  }
 }
 
-function estadoLabel(e) {
-  return ({ vigente: "Vigente", suspendida: "Suspendida", derogada: "Derogada", en_debate: "En debate" }[e]) || e;
+function escapeAttr(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
-function renderMeasureList() {
+// Traduce el estado de los filtros al payload que espera queryMeasures().
+function buildFilterPayload(offset, limit) {
+  const f = state.filters;
+  const payload = { offset: offset || 0, limit: limit != null ? limit : 15 };
+  if (f.areas.length === 0) payload.areas = ['__nomatch__'];           // nada seleccionado → 0 resultados
+  else if (f.areas.length < AREA_KEYS.length) payload.areas = f.areas.slice();
+  const est = f.estadoKeys.flatMap(k => (ESTADO_FILTERS.find(e => e.key === k) || {}).estados || []);
+  if (est.length) payload.estados = est;
+  const pop = f.popKeys.flatMap(k => (POP_FILTERS.find(p => p.key === k) || {}).vals || []);
+  if (pop.length) payload.popularidades = pop;
+  const fr = FECHA_FILTERS.find(x => x.key === f.fecha);
+  if (fr) {
+    if (fr.months) payload.fechaDesde = isoMonthsAgo(fr.months);
+    if (fr.desde) payload.fechaDesde = fr.desde;
+    if (fr.hasta) payload.fechaHasta = fr.hasta;
+  }
+  if (f.busqueda.trim()) payload.busqueda = f.busqueda.trim();
+  return payload;
+}
+
+// ============== v0.7 — LISTADO PAGINADO ==============
+async function loadFirstPage() {
+  state.list = { items: [], total: 0, loading: true };
+  state.listLoaded = true;
+  renderResultCount();
+  renderMeasureCards();
+  const res = await window.queryMeasures(buildFilterPayload(0, 15));
+  state.list = { items: res.medidas || [], total: res.total || 0, loading: false };
+  renderResultCount();
+  renderMeasureCards();
+  updateLoadMore();
+}
+
+async function loadMoreMeasures() {
+  if (state.list.loading) return;
+  const offset = state.list.items.length;
+  state.list.loading = true;
+  updateLoadMore();
+  const res = await window.queryMeasures(buildFilterPayload(offset, 15));
+  state.list.items = state.list.items.concat(res.medidas || []);
+  if (res.total) state.list.total = res.total;
+  state.list.loading = false;
+  renderResultCount();
+  renderMeasureCards();
+  updateLoadMore();
+}
+window.loadMoreMeasures = loadMoreMeasures;
+
+function renderResultCount() {
+  const el = document.getElementById('resultCount');
+  if (!el) return;
+  if (state.list.loading && !state.list.items.length) { el.textContent = ''; return; }
+  el.innerHTML = `Mostrando <strong>${state.list.items.length}</strong> de <strong>${state.list.total}</strong> medidas`;
+}
+
+function updateLoadMore() {
+  const btn = document.getElementById('btnLoadMore');
+  if (!btn) return;
+  const more = state.list.items.length < state.list.total;
+  btn.style.display = more ? '' : 'none';
+  btn.textContent = state.list.loading ? 'Cargando…' : 'Mostrar 15 más';
+  btn.disabled = !!state.list.loading;
+}
+
+function renderMeasureCards() {
   const list = document.getElementById('measureList');
   if (!list) return;
-  let measures = getMeasures().slice();
-  if (state.filterArea) measures = measures.filter(m => m.area === state.filterArea);
-  if (state.filterEstado) measures = measures.filter(m => m.estado === state.filterEstado);
-  measures.sort((a, b) => String(b.date).localeCompare(String(a.date)));
-
-  list.innerHTML = '';
-  if (!measures.length) {
+  if (state.list.loading && !state.list.items.length) {
+    list.innerHTML = '<div class="list-loading">Cargando medidas…</div>';
+    return;
+  }
+  if (!state.list.items.length) {
     list.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:14px 0;">No hay medidas con esos filtros.</div>';
     return;
   }
-  measures.forEach(m => {
+  list.innerHTML = '';
+  state.list.items.forEach(m => {
     const card = document.createElement('div');
     card.className = 'card measure';
     const tagsHtml = (m.tags || []).slice(0, 4).map(t => `<span class="measure-tag">${t}</span>`).join('');
@@ -309,32 +512,51 @@ function renderMeasureList() {
   });
 }
 
-// ============== IMPACT (+ Constitución, vista C) ==============
+// ============== IMPACT (descripción + cobertura + constitución SIEMPRE) ==============
 function renderImpact() {
   const m = state.measure;
   if (!m) return;
   document.getElementById('measureTitle').textContent = m.title;
-  document.getElementById('measureMeta').textContent = m.meta;
+  // La fecha (BORA) al frente; pero varias `meta` del base ya la incluyen → evitamos duplicarla.
+  const fd = formatDate(m.date);
+  document.getElementById('measureMeta').textContent =
+    (m.meta && fd && m.meta.includes(fd)) ? m.meta : [fd, m.meta].filter(Boolean).join(' · ');
 
+  // Área + estado (chips).
+  const chips = document.getElementById('measureAreaChips');
+  if (chips) {
+    const ep = estadoPill(m.estado);
+    chips.innerHTML = `${m.area ? `<span class="area-chip">${m.area}</span>` : ''}<span class="estado-pill ${ep.c}">${ep.l}</span>`;
+  }
+
+  // Descripción de la norma (siempre, si la hay).
+  const descEl = document.getElementById('measureDesc');
+  if (descEl) {
+    if (m.desc) { descEl.innerHTML = m.desc; descEl.style.display = ''; }
+    else descEl.style.display = 'none';
+  }
+
+  renderCobertura(m);
+  renderConstitucion(m);
+
+  // Fuente.
   let fuenteHtml = '';
   if (m.fuente) fuenteHtml = '<strong>FUENTE:</strong> ' + m.fuente;
   if (m.fuenteUrl) fuenteHtml += `${fuenteHtml ? '<br>' : ''}<a href="${m.fuenteUrl}" target="_blank" rel="noopener">Ver en el Boletín Oficial ↗</a>`;
   document.getElementById('sourceBox').innerHTML = fuenteHtml || '';
 
+  // Análisis personalizado: solo si hay reglas cargadas. Si no, cartel honesto.
+  const analysis = document.getElementById('impactAnalysis');
+  const notice = document.getElementById('impactNotice');
   const dimList = document.getElementById('dimList');
-  dimList.innerHTML = '';
-  // Botones de comparación / sectores: solo tienen sentido si hay reglas.
-  const btnCompare = document.getElementById('btnCompare');
-  const btnSectores = document.getElementById('btnSectores');
 
   if (!m.hasRules) {
-    // Medida real del catálogo DB sin reglas de impacto cargadas todavía.
-    dimList.innerHTML = '<div class="impact-prep">Análisis de impacto para esta medida en preparación. Pronto vas a poder ver cómo te pega según tu perfil.</div>';
-    if (btnCompare) btnCompare.style.display = 'none';
-    if (btnSectores) btnSectores.style.display = 'none';
+    if (analysis) analysis.style.display = 'none';
+    if (notice) notice.innerHTML = `<div class="impact-notice">Esta medida aún no tiene análisis personalizado por perfil. Mientras vamos cargando las reglas, te dejamos arriba la información objetiva: descripción de la norma, cobertura mediática y procesos judiciales si los hay.</div>`;
   } else {
-    if (btnCompare) btnCompare.style.display = '';
-    if (btnSectores) btnSectores.style.display = '';
+    if (notice) notice.innerHTML = '';
+    if (analysis) analysis.style.display = '';
+    dimList.innerHTML = '';
     const dims = m.impact(state.perfil);
     if (!dims.length) {
       dimList.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">Con este perfil no detectamos impacto directo de esta medida.</div>';
@@ -354,8 +576,31 @@ function renderImpact() {
       });
     }
   }
+}
 
-  renderConstitucion(m);
+// 🗞 Cobertura mediática — siempre visible (badge X/6 + medios; mensaje si 0).
+function renderCobertura(m) {
+  const box = document.getElementById('coberturaBox');
+  if (!box) return;
+  const tot = m.coberturaTotal || 6;
+  const n = (m.popularidad != null) ? m.popularidad : (m.cobertura?.length || 0);
+  let inner;
+  if (!m.hasDb) {
+    inner = `<div class="cob-card cob-empty">La cobertura mediática se carga con conexión. Volvé a abrir la app con internet para ver qué medios la cubrieron.</div>`;
+  } else if (!n) {
+    inner = `<div class="cob-card cob-empty">Ningún medio del panel cubrió esta medida en portada.</div>`;
+  } else {
+    const badges = (m.cobertura || []).map(c => {
+      const st = medioStyle(c.medioId);
+      return `<span class="medio-badge" style="background:${st.color}" title="${c.nombre}${c.titular ? ' — ' + c.titular : ''}">${st.inicial}</span>`;
+    }).join('');
+    inner = `<div class="cob-card"><div class="cob-top"><span class="cobertura-badge">${n}/${tot}</span><div class="medio-badges">${badges}</div></div></div>`;
+  }
+  box.innerHTML = `<div class="cob-section">
+    <div class="cob-title">🗞 Cobertura mediática</div>
+    ${inner}
+    <div class="cob-foot">Cobertura en portada de los 6 medios que seguimos: Clarín, La Nación, Infobae, Página 12, El Destape, C5N.</div>
+  </div>`;
 }
 
 function renderConstitucion(m) {
