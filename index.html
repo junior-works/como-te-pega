@@ -711,7 +711,14 @@
   }
   .filter-clear:hover { text-decoration: underline; }
   .filters { padding-top: 12px; }
-  .filters .filter-row { align-items: flex-start; }
+  /* Bloque por filtro: titulito arriba (no al costado) + chips a ancho completo. */
+  .filter-group { margin-bottom: 16px; }
+  .filter-group:last-child { margin-bottom: 4px; }
+  .filter-h {
+    margin: 0 0 8px 2px; font-size: 10.5px; font-weight: 700; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.6px;
+  }
+  .filter-group .fchips { display: flex; flex-wrap: wrap; gap: 8px; }
   .filter-search {
     width: 100%; box-sizing: border-box; font-family: inherit; font-size: 13px;
     border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px;

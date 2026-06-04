@@ -95,24 +95,36 @@ const CONST_ESTADO = {
 };
 
 // ============== v0.7 — FILTROS (config) ==============
-// 14 áreas de la DB (valor crudo → etiqueta sobria).
+// 14 áreas de la DB (valor crudo → etiqueta legible, con tildes/mayúsculas).
 const AREA_LABELS = {
   vivienda: "Vivienda", transporte: "Transporte", fiscal: "Fiscal", energia: "Energía",
   previsional: "Previsional", laboral: "Laboral", salud: "Salud", educacion: "Educación",
-  comercio_exterior: "Comercio exterior", plataformas: "Plataformas",
+  comercio_exterior: "Comercio Exterior", plataformas: "Plataformas",
   privatizaciones: "Privatizaciones", comunicaciones: "Comunicaciones",
   agroindustria: "Agroindustria", otros: "Otros"
 };
 const AREA_KEYS = Object.keys(AREA_LABELS);
 
-// Estado: cada botón mapea a uno o más valores crudos de la columna `estado`.
-const ESTADO_FILTERS = [
-  { key: "vigente",     label: "Vigente",                  estados: ["vigente"] },
-  { key: "suspendida",  label: "Suspendida judicialmente", estados: ["suspendida_judicialmente"] },
-  { key: "derogada",    label: "Derogada",                 estados: ["derogada_parcial", "derogada_total"] },
-  { key: "vetada",      label: "Vetada",                   estados: ["vetada"] },
-  { key: "convalidada", label: "Convalidada",              estados: ["convalidada_congreso"] }
-];
+// Estado: un chip por valor crudo de la columna `estado`, con etiqueta legible.
+// El chip muestra la etiqueta; el filtro usa el valor crudo (la clave). Los
+// chips se renderizan según los estados realmente presentes en los datos, en
+// este orden. ESTADO_LABELS/ESTADO_CLS son la única fuente de verdad (también
+// las usa la pill de la pantalla de impacto).
+const ESTADO_LABELS = {
+  vigente:                  "Vigente",
+  suspendida_judicialmente: "Suspendida por la Justicia",
+  derogada_total:           "Derogada",
+  derogada_parcial:         "Derogada parcialmente",
+  vetada:                   "Vetada",
+  convalidada_congreso:     "Convalidada por Congreso",
+  convalidada_csjn:         "Convalidada por CSJN"
+};
+const ESTADO_ORDER = Object.keys(ESTADO_LABELS);
+const ESTADO_CLS = {
+  vigente: "e-vigente", suspendida_judicialmente: "e-suspendida",
+  derogada_total: "e-derogada", derogada_parcial: "e-derogada", vetada: "e-vetada",
+  convalidada_congreso: "e-convalidada", convalidada_csjn: "e-convalidada"
+};
 
 // Popularidad mediática: los datos reales topean en 4/6 (ninguna medida llega
 // a 5-6), así que los buckets se ajustan a la distribución real.
@@ -142,15 +154,7 @@ function isoMonthsAgo(months) {
 
 // Estado crudo → pill (clase de color + etiqueta) para la pantalla de impacto.
 function estadoPill(estado) {
-  const map = {
-    vigente:                  { c: "e-vigente",     l: "Vigente" },
-    suspendida_judicialmente: { c: "e-suspendida",  l: "Suspendida judicialmente" },
-    derogada_parcial:         { c: "e-derogada",    l: "Derogada (parcial)" },
-    derogada_total:           { c: "e-derogada",    l: "Derogada" },
-    vetada:                   { c: "e-vetada",      l: "Vetada" },
-    convalidada_congreso:     { c: "e-convalidada", l: "Convalidada por el Congreso" }
-  };
-  return map[estado] || { c: "e-vigente", l: estado || "—" };
+  return { c: ESTADO_CLS[estado] || "e-vigente", l: ESTADO_LABELS[estado] || estado || "—" };
 }
 
 // ============== STATE ==============
@@ -160,7 +164,7 @@ const state = {
   histArea: null, histAnio: null,
   // v0.7: filtros de la pantalla de medidas + paginación
   filtersOpen: false,
-  filters: { areas: AREA_KEYS.slice(), estadoKeys: [], popKeys: [], fecha: "todas", busqueda: "" },
+  filters: { areas: AREA_KEYS.slice(), estados: [], popKeys: [], fecha: "todas", busqueda: "" },
   list: { items: [], total: 0, loading: false },
   listLoaded: false,
   searchTimer: null
@@ -322,7 +326,7 @@ function activeFilterCount() {
   const f = state.filters;
   let n = 0;
   if (f.areas.length < AREA_KEYS.length) n++;
-  n += f.estadoKeys.length;
+  n += f.estados.length;
   n += f.popKeys.length;
   if (f.fecha !== "todas") n++;
   if (f.busqueda.trim()) n++;
@@ -336,7 +340,7 @@ function toggleFilters() {
 window.toggleFilters = toggleFilters;
 
 function clearFilters() {
-  state.filters = { areas: AREA_KEYS.slice(), estadoKeys: [], popKeys: [], fecha: "todas", busqueda: "" };
+  state.filters = { areas: AREA_KEYS.slice(), estados: [], popKeys: [], fecha: "todas", busqueda: "" };
   renderFilters();
   loadFirstPage();
 }
@@ -362,18 +366,22 @@ function renderFilters() {
     `<button class="fchip ${f.areas.includes(k) ? 'sel' : ''}" data-kind="area" data-v="${k}">${AREA_LABELS[k]}</button>`).join('');
   const fechaChips = FECHA_FILTERS.map(x =>
     `<button class="fchip ${f.fecha === x.key ? 'sel' : ''}" data-kind="fecha" data-v="${x.key}">${x.label}</button>`).join('');
-  const estadoChips = ESTADO_FILTERS.map(x =>
-    `<button class="fchip ${f.estadoKeys.includes(x.key) ? 'sel' : ''}" data-kind="estado" data-v="${x.key}">${x.label}</button>`).join('');
+  // Estado: un chip por valor crudo PRESENTE en los datos (etiqueta legible).
+  const estadosPresentes = [...new Set(getMeasures().map(m => m.estado).filter(Boolean))];
+  const estadoList = ESTADO_ORDER.filter(e => estadosPresentes.includes(e));
+  estadosPresentes.forEach(e => { if (!estadoList.includes(e)) estadoList.push(e); });
+  const estadoChips = estadoList.map(e =>
+    `<button class="fchip ${f.estados.includes(e) ? 'sel' : ''}" data-kind="estado" data-v="${e}">${ESTADO_LABELS[e] || e}</button>`).join('');
   const popChips = POP_FILTERS.map(x =>
     `<button class="fchip ${f.popKeys.includes(x.key) ? 'sel' : ''}" data-kind="pop" data-v="${x.key}">${x.label}</button>`).join('');
 
   el.innerHTML = `
-    <div class="filter-row"><span class="filter-lbl">Área</span><div class="fchips">
+    <div class="filter-group"><h4 class="filter-h">Área</h4><div class="fchips">
       <button class="fchip ${f.areas.length === AREA_KEYS.length ? 'sel' : ''}" data-kind="area-all" data-v="">Todas</button>${areaChips}</div></div>
-    <div class="filter-row"><span class="filter-lbl">Fecha</span><div class="fchips">${fechaChips}</div></div>
-    <div class="filter-row"><span class="filter-lbl">Estado</span><div class="fchips">${estadoChips}</div></div>
-    <div class="filter-row"><span class="filter-lbl">Medios</span><div class="fchips">${popChips}</div></div>
-    <div class="filter-row"><span class="filter-lbl">Buscar</span>
+    <div class="filter-group"><h4 class="filter-h">Fecha</h4><div class="fchips">${fechaChips}</div></div>
+    <div class="filter-group"><h4 class="filter-h">Estado</h4><div class="fchips">${estadoChips}</div></div>
+    <div class="filter-group"><h4 class="filter-h">Cobertura mediática</h4><div class="fchips">${popChips}</div></div>
+    <div class="filter-group"><h4 class="filter-h">Buscar</h4>
       <input class="filter-search" id="filterSearch" type="text" placeholder="Título o descripción…" value="${escapeAttr(f.busqueda)}"></div>`;
 
   el.querySelectorAll('.fchip').forEach(b => {
@@ -389,7 +397,7 @@ function renderFilters() {
       } else if (kind === 'fecha') {
         f.fecha = v; // single-select
       } else if (kind === 'estado') {
-        f.estadoKeys = f.estadoKeys.includes(v) ? f.estadoKeys.filter(x => x !== v) : [...f.estadoKeys, v];
+        f.estados = f.estados.includes(v) ? f.estados.filter(x => x !== v) : [...f.estados, v];
       } else if (kind === 'pop') {
         f.popKeys = f.popKeys.includes(v) ? f.popKeys.filter(x => x !== v) : [...f.popKeys, v];
       }
@@ -424,8 +432,7 @@ function buildFilterPayload(offset, limit) {
   const payload = { offset: offset || 0, limit: limit != null ? limit : 15 };
   if (f.areas.length === 0) payload.areas = ['__nomatch__'];           // nada seleccionado → 0 resultados
   else if (f.areas.length < AREA_KEYS.length) payload.areas = f.areas.slice();
-  const est = f.estadoKeys.flatMap(k => (ESTADO_FILTERS.find(e => e.key === k) || {}).estados || []);
-  if (est.length) payload.estados = est;
+  if (f.estados.length) payload.estados = f.estados.slice(); // ya son valores crudos de DB
   const pop = f.popKeys.flatMap(k => (POP_FILTERS.find(p => p.key === k) || {}).vals || []);
   if (pop.length) payload.popularidades = pop;
   const fr = FECHA_FILTERS.find(x => x.key === f.fecha);
