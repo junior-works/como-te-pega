@@ -1207,6 +1207,280 @@ export const MEASURES_BASE = [
       { name: "Empleado público nacional", sub: "Empleado público · Cualquier sector", badges: { Plata: "soft" } },
       { name: "Familia con CUD y trabajadora informal", sub: "Trabajo informal · Familiar c/CUD", badges: { Plata: "soft", "Movilidad social": "soft" } }
     ]
+  },
+  {
+    id: "aranceles_textiles_calzado",
+    title: "Reducción de aranceles para textiles, calzado e hilados",
+    date: "2025-03-31",
+    meta: "Decreto 236/2025 · vigente · vuelve a niveles pre-2007",
+    desc: "Reducción de aranceles a importación: ropa y calzado 35%→20%, telas 26%→18%, hilados 18%→12-16%. Justificación oficial: Argentina con indumentaria más cara de la región (remera 310% más cara que España). Impacto verificado a abr-2026: 20.700 puestos perdidos en cadena textil/indumentaria/cuero/calzado, 17% caída empleo registrado, 380 empresas cerradas (Pro Tejer), 33% caída de producción, 6-7 de cada 10 máquinas paradas. Importaciones prendas terminadas +129% en cantidad. Casos: Textilana suspensiones 175 personas, VVC Catamarca paros. Sin observación constitucional firme (es facultad propia del PEN ajustar aranceles).",
+    tags: ["Trabajo","Plata","Industria"],
+    fuente: "Boletín Oficial — Decreto 236/2025. Pro Tejer, CIAI, SIPA, Infobae, El Cronista.",
+    impact: function(p) {
+      const dims = [];
+      const esTrabajador = p.ocupacion === 'empleado_priv' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib';
+      const enPoloTextil = p.zona === 'noa' || p.zona === 'nea' || p.zona === 'cuyo' || p.zona === 'gba_oeste' || p.zona === 'gba_sur' || p.zona === 'cba_int' || p.zona === 'santafe_int';
+      if (esTrabajador && enPoloTextil) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si trabajás en cadena textil/indumentaria/calzado, tu sector perdió 20.700 puestos en 2 años (17% del empleo registrado). Suspensiones masivas (Textilana 175 personas) son la nueva normalidad. Efecto cascada toca a proveedores: logística, packaging, transporte." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "380 empresas cerradas + 7 de cada 10 máquinas paradas = riesgo concreto de tu lugar de trabajo." });
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Salarios reales del sector cayeron + riesgo de despido + indemnización con tope (DNU 70)." });
+      }
+      if (p.ocupacion === 'pyme' && enPoloTextil) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Competís con ropa importada que entra al 20% de arancel (era 35%), sin tasa de estadística. Tu costo local en pesos es 25-40% más alto que la mercadería china que entra al puerto. Los márgenes desaparecieron." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si lograste sostener empleados, lo estás haciendo a costa de tu capital de trabajo. La mayoría tuvo que despedir o suspender." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "380 PyMEs textiles cerraron. Si seguís abierto, vivís al día." });
+      }
+      if (p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Toda la cadena de subcontratación informal (talleres clandestinos, costureras domiciliarias) cae junto con la industria formal. Menos trabajo, menos paga por prenda." });
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Mercado de subcontratación se contrae." });
+      }
+      const ingresoMedioBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m' || p.ingreso === '1.5m_3m';
+      if (ingresoMedioBajo) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Ropa y calzado importados bajaron 8-15% en precio final. Si comprás en fast fashion (Falabella, Zara, mercado de Once, ferias americanas), notás la diferencia. Tu hijo va al colegio con zapatillas que antes costaban el doble." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "pos_soft",
+          body: "Acceso a marcas que antes eran inalcanzables." });
+      }
+      const ingresoAlto = p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Marcas internacionales (Nike, Adidas, Tommy, Polo) bajaron 10-15%. Si comprás regularmente, ahorro real." });
+      }
+      if (enPoloTextil && (p.ocupacion === 'estudiante' || p.ocupacion === 'desempleado')) {
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
+          body: "En provincias con monocultivo industrial, las opciones de empleo alternativo son limitadas. Si la textil cierra, no hay otra fábrica." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Decisión de desindustrializar sin política industrial complementaria. Argentina no es Brasil (que sigue protegiendo industria) ni Vietnam (que produce con escala). El modelo elegido implica importar lo que antes hacíamos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Operaria textil Catamarca", sub: "Empleada priv. · NOA · Polo textil", badges: { Trabajo: "strong", Estabilidad: "strong", Plata: "mid" } },
+      { name: "PyME confección Conurbano", sub: "Empresario PyME · GBA Oeste", badges: { Plata: "strong", Trabajo: "strong", Estabilidad: "strong" } },
+      { name: "Costurera domiciliaria informal", sub: "Cuidado hogar · Subcontratación", badges: { Trabajo: "mid", Plata: "mid" } },
+      { name: "Consumidor ingreso bajo CABA", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "pos_soft", "Movilidad social": "pos_soft" } },
+      { name: "Consumidor de marcas premium", sub: "Empresario · +$6M", badges: { Plata: "pos_soft" } },
+      { name: "Estudiante en polo textil", sub: "Estudiante · Provincia industrial", badges: { "Movilidad social": "mid" } }
+    ]
+  },
+  {
+    id: "eliminacion_fondo_compensador_transporte_dnu_280",
+    title: "Eliminación del Fondo Compensador del Transporte del Interior",
+    date: "2024-03-24",
+    meta: "DNU 280/2024 · vigente · cautelares provinciales en curso",
+    desc: "Dispone que arts. 81, 92, 93 y 94 de Ley 27.701 (Presupuesto 2023) NO se prorrogan a 2024. El art. 81 fijaba piso de $85.000M para el Fondo Compensador del Transporte del Interior, que subsidiaba boleto de colectivos urbanos e interurbanos fuera del AMBA. Resultado: provincias del interior sin aporte nacional (AMBA siguió con subsidios). Cobertura previa del FCI: Rosario 27% subsidios, Córdoba 28%, Bariloche 35%, Río Gallegos 40%. Tarifas pasaron de media $252 (ene-2024) a $607 (abr-2024) → $1.720-1.895 a jun-2026. Interior paga casi el triple que AMBA. Cautelares Chubut (fallo Sastre, Rawson feb-2024), Cámara Federal Rosario, Santa Fe, Córdoba. Nación incumplió parcialmente el fallo Sastre.",
+    tags: ["Plata","Movilidad","Transporte"],
+    fuente: "Boletín Oficial — DNU 280/2024. Fallo Sastre Federal Rawson feb-2024. Chequeado, Cenital, La Nación.",
+    impact: function(p) {
+      const dims = [];
+      const enInterior = !['caba','gba_norte','gba_sur','gba_oeste','laplata'].includes(p.zona);
+      const usaTransportePublico = p.transporte === '2colectivos' || p.transporte === 'combinacion' || p.transporte === 'tren';
+      if (enInterior && usaTransportePublico) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si en una ciudad como Rosario tomás 2 colectivos al día x 22 días = 44 viajes/mes. Antes (ene-2024): 44 × $252 = $11.088. Hoy (jun-2026): 44 × $1.720 = $75.680/mes. Diferencia: $64.592 más por mes en transporte sobre un sueldo del interior. Para ingresos ≤$1,5M, eso es 4-7% del sueldo solo en transporte al trabajo." });
+        dims.push({ name: "Movilidad", icon: "🛤️", level: "strong",
+          body: "Tu acceso a la ciudad se encareció dramáticamente. Trámites, estudios, visitar familia, salir a comer ahora exige cálculo." });
+        dims.push({ name: "Tiempo", icon: "⏰", level: "mid",
+          body: "Muchas líneas redujeron frecuencias. Algunas rutas se eliminaron." });
+      }
+      if (enInterior && (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado')) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si tomás colectivo para ir al médico, hacer trámite ANSES o PAMI, visitar familia: 8 boletos/mes a $1.720 = $13.760 fijos. Sobre haber mínimo de $473k = 3% solo en transporte al hospital. Tarifa Social SUBE no aplica fuera de AMBA." });
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "Postergación de turnos médicos por costo de traslado. Defensoría provincias 2025: 10-15% de jubilados del interior reducen frecuencia de consultas por costo de transporte." });
+      }
+      if (enInterior && p.ocupacion === 'estudiante') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Beca Progresar = $35.000/mes. Si vas a clase en colectivo 4 días por semana = 32 viajes/mes = $55.040. La beca no cubre el transporte. Te tenés que arreglar con familia." });
+        dims.push({ name: "Educación", icon: "📚", level: "mid",
+          body: "Asistencia a clase se ve afectada por el costo. UNL, UNR, UNC reportan aumento de 'abandono por costo de transporte' en 2024-2025." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
+          body: "Barrera de acceso a estudios superiores creció si vivís lejos de la facultad." });
+      }
+      if (enInterior && (p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa')) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si tu jornal es $20-30k y el transporte para llegar al trabajo cuesta $3.500-5.500 ida y vuelta, perdés 15-25% del jornal. Algunos trabajos ya no son rentables por costo de viajar." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Menos margen para aceptar trabajos lejos. Reducción de búsquedas a 'lo que esté cerca'." });
+      }
+      if (enInterior && p.ocupacion === 'pyme') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Tus empleados gastan más en llegar. Algunos rechazan trabajos lejos. Si tu negocio depende de clientes que se mueven en transporte público, tu afluencia cae." });
+      }
+      const noEsEmpleadoPub = p.ocupacion !== 'empleado_pub';
+      if (noEsEmpleadoPub) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Ahorro fiscal real del Tesoro Nacional (los $85.000M que no se transfirieron). En teoría redirigido a otros usos o menor presión tributaria — depende de la redistribución." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Asimetría federal: AMBA sigue con subsidio nacional, interior no. Y desobediencia documentada al fallo Sastre (Rawson, feb-2024) que ordenaba mantener subsidios — Nación cumplió parcialmente para 2023 y luego dictó el DNU 280 que lo desoyó." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empleado Rosario · 2 colectivos/día", sub: "Empleado priv. · Santa Fe int.", badges: { Plata: "strong", Movilidad: "strong", Tiempo: "mid" } },
+      { name: "Jubilada Bariloche al hospital", sub: "Jubilada · Patagonia · Combinación", badges: { Plata: "strong", Salud: "mid" } },
+      { name: "Estudiante UNC · Beca Progresar", sub: "Estudiante · Córdoba · Combinación", badges: { Plata: "strong", Educación: "mid", "Movilidad social": "mid" } },
+      { name: "Trabajadora informal Mendoza", sub: "Trabajo informal · Cuyo", badges: { Plata: "strong", Trabajo: "mid" } },
+      { name: "PyME hotelera Salta", sub: "PyME · NOA", badges: { Trabajo: "mid" } },
+      { name: "Habitante AMBA con auto", sub: "Empleado priv. · CABA · Auto", badges: { Plata: "pos_soft" } }
+    ]
+  },
+  {
+    id: "dnu70_prepagas",
+    title: "DNU 70 — Desregulación de medicina prepaga",
+    date: "2023-12-21",
+    meta: "DNU 70/2023 · deroga arts. de Ley 26.682 · jurisprudencia federal limita aumentos",
+    desc: "Deroga incisos g y m del art. 5, los arts. 6, 18, 19, 25 inc. a y 27 de la Ley 26.682 de Marco Regulatorio de la Medicina Prepaga. Quita facultades a Ministerio de Salud y Superintendencia de Servicios de Salud de autorizar y revisar valores de cuotas. Habilita libre fijación de precios. Suprime modelos de contrato entre prepagas y prestadores. Aumentos acumulados >100% en pocos meses durante 2024; a jun-2026 acumulan 350-450% según plan vs IPC ~280%. Cautelares individuales y colectivas. Jurisprudencia federal consolidada (CAF Sala III, Sala V): aumentos deben ser razonables con IPC como parámetro; derecho a la salud (tratados art. 75:22 CN) prima sobre lógica de mercado. 26-may-2025 Justicia anuló retroactivamente aumentos.",
+    tags: ["Salud","Plata","Carga mental"],
+    fuente: "Boletín Oficial — DNU 70/2023 (arts. derogadores de Ley 26.682). Microjuris, Infobae, CELS, CADIME.",
+    impact: function(p) {
+      const dims = [];
+      if (p.salud === 'prepaga') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Cuota se duplicó o triplicó en términos reales contra inflación. Si gastabas $80k/mes en cobertura familiar, ahora es $250-350k. Si tu sueldo no creció en la misma proporción, perdiste poder de compra de muchas otras cosas para sostener la cobertura." });
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "Para sostener la cuota, mucha gente migra a planes inferiores con peor cobertura (más coseguros, menor cartilla, copagos en estudios). Menor calidad efectiva por la misma plata." });
+      }
+      if (p.salud === 'prepaga_aporte') {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Tu aporte de obra social cubre parte; el 'plus' de prepaga te lo pagás vos. Ese plus se disparó. Te toca pagar un excedente cada vez más alto." });
+      }
+      const esJubiladoPensionado = p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado';
+      if (esJubiladoPensionado && (p.salud === 'prepaga' || p.salud === 'mixta')) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Sos el perfil más expuesto: no podés cambiar de cobertura por edad (otras prepagas no aceptan), no podés volver a PAMI sin perder cuota acumulada. La cuota se come hasta 30-40% de tu haber." });
+        dims.push({ name: "Salud", icon: "❤️", level: "strong",
+          body: "Estás en la edad donde MÁS necesitás cobertura, con la cuota más alta de tu vida y sin alternativa equivalente." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
+          body: "Vivir con la cuota colgando del calendario, judicializaciones, recursos administrativos." });
+      }
+      if (p.salud === 'mixta') {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "El componente prepaga se encareció. El plan total te sale más." });
+      }
+      if (p.salud === 'hosp_pub') {
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "La migración de afiliados que abandonan prepaga aumenta la demanda en hospitales públicos. Esperas más largas para turnos de especialistas. Saturación de guardias." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Jurisprudencia federal consolidada limita lo que el DNU autoriza. El derecho a la salud con jerarquía constitucional (tratados internacionales) recorta la libre fijación. El argumento 'desregular para que la competencia baje precios' no se cumplió empíricamente: precios subieron 350-450%, no bajaron. Mercado oligopólico (Swiss Medical, OSDE, Medifé, Galeno) generó alza coordinada." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Jubilado mínima con prepaga vitalicia", sub: "Jubilado mín. · Prepaga bolsillo", badges: { Plata: "strong", Salud: "strong", "Carga mental": "mid" } },
+      { name: "Familia con cobertura familiar", sub: "Empleado priv. · Prepaga bolsillo · Hijos", badges: { Plata: "strong", Salud: "mid" } },
+      { name: "Empleado con aporte OS + plus", sub: "Empleado priv. · Prepaga c/aporte OS", badges: { Plata: "mid" } },
+      { name: "Usuario hospital público", sub: "Trabajo informal · Hospital público", badges: { Salud: "mid" } },
+      { name: "Adulto joven con cobertura mixta", sub: "Empleado priv. · Mixta · CABA", badges: { Plata: "mid" } }
+    ]
+  },
+  {
+    id: "despidos_hospital_posadas",
+    title: "Reorganización del Hospital Posadas",
+    date: "2024-03-22",
+    meta: "Decreto 270/2024 + DDAA 215, 264, 418, 601, 602, 892/2024 · vigente",
+    desc: "Decreto 270/2024 (22-mar-2024) reorganizó la jurisdicción del Hospital Posadas (oeste GBA, referencia para 6 millones de habitantes) bajo la Subsecretaría de Institutos y Fiscalización del Min. de Salud. Decisiones Administrativas posteriores (DA 215, 264, 418, 601, 602, 892 de 2024) reorganizaron estructura y plantas. Consecuencias documentadas (CICOP, prensa, Justicia): ~90 desvinculaciones jun-2024, +110 en jun-2025, total 200-250 trabajadores. Casos de despido a personal reinstalado por Justicia (re-despido). Casos a delegados sindicales con tutela activa (kinesiólogo CICOP). CICOP litiga colectivamente; órdenes individuales de reinstalación firmes.",
+    tags: ["Trabajo","Salud","País"],
+    fuente: "Boletín Oficial — Decreto 270/2024 + Decisiones Administrativas 215, 264, 418, 601, 602, 892/2024. CICOP, Página 12, Perfil, Infobae.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si trabajás en hospital público nacional, el caso Posadas marca el precedente: cualquier reorganización administrativa habilita despidos. Riesgo de no renovación de contrato + despidos con efecto retroactivo." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Las garantías sindicales (delegado/CICOP) NO frenan la decisión administrativa de despedir, aunque después la Justicia ordene reinstalación." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
+          body: "Incertidumbre operativa. Equipos desarmados, compañeros despedidos, sobrecarga sobre quien queda." });
+      }
+      const enZonaPosadas = p.zona === 'gba_oeste' || p.zona === 'gba_sur' || p.zona === 'caba';
+      if (enZonaPosadas && (p.salud === 'hosp_pub' || p.salud === 'mixta' || p.salud === 'os_sindical')) {
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "Posadas es referencia para 6 millones del oeste/sur GBA. Servicios de oncología, neonatología, trauma se debilitan. Tiempos de espera para turnos aumentan. Derivaciones a centros privados se demoran." });
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "Atención hospitalaria queda con menos personal por turno." });
+      }
+      const tieneHijos = p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas';
+      if (enZonaPosadas && tieneHijos && p.salud === 'hosp_pub') {
+        dims.push({ name: "Salud", icon: "❤️", level: "strong",
+          body: "Si tu hijo/a tiene patología crónica (oncológica, neonatal, trasplante) atendida en Posadas, la continuidad de tratamiento depende de equipos que pueden ser desarmados. Si tu médica de cabecera fue despedida, te toca recomenzar relación o ir al privado." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
+          body: "Inestabilidad del equipo asistencial es estrés agregado." });
+      }
+      const noEsEmpleadoPub = p.ocupacion !== 'empleado_pub';
+      if (noEsEmpleadoPub) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Ahorro fiscal por reducción de masa salarial." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "El incumplimiento de órdenes judiciales de reinstalación (re-despido) es punto institucional concreto. La Justicia ordena, el gobierno vuelve a despedir. Casos de despido a delegados con tutela sindical activa también." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Médica del Posadas oncología", sub: "Empleada pública · Salud", badges: { Trabajo: "strong", Estabilidad: "strong", "Carga mental": "mid" } },
+      { name: "Familia con hijo oncológico GBA Oeste", sub: "Empleado priv. · 2 hijos · Hosp. público", badges: { Salud: "strong", "Carga mental": "mid" } },
+      { name: "Habitante oeste GBA con AUH", sub: "Cuidado hogar · GBA Oeste · Hosp. público", badges: { Salud: "mid", "Calidad de servicios": "mid" } },
+      { name: "Delegado sindical sector público", sub: "Empleado público · Tutela CICOP", badges: { Trabajo: "strong", Estabilidad: "strong" } },
+      { name: "Empleada privada CABA con prepaga", sub: "Empleada priv. · CABA · Prepaga", badges: { Plata: "pos_soft" } }
+    ]
+  },
+  {
+    id: "ley_emergencia_pediatrica_garrahan",
+    title: "Ley de Emergencia Pediátrica — veto rechazado",
+    date: "2025-10-02",
+    meta: "Ley Emergencia Pediátrica · Dto 651/2025 veto · Diputados 17-sep-2025 (181-60-1) · Senado 02-oct-2025 (59-7-3) · vigente",
+    desc: "Ley sancionada 22-ago-2025 declara emergencia sanitaria pediátrica por 2 años. Recomposición salarial inmediata para residentes y profesionales del Hospital Garrahan, Notti (Mendoza), Sor María Ludovica (La Plata). Asignación urgente de recursos para insumos críticos. Deroga Resolución 2109/2025 (que había congelado partidas para residencias). Veto total del PEN por Decreto 651/2025 (11-sep-2025). Veto rechazado por Diputados 17-sep-2025 (181-60-1) y Senado 02-oct-2025 (59-7-3) — alcanzaron 2/3 en ambas cámaras. Ley vigente; implementación efectiva disputada. Contexto: 70% pacientes Garrahan del interior. Salarios residentes: $800k → $1.3M (suba unilateral parcial jul-2025). Carga 70 hs/semana con guardias 24 hs.",
+    tags: ["Salud","Plata","País"],
+    fuente: "Boletín Oficial — Ley de Emergencia Pediátrica + Decreto 651/2025 (veto) + Actas Diputados 17-sep-2025 + Senado 02-oct-2025. Infobae, Perfil, Palabras del Derecho.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Si sos residente o profesional de planta de hospital pediátrico de referencia, la ley garantiza recomposición salarial inmediata. Aunque la implementación es disputada, hay piso legal a la negociación." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos",
+          body: "Marco legal de emergencia para tu sector. Insumos críticos garantizados." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos",
+          body: "Ley vigente es respaldo institucional para tu rol." });
+      }
+      const tieneHijos = p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas';
+      const enInterior = !['caba','gba_norte','gba_sur','gba_oeste','laplata'].includes(p.zona);
+      if (tieneHijos) {
+        dims.push({ name: "Salud", icon: "❤️", level: "pos_strong",
+          body: "Continuidad de tratamientos pediátricos especializados (oncología, cardiología, trasplante, enfermedades raras) que estaban en riesgo. La ley asigna recursos urgentes." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "pos",
+          body: "Menor incertidumbre sobre la disponibilidad de profesionales que atienden a tu hijo." });
+      }
+      if (tieneHijos && enInterior) {
+        dims.push({ name: "Salud", icon: "❤️", level: "pos_strong",
+          body: "Sin Garrahan en condiciones, la pediatría especializada no tiene equivalente en muchas provincias. La ley defiende ese sistema de derivación nacional del que dependés." });
+        dims.push({ name: "Movilidad", icon: "🛤️", level: "pos_soft",
+          body: "Tu acceso a cobertura federal pediátrica es real." });
+      }
+      const noEsEmpleadoPub = p.ocupacion !== 'empleado_pub';
+      if (noEsEmpleadoPub) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Impacto fiscal real (asignación adicional al presupuesto Salud). Es difuso para vos pero está." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "pos",
+        body: "Veto del PEN rechazado con 2/3 en ambas cámaras. Congreso ejerciendo facultades constitucionales. Buena salud institucional independiente de la posición sobre la política específica." });
+      dims.push({ name: "Salud", icon: "❤️", level: "pos_soft",
+        body: "Sistema pediátrico federal sostenido. Beneficio sistémico para la sociedad." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Residente médica del Garrahan", sub: "Empleada pública · Salud", badges: { Plata: "pos_strong", Trabajo: "pos", Estabilidad: "pos" } },
+      { name: "Familia del interior con hijo oncológico", sub: "Empleado priv. · NOA · 2 hijos", badges: { Salud: "pos_strong", "Carga mental": "pos", Movilidad: "pos_soft" } },
+      { name: "Familia CABA con hijo en Garrahan", sub: "Empleado priv. · CABA · 1 hijo", badges: { Salud: "pos_strong", "Carga mental": "pos" } },
+      { name: "Empleado público sector salud", sub: "Empleado público · Hosp. nacional", badges: { Trabajo: "pos", "País / Equilibrio institucional": "pos" } },
+      { name: "Contribuyente sin hijos pequeños", sub: "Monotributista · Sin hijos", badges: { Plata: "soft", "País / Equilibrio institucional": "pos" } }
+    ]
   }
 ];
 
