@@ -438,6 +438,90 @@
     border-radius: 3px;
     margin-right: 5px;
   }
+  /* ============== v0.8.3 — LEYENDA 7 NIVELES ============== */
+  .legend-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin: 10px 0 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .legend-title {
+    font-size: 11px; font-weight: 700; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 11px;
+  }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 12px; }
+  .legend-item {
+    display: inline-flex; align-items: center;
+    font-size: 12px; color: var(--ink-soft);
+  }
+  .legend-item .dot {
+    display: inline-block; width: 11px; height: 11px;
+    border-radius: 3px; margin-right: 6px; flex: 0 0 auto;
+  }
+  .legend-none { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--line-soft); }
+  /* ============== v0.8.3 — PANEL COLAPSABLE "QUÉ SIGNIFICA CADA SIGLA" ============== */
+  .siglas-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin: 0 0 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .siglas-head {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    background: none; border: 0; cursor: pointer; padding: 13px 16px; font: inherit; text-align: left;
+  }
+  .siglas-head-title {
+    font-size: 11px; font-weight: 700; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.7px;
+  }
+  .siglas-chevron {
+    width: 8px; height: 8px; flex: 0 0 auto; margin: -3px 2px 0 8px;
+    border-right: 2px solid var(--ink-mute); border-bottom: 2px solid var(--ink-mute);
+    transform: rotate(45deg); transition: transform 0.25s ease;
+  }
+  .siglas-card.open .siglas-chevron { transform: rotate(-135deg); margin-top: 3px; }
+  .siglas-body {
+    max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+  }
+  .siglas-card.open .siglas-body { max-height: 520px; opacity: 1; }
+  .siglas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 14px; padding: 2px 16px 16px; }
+  .sigla-item { font-size: 12px; color: var(--ink-soft); line-height: 1.35; }
+  .sigla-item strong { color: var(--ink); margin-right: 5px; font-weight: 700; }
+  /* ============== v0.8.3 — GANADORES Y PERDEDORES ============== */
+  .wl-card { padding: 16px 18px; margin-top: 8px; }
+  .wl-title {
+    font-size: 11px; font-weight: 700; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 13px;
+  }
+  .wl-row { margin-bottom: 12px; }
+  .wl-row:last-child { margin-bottom: 0; }
+  .wl-label {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.4px; margin-bottom: 6px;
+  }
+  .wl-row.ganan .wl-label { color: var(--hit-pos); }
+  .wl-row.pierden .wl-label { color: var(--hit-strong); }
+  .wl-row.neutro .wl-label { color: var(--ink-mute); }
+  .wl-ico { flex: 0 0 auto; }
+  .wl-ico.up {
+    width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-bottom: 8px solid var(--hit-pos);
+  }
+  .wl-ico.down {
+    width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 8px solid var(--hit-strong);
+  }
+  .wl-ico.flat { width: 10px; height: 2px; border-radius: 2px; background: var(--hit-none); }
+  .wl-pill { font-size: 12.5px; line-height: 1.5; padding: 9px 12px; border-radius: 10px; }
+  .wl-row.ganan .wl-pill { background: #dcfce7; color: #166534; }
+  .wl-row.pierden .wl-pill { background: #fee2e2; color: #991b1b; }
+  .wl-row.neutro .wl-pill { background: var(--paper-soft); color: var(--ink-soft); }
   /* ============== HERO ============== */
   .hero {
     padding: 30px 0 16px;
@@ -1194,6 +1278,7 @@
         <div style="font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; font-weight: 700;">Te pega así</div>
         <div id="dimList"></div>
       </div>
+      <div id="winnersLosers"></div>
       <button class="btn ghost" id="btnCompare" onclick="show('compare')">Ver cómo le pega al resto →</button>
       <button class="btn ghost" id="btnSectores" onclick="show('sectores')" style="margin-top: 8px;">Ver cómo le pega a cada clase social →</button>
     </div>
@@ -1207,13 +1292,21 @@
     <div class="crumb" onclick="show('impact')">← Volver a tu impacto</div>
     <h2 class="step" id="compareTitle">Cómo le pega al resto</h2>
     <p class="step-sub">Misma medida, cuerpos distintos. Los <em>badges</em> resumen la intensidad por dimensión.</p>
-    <div class="legend">
-      <span><span class="dot" style="background: var(--hit-strong);"></span>Fuerte</span>
-      <span><span class="dot" style="background: var(--hit-mid);"></span>Medio</span>
-      <span><span class="dot" style="background: var(--hit-soft);"></span>Leve</span>
-      <span><span class="dot" style="background: var(--hit-pos);"></span>Positivo</span>
-      <span><span class="dot" style="background: #e8e4da;"></span>No aplica</span>
+    <div class="legend-card">
+      <div class="legend-title">Intensidad del impacto</div>
+      <div class="legend-grid">
+        <span class="legend-item"><span class="dot" style="background: var(--hit-strong);"></span>Negativo fuerte</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-pos-strong);"></span>Positivo fuerte</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-mid);"></span>Negativo medio</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-pos);"></span>Positivo medio</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-soft);"></span>Negativo leve</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-pos-soft);"></span>Positivo leve</span>
+      </div>
+      <div class="legend-none">
+        <span class="legend-item"><span class="dot" style="background: var(--hit-none);"></span>No aplica</span>
+      </div>
     </div>
+    <div id="siglasCompare"></div>
     <div class="card" id="compareList"></div>
   </section>
 
@@ -1222,13 +1315,21 @@
     <div class="crumb" onclick="show('impact')">← Volver a tu impacto</div>
     <h2 class="step" id="sectoresTitle">Cómo le pega a cada clase social</h2>
     <p class="step-sub">Misma medida, seis sectores. Cada clase se representa con un <em>perfil arquetípico</em> (ingreso central + vivienda, transporte y salud típicos). <em>La clase se deriva del ingreso, no se elige.</em></p>
-    <div class="legend">
-      <span><span class="dot" style="background: var(--hit-strong);"></span>Fuerte</span>
-      <span><span class="dot" style="background: var(--hit-mid);"></span>Medio</span>
-      <span><span class="dot" style="background: var(--hit-soft);"></span>Leve</span>
-      <span><span class="dot" style="background: var(--hit-pos);"></span>Positivo</span>
-      <span><span class="dot" style="background: #e8e4da;"></span>No aplica</span>
+    <div class="legend-card">
+      <div class="legend-title">Intensidad del impacto</div>
+      <div class="legend-grid">
+        <span class="legend-item"><span class="dot" style="background: var(--hit-strong);"></span>Negativo fuerte</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-pos-strong);"></span>Positivo fuerte</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-mid);"></span>Negativo medio</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-pos);"></span>Positivo medio</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-soft);"></span>Negativo leve</span>
+        <span class="legend-item"><span class="dot" style="background: var(--hit-pos-soft);"></span>Positivo leve</span>
+      </div>
+      <div class="legend-none">
+        <span class="legend-item"><span class="dot" style="background: var(--hit-none);"></span>No aplica</span>
+      </div>
     </div>
+    <div id="siglasSectores"></div>
     <div class="card" id="sectoresList"></div>
   </section>
 

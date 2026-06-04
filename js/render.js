@@ -195,6 +195,77 @@ function perfilComplete(p) { return !!p && PERFIL_REQUIRED.every(f => p[f]); }
 // recurso. Así una medida futura puede no repetir el emoji.
 function dimIcon(d) { return d.icon || (window.DIM_ICONS || {})[d.name] || "•"; }
 
+// ============== v0.8.3 — SIGLAS DE DIMENSIONES ==============
+// Las grillas del comparador/sectores muestran cada dimensión como una sigla
+// de 3 letras. Antes se generaba con name.substring(0,3) → colisiones (MOV =
+// Movilidad y Movilidad social) y siglas con acento (PAÍ). Este mapa canónico
+// fija la sigla por nombre de dimensión (acepta tanto el `name` canónico como
+// los alias cortos que usan los compareProfiles, p. ej. "Familia" / "País").
+const DIM_SIGLA = {
+  "Plata": "PLA", "Vivienda": "VIV", "Tiempo": "TIE", "Salud": "SAL",
+  "Carga mental": "CAR", "Estabilidad": "EST", "Trabajo": "TRA",
+  "Servicios": "SER", "Calidad de servicios": "CAL",
+  "Movilidad": "MOV", "Movilidad social": "MOS",
+  "Vida familiar / ocio": "FAM", "Vida familiar": "FAM",
+  "Educación": "EDU", "País / Equilibrio institucional": "PAI",
+  "Ahorro": "AHO", "Vacaciones": "VAC", "Ocio": "OCI",
+  // alias cortos usados como claves de badge en los compareProfiles:
+  "Familia": "FAM", "País": "PAI"
+};
+function dimSigla(name) {
+  return DIM_SIGLA[name] || String(name || "?").substring(0, 3).toUpperCase();
+}
+
+// Nivel crudo → etiqueta legible. Se usa en los tooltips de los badges para no
+// exponer el enum crudo (pos_strong, mid…) al usuario.
+const LEVEL_LABEL = {
+  strong: "Negativo fuerte", mid: "Negativo medio", soft: "Negativo leve",
+  pos_strong: "Positivo fuerte", pos: "Positivo medio", pos_soft: "Positivo leve",
+  none: "No aplica"
+};
+
+// Glosario para el panel colapsable "Qué significa cada sigla". Orden pensado
+// para lectura, no alfabético. Es la fuente única del panel.
+const SIGLA_GLOSSARY = [
+  { sigla: "PLA", full: "Plata" },
+  { sigla: "VIV", full: "Vivienda" },
+  { sigla: "TIE", full: "Tiempo" },
+  { sigla: "SAL", full: "Salud" },
+  { sigla: "FAM", full: "Vida familiar / ocio" },
+  { sigla: "CAR", full: "Carga mental" },
+  { sigla: "EST", full: "Estabilidad" },
+  { sigla: "TRA", full: "Trabajo" },
+  { sigla: "MOV", full: "Movilidad (transporte)" },
+  { sigla: "SER", full: "Servicios" },
+  { sigla: "EDU", full: "Educación" },
+  { sigla: "MOS", full: "Movilidad social" },
+  { sigla: "CAL", full: "Calidad de servicios" },
+  { sigla: "PAI", full: "País / Equilibrio institucional" },
+  { sigla: "AHO", full: "Ahorro" },
+  { sigla: "VAC", full: "Vacaciones" },
+  { sigla: "OCI", full: "Ocio" }
+];
+
+// HTML del panel colapsable (cerrado por defecto). Lo inyectan compare/sectores.
+function siglasPanelHTML() {
+  const items = SIGLA_GLOSSARY.map(s =>
+    `<div class="sigla-item"><strong>${s.sigla}</strong>${s.full}</div>`).join('');
+  return `<div class="siglas-card">
+    <button class="siglas-head" type="button" aria-expanded="false" onclick="toggleSiglas(this)">
+      <span class="siglas-head-title">Qué significa cada sigla</span>
+      <span class="siglas-chevron" aria-hidden="true"></span>
+    </button>
+    <div class="siglas-body"><div class="siglas-grid">${items}</div></div>
+  </div>`;
+}
+function toggleSiglas(headEl) {
+  const card = headEl.closest('.siglas-card');
+  if (!card) return;
+  const open = card.classList.toggle('open');
+  headEl.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+window.toggleSiglas = toggleSiglas;
+
 // Restaura las clases .sel / .sel-multi de los chips de perfil según state.perfil.
 function restoreChipSelections() {
   document.querySelectorAll('.chips').forEach(group => {
@@ -670,6 +741,58 @@ function renderImpact() {
       });
     }
   }
+
+  renderWinnersLosers(m);
+}
+
+// ============== v0.8.3 — GANADORES Y PERDEDORES ==============
+// Deriva quién gana / pierde / queda neutro de la medida a partir de los
+// `compareProfiles` (los mismos arquetipos del comparador). Para cada perfil
+// suma los pesos de sus badges con LEVEL_WEIGHT: score>0 gana, <0 pierde, =0
+// neutro. Solo se muestra en medidas con análisis personalizado completo
+// (hasRules) y con perfiles cargados — si no, no hay base para afirmarlo.
+function profileScore(p) {
+  const badges = p && p.badges ? p.badges : {};
+  let score = 0;
+  Object.keys(badges).forEach(k => { score += (LEVEL_WEIGHT[badges[k]] || 0); });
+  return score;
+}
+
+function renderWinnersLosers(m) {
+  const el = document.getElementById('winnersLosers');
+  if (!el) return;
+  const profiles = (m && Array.isArray(m.compareProfiles)) ? m.compareProfiles : [];
+  if (!m || !m.hasRules || !profiles.length) { el.innerHTML = ''; return; }
+
+  const ganan = [], pierden = [], neutros = [];
+  profiles.forEach(p => {
+    if (!p || !p.badges || !Object.keys(p.badges).length) return; // no analizable → saltear
+    const score = profileScore(p);
+    if (score > 0) ganan.push(p.name);
+    else if (score < 0) pierden.push(p.name);
+    else neutros.push(p.name);
+  });
+
+  const row = (cls, ico, label, items, emptyMsg) => {
+    const text = items.length ? items.join(' · ') : emptyMsg;
+    if (!text) return ''; // sin items y sin mensaje de fallback → se omite el sub-bloque
+    return `<div class="wl-row ${cls}">
+      <div class="wl-label"><span class="wl-ico ${ico}" aria-hidden="true"></span>${label}</div>
+      <div class="wl-pill">${text}</div>
+    </div>`;
+  };
+
+  const rows = [
+    row('ganan', 'up', 'Ganan', ganan, ''),
+    row('pierden', 'down', 'Pierden', pierden,
+        'En esta medida no se identifican perdedores económicos directos en los perfiles analizados.'),
+    row('neutro', 'flat', 'No aplica directo', neutros, '')
+  ].join('');
+
+  el.innerHTML = `<div class="card wl-card">
+    <div class="wl-title">Ganadores y perdedores</div>
+    ${rows}
+  </div>`;
 }
 
 // 🗞 Cobertura mediática — siempre visible (badge X/6 + medios; mensaje si 0).
@@ -761,8 +884,7 @@ function renderCompare() {
     let badges = '';
     Object.keys(p.badges).forEach(k => {
       const lvl = p.badges[k];
-      const initials = k.substring(0, 3);
-      badges += `<span class="badge ${lvl}" title="${k}: ${lvl}">${initials.toUpperCase()}</span>`;
+      badges += `<span class="badge ${lvl}" title="${k} — ${LEVEL_LABEL[lvl] || ''}">${dimSigla(k)}</span>`;
     });
     row.innerHTML = `
       <div class="name">${p.name}<small>${p.sub}</small></div>
@@ -771,6 +893,8 @@ function renderCompare() {
     list.appendChild(row);
   });
   if (!list.innerHTML) list.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);">Sin comparación disponible para esta medida.</div>';
+  const sig = document.getElementById('siglasCompare');
+  if (sig) sig.innerHTML = siglasPanelHTML();
 }
 
 // ============== BALANCE FEATURE ==============
@@ -1036,13 +1160,14 @@ function renderSectores() {
     row.className = 'compare-row';
     let badges = '';
     dims.forEach(d => {
-      const initials = d.name.substring(0, 3).toUpperCase();
-      badges += `<span class="badge ${d.level}" title="${d.name}: ${d.level}">${initials}</span>`;
+      badges += `<span class="badge ${d.level}" title="${d.name} — ${LEVEL_LABEL[d.level] || ''}">${dimSigla(d.name)}</span>`;
     });
     if (!badges) badges = '<span class="badge none" title="Sin impacto directo en este perfil">—</span>';
     row.innerHTML = `<div class="name">${c.label}<small>${c.aam} · ${c.quintil}</small></div><div class="badge-row">${badges}</div>`;
     list.appendChild(row);
   });
+  const sig = document.getElementById('siglasSectores');
+  if (sig) sig.innerHTML = siglasPanelHTML();
 }
 
 // ============== HISTORIAL CRONOLÓGICO (vista B) ==============
