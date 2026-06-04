@@ -857,6 +857,356 @@ export const MEASURES_BASE = [
       { name: "Estudiante becario Progresar", sub: "Estudiante · CABA", badges: { Educación: "soft" } },
       { name: "Trabajador informal con AUH", sub: "Cuidado hogar · AUH/Alimentar", badges: { "Calidad de servicios": "mid", "Movilidad social": "soft" } }
     ]
+  },
+
+  {
+    id: "dnu70_reforma_laboral",
+    title: "DNU 70 Reforma Laboral (Título IV)",
+    date: "2023-12-21",
+    meta: "DNU 70/2023 · Título IV (arts. 53-97) · CNAT declaró inconstitucional · Ley Bases reincorporó parcialmente",
+    desc: "Reforma laboral por DNU: período de prueba 3 → 8 meses, sistema privado de capitalización de despido, restricción a derecho de huelga (75% prestación en 'servicios esenciales'), bloqueos/tomas como 'injuria grave' (despido sin indemnización), cuotas sindicales solidarias eliminadas, tope a indemnización por antigüedad. ADEMÁS DEROGÓ MÚLTIPLES MULTAS al empleador: multas Ley 24.013 por trabajo no registrado, doble indemnización Ley 25.323 art. 1, multa 50% por demora art. 25.323 art. 2, Ley 25.345 antievasión, multa 3 salarios art. 80 LCT por no entregar certificado, multa retención aportes art. 132 bis LCT. CNAT Sala Feria 30-ene-2024 declaró inconstitucionalidad Título IV completo (art. 99:3 CN). CNAT Sala II abril 2024 confirmó. Bloque suspendido judicialmente, sin recurso a CSJN. Ley Bases (jul-2024) reincorporó parte en su Título de Modernización Laboral.",
+    tags: ["Trabajo","Estabilidad","Plata"],
+    fuente: "Boletín Oficial — DNU 70/2023 Título IV. Fallos CNAT 30-ene-2024 y abril 2024. Doctrina laboral AADTYSS, CAM, MyA Abogados.",
+    impact: function(p) {
+      const dims = [];
+      // Empleado privado / Autónomo / Monotributista
+      const esTrabajadorDependiente = p.ocupacion === 'empleado_priv' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib';
+      if (esTrabajadorDependiente) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si te contratan bajo este régimen, durante los primeros 8 meses te pueden despedir sin causa y sin indemnización. Si participás en un paro o bloqueo, 'injuria grave' = despido sin pago. La Justicia laboral mantiene la inconstitucionalidad, pero en sectores donde el patrón aplica el DNU, la práctica precarizadora ya rige." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Si te despiden, hay sistema de capitalización privado (seguro de despido) que puede sustituir la indemnización tradicional. Eso introduce incertidumbre sobre cuánto vas a cobrar y de quién." });
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "El DNU derogó MÚLTIPLES MULTAS al empleador (Ley 24.013, 25.323, 25.345, art. 80 y 132 bis LCT) que eran lo que te protegía si te tenían en negro o no te pagaban en tiempo. Sin esas multas, si te despiden y no pagan a tiempo ya no podés reclamar el 50% extra (Ley 25.323 art. 2). Si no te dan certificado de trabajo, ya no son 3 salarios de multa. Si estás en negro y peleás en juicio, perdiste la duplicación de Ley 25.323 art. 1. El 'techo' de lo que podés recuperar bajó 40-60%." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
+          body: "Saber que durante 8 meses no tenés protección plena cambia la relación con tu trabajo. En sectores donde se aplica, los nuevos contratos están más expuestos." });
+      }
+      // Empleado público
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si tu sector entra en 'servicios esenciales' (salud, educación, justicia, transporte), tu derecho de huelga se restringe: 75% de prestación obligatoria durante un paro. Combinado con la reorganización ministerial y los despidos, es ambiente muy adverso." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Marco general más débil. Menos respaldo colectivo en disputas individuales." });
+      }
+      // Trabajador informal
+      if (p.ocupacion === 'trab_informal') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Las multas derogadas eran lo que hacía que conviniera al empleador formalizarte. Sin ellas, no hay incentivo económico para blanquearte. Tu empleador puede mantenerte en negro indefinidamente con muy poco riesgo. Si te despiden y vas a juicio, lo que vas a cobrar bajó significativamente." });
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Tu margen de negociación en un eventual juicio cayó. Antes podías reclamar 4-6 salarios extra por irregularidad; ahora muchos menos." });
+      }
+      // Empresario PyME / Gran empresario
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Las multas derogadas representaban hasta 4-6 salarios brutos en costo evitable por irregularidad. Si tenés trabajadores en negro o registrados mal, el costo de 'que te denuncien' cayó dramáticamente. Si demorás indemnizaciones ya no pagás el 50% extra. Si no das certificado de trabajo, ya no son 3 salarios de multa." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos",
+          body: "Período de prueba de 8 meses + sin multas por trabajo no registrado = combo que reduce significativamente el costo de mantener una plantilla flexible." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos",
+          body: "Tu exposición legal cae. Sistema de capitalización privado te da previsibilidad." });
+      }
+      // Estudiante / Desempleado buscando primer empleo
+      if (p.ocupacion === 'estudiante' || p.ocupacion === 'desempleado') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Tu primer empleo formal arranca con 8 meses sin protección y sin las multas que históricamente te protegían si te registraban mal. Riesgo alto de empezar en gris (registrado por menos sueldo del que cobrás real)." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
+          body: "Trabajo formal con menos garantías cambia el perfil de 'estabilidad' que históricamente permitía planificar (crédito hipotecario, alquiler con garantía, formar familia). Menos seguridad = menos planificación." });
+      }
+      // Empleada doméstica registrada (relación laboral)
+      if (p.ocupacion === 'domestica_reg' || p.ocupacion === 'domestica_no_reg') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Marco general más débil. Si trabajás en negro, tu empleador tiene menos riesgo de tenerte así. Si te despiden, lo que podés recuperar en juicio cayó." });
+      }
+      // Sociedad en general
+      if (true) {
+        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
+          body: "La CNAT declaró inconstitucional el Título IV completo por violación del art. 99:3 CN (régimen de DNU). El bloque sigue suspendido. Es uno de los conflictos constitucionales más fuertes del período. El gobierno no presentó recurso extraordinario a la CSJN: no se va a última instancia, se aplica por Ley Bases en su lugar." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empleado privado relación nueva", sub: "Empleado · Primer trabajo", badges: { Trabajo: "strong", Estabilidad: "strong", Plata: "strong", "Carga mental": "mid" } },
+      { name: "Empleado público sector esencial", sub: "Empleado público · Salud/Educación", badges: { Trabajo: "strong", Estabilidad: "strong", "País / Equilibrio institucional": "strong" } },
+      { name: "Trabajador informal", sub: "Trabajo informal · Sin registración", badges: { Trabajo: "mid", Plata: "mid" } },
+      { name: "PyME contratante", sub: "Empresario PyME", badges: { Plata: "pos_strong", Trabajo: "pos", Estabilidad: "pos" } },
+      { name: "Estudiante buscando primer empleo", sub: "Estudiante · CABA", badges: { Trabajo: "mid", "Movilidad social": "mid", "País / Equilibrio institucional": "strong" } },
+      { name: "Doméstica no registrada", sub: "Doméstica · En negro", badges: { Trabajo: "mid", Plata: "mid" } }
+    ]
+  },
+
+  {
+    id: "protocolo_antipiquetes",
+    title: "Protocolo Antipiquetes",
+    date: "2023-12-14",
+    meta: "Resolución 943/2023 Min. Seguridad · cautelar nulidad suspendida en apelación · vigente",
+    desc: "Habilita a fuerzas de seguridad a intervenir en protestas SIN orden judicial previa. Permite identificar, filmar y recolectar datos de manifestantes aunque no haya actos violentos. Cobro a manifestantes y organizaciones por costo del operativo. Sanciones administrativas a beneficiarios de planes sociales que protesten (potencial suspensión de AUH, Potenciar Trabajo, PNC). Aplica a cortes, marchas, concentraciones. Juez CAF 11 (Cormick) 29-dic-2025 declaró nulidad en 38 pp. por exceso de competencia del PEN (art. 75:12 CN) y restricción de derechos del art. 14 CN sin ley del Congreso. Cormick suspendió efectos de su propia sentencia ante apelación. Sigue vigente. Combinado con espionaje interno por SIDE (denuncias documentadas por CELS, ICSI) prohibido por Ley 25.520.",
+    tags: ["País","Trabajo","Carga mental"],
+    fuente: "Boletín Oficial — Resolución 943/2023 Min. Seguridad. Fallo Cormick CAF 11 dic-2025. CELS, Plan de Inteligencia 2024 (Caputo), Comisión Bicameral del Congreso.",
+    impact: function(p) {
+      const dims = [];
+      // Beneficiario de plan social
+      const tieneAsistencia = Array.isArray(p.asistencia) && p.asistencia.length > 0 && !p.asistencia.includes('ninguno');
+      if (tieneAsistencia) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "El protocolo habilita expresamente suspender tu beneficio si participás en protestas. AUH = $107k/hijo/mes, Tarjeta Alimentar = $45-80k, PNC = ~$300k. Si te dan de baja, perdés tu ingreso principal o secundario." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Tu sustento depende ahora de no manifestarte, aunque la protesta sea por demandas legítimas (educación, salud, hambre). Restricción real al ejercicio de un derecho constitucional." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "strong",
+          body: "Tenés que medir si participás o no, sabiendo que estás filmada/o e identificada/o. Tu vinculación a la organización social queda registrada y afecta tu acceso futuro a otros programas, becas, créditos." });
+      }
+      // Sindicalista / Delegado (proxy: empleado público o empleado privado con afiliación sindical activa — el front no distingue afiliación, usamos los perfiles más expuestos)
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "La herramienta del paro y la movilización es central en las relaciones laborales del sector público. El protocolo la restringe seriamente. Si tu sector es 'servicio esencial' la huelga ya está restringida (DNU 70). Si organizás un corte de calle, podés ser identificado/multado/llevado a juicio." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "strong",
+          body: "Si sos delegado o referente, tu legajo personal queda en bases de la SIDE, que después puede ser usado para presión silenciosa: rumores en tu lugar de trabajo, vigilancia de tus contactos, eventual filtración a medios afines. Práctica documentada por CELS, ICSI y Comisión Bicameral." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Hay casos documentados de delegados despedidos después de movilizaciones, donde la información de sus actividades extraempresa estaba previamente recolectada." });
+      }
+      // Activista (proxy: jubilado, estudiante, ama de casa con activismo — el front no lo distingue. Aplicamos al jubilado por el ejemplo de organizaciones de jubilados)
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Carga mental", icon: "🧠", level: "strong",
+          body: "Las marchas de jubilados (miércoles del Congreso, otras movilizaciones) están sujetas al protocolo. Hay denuncias documentadas de espionaje específico a organizaciones de jubilados: personas mayores ejerciendo el derecho a peticionar mejores haberes, sospechadas y vigiladas como amenazas a la seguridad nacional." });
+      }
+      // Estudiante con movilización
+      if (p.ocupacion === 'estudiante') {
+        dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
+          body: "Las movilizaciones estudiantiles son históricas en Argentina. Ahora pueden cobrarte el operativo o identificarte." });
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Si tenés Beca Progresar, podés perderla por participar en una marcha estudiantil." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "Restricción de la organización colectiva afecta la capacidad de pelear por mejoras del sistema educativo." });
+      }
+      // Empresario PyME en zona con cortes habituales (CABA, AMBA centrales)
+      const enCentroProtestas = p.zona === 'caba' || p.zona === 'gba_norte' || p.zona === 'gba_sur';
+      if (p.ocupacion === 'pyme' && enCentroProtestas) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si tu comercio o local está en zona donde los cortes te dejaban sin clientes (Plaza de Mayo, Av. 9 de Julio, accesos a oficinas), menos cortes = más operatividad." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+          body: "Más previsibilidad para tu negocio." });
+      }
+      // Conductor / transportista (proxy: transporte=auto o moto)
+      if ((p.transporte === 'auto' || p.transporte === 'moto') && enCentroProtestas) {
+        dims.push({ name: "Tiempo", icon: "⏰", level: "pos",
+          body: "Menos demoras en avenidas, accesos y zonas con cortes habituales." });
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Menos viajes interrumpidos = más rentabilidad si tu actividad depende del movimiento." });
+      }
+      // Persona común en AMBA que no protesta ni vive del transporte (transporte=cerca o solo_finde)
+      if (enCentroProtestas && (p.transporte === 'cerca' || p.transporte === 'solo_finde')) {
+        dims.push({ name: "Tiempo", icon: "⏰", level: "pos_soft",
+          body: "Menos demoras puntuales por cortes." });
+      }
+      // Sociedad en general — todos los perfiles reciben este punto
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
+        body: "Tres elementos combinados sin ley del Congreso: (1) restricción al derecho de reunión (art. 14 CN) por resolución administrativa; (2) habilitación de identificación/filmación sin orden judicial; (3) procesamiento de esa información por SIDE pese a prohibición expresa de Ley 25.520. La Justicia Federal CAF declaró nulidad por exceso de competencia. Comisión Bicameral del Senado investigando. Como ciudadano, vos también podrías necesitar manifestarte mañana — el marco que rige es contestado por la Justicia." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Beneficiaria AUH que protesta", sub: "Cuidado hogar · 2 hijos · AUH", badges: { Plata: "strong", Estabilidad: "strong", "Carga mental": "strong" } },
+      { name: "Delegado sindical sector público", sub: "Empleado público · Activo", badges: { Trabajo: "strong", "Carga mental": "strong", Estabilidad: "strong" } },
+      { name: "Jubilada activista de los miércoles", sub: "Jubilada mínima · CABA", badges: { "Carga mental": "strong", "País / Equilibrio institucional": "strong" } },
+      { name: "Estudiante con movilización", sub: "Estudiante · UBA/UNC", badges: { "Carga mental": "mid", Plata: "soft", "Movilidad social": "soft" } },
+      { name: "Comerciante CABA en zona de cortes", sub: "PyME · Microcentro/Congreso", badges: { Plata: "pos", Trabajo: "pos_soft" } },
+      { name: "Conductor profesional AMBA", sub: "Empleado priv. · Auto", badges: { Tiempo: "pos", Plata: "pos_soft" } }
+    ]
+  },
+
+  {
+    id: "banco_nacion_sociedad_anonima",
+    title: "Banco Nación → Sociedad Anónima",
+    date: "2025-02-19",
+    meta: "Decreto 116/2025 · cautelar vigente · Cámara Federal La Plata confirmó · prorrogada hasta sep-2026",
+    desc: "Decreto 116/2025 transformó al BNA de Sociedad del Estado a Sociedad Anónima — paso intermedio típico antes de privatización. BNA: 100% capital estatal, mayor banco del país, más sucursales que cualquier otro, 17.400 empleados, función social explícita en carta orgánica (PyMEs, agropecuario chico-mediano, economías regionales, jubilados con préstamo Previsional). Juez Federal Dolores (Ramos Padilla) 13-mar-2025 cautelar 6 meses; Cámara Federal La Plata 05-jun-2025 confirmó; 10-mar-2026 prórroga hasta sep-2026. Razón: Ley Bases EXCLUYÓ EXPRESAMENTE al BNA del capítulo de privatización; el PEN excedió atribuciones (art. 76 CN).",
+    tags: ["Trabajo","País","Plata"],
+    fuente: "Boletín Oficial — Decreto 116/2025. Fallos Ramos Padilla 13-mar-2025 y 10-mar-2026. Cámara Federal La Plata 05-jun-2025. La Bancaria, Infobae, La Nación, Perfil.",
+    impact: function(p) {
+      const dims = [];
+      const enInteriorChico = p.zona === 'pueblo' || p.zona === 'cba_int' || p.zona === 'santafe_int' || p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cuyo' || p.zona === 'patagonia';
+      // PyME
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "El BNA tiene función social explícita en su carta orgánica: financiar PyMEs en condiciones que el sector privado no replica (tasas más bajas, garantías más flexibles, plazos más largos). Si pasa a SA con orientación de rentabilidad, esa función se diluye. Tu acceso al crédito cae o se encarece." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si dependés del crédito BNA para capital de trabajo, una transformación a SA cambia tus condiciones de financiamiento." });
+        // PyME del interior + agropecuario: el front no distingue sector, pero el impacto agropecuario es más fuerte
+        if (enInteriorChico) {
+          dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+            body: "Si sos productor agropecuario chico-mediano o de economía regional (vid, citrus, yerba, ovino, tabaco), el BNA es el principal banco de crédito para tu segmento. La banca privada no ofrece líneas equivalentes. Tu modelo productivo depende del crédito BNA." });
+        }
+      }
+      // Jubilado / Pensionado
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "El préstamo Previsional BNA (hasta $50M, cuota 35% del haber, sin garantía adicional) es producto específico de banca pública. La banca privada para jubilados ofrece menos monto, más tasa, coseguros adicionales. Si BNA pasa a SA, esta línea puede dejar de existir o encarecerse." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "Si BNA es tu cuenta sueldo y se reorganiza, podés enfrentar cambios de costos o canales." });
+      }
+      // Habitante interior / pueblo donde BNA es único banco
+      if (enInteriorChico) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "strong",
+          body: "En cientos de localidades del interior, el BNA es el único banco. SA implica orientación a rentabilidad → cierre de sucursales no rentables. Si te cierran la del pueblo, viajás 50-150 km al banco más cercano." });
+        dims.push({ name: "Tiempo", icon: "⏰", level: "mid",
+          body: "Trámites bancarios pasan a requerir desplazamientos largos." });
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Costos de transporte + comisiones más altas del sistema privado." });
+      }
+      // Empleado privado / Monotributo / Autónomo
+      const esTrabajadorComun = p.ocupacion === 'empleado_priv' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib';
+      if (esTrabajadorComun) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Las comisiones BNA históricamente son las más bajas del sistema. Si pasa a SA con orientación a rentabilidad, comisiones suben gradualmente." });
+      }
+      // Beneficiario de plan social
+      const tieneAsistencia = Array.isArray(p.asistencia) && p.asistencia.length > 0 && !p.asistencia.includes('ninguno');
+      if (tieneAsistencia) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "BNA tiene costos mínimos en cuentas para beneficiarios de planes sociales. SA introduce eventual privatización progresiva de estos servicios." });
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "Riesgo de menor atención en sucursales no rentables (interior)." });
+      }
+      // Sociedad en general
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
+        body: "El Congreso EXCLUYÓ expresamente al BNA del capítulo de privatización de la Ley Bases. El Ejecutivo, por decreto, intentó hacer lo que el Congreso le negó. La Justicia (Ramos Padilla + Cámara Federal La Plata) viene confirmando la cautelar porque entiende que es exceso de atribuciones delegadas (art. 76 CN)." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Productor agropecuario chico interior", sub: "PyME · NEA/NOA/Cuyo", badges: { Plata: "mid", Trabajo: "mid", Estabilidad: "mid" } },
+      { name: "PyME industrial CABA", sub: "Empresario PyME · CABA", badges: { Plata: "mid", Trabajo: "mid" } },
+      { name: "Jubilada con préstamo Previsional BNA", sub: "Jubilada · Cuenta BNA", badges: { Plata: "mid", Estabilidad: "soft" } },
+      { name: "Habitante pueblo interior con BNA único", sub: "Trabajo informal · Pueblo", badges: { "Calidad de servicios": "strong", Tiempo: "mid", Plata: "mid" } },
+      { name: "Empleado BNA / Bancaria", sub: "Empleado · 17.400 plantel", badges: { Trabajo: "strong", Estabilidad: "strong" } },
+      { name: "Beneficiaria AUH con cuenta BNA", sub: "Cuidado hogar · AUH/Alimentar", badges: { Plata: "soft", "Calidad de servicios": "mid" } }
+    ]
+  },
+
+  {
+    id: "ley_emergencia_discapacidad",
+    title: "Ley de Emergencia en Discapacidad",
+    date: "2025-09-22",
+    meta: "Ley 27.793 · vetada · veto rechazado por Congreso · suspensión Dto 681/2025 declarada nula · vigente",
+    desc: "Declara emergencia nacional en discapacidad hasta dic-2026 (prorrogable). Compensación de emergencia a prestadores (terapeutas, transportistas adaptados, centros, talleres, hogares) por diferencia entre aumentos de aranceles 2023-2024 vs IPC. Financiamiento adecuado y sostenible de PNC por discapacidad. Régimen de regularización tributaria para prestadores. Jefatura de Gabinete debe asignar partidas sin reducir crédito del área Social. Vetada por PEN 04-ago-2025; veto rechazado por Diputados y Senado con 2/3 (sep-2025); Decreto 681/2025 promulgó pero suspendió ejecución; Juez Federal Campana (González Charbay) 12-dic-2025 declaró nulo art. II del Decreto 681 por 'veto encubierto' y violación a división de poderes. Impacto fiscal estimado OPC: 0,22-0,42% PBI. Afecta a ~1,6M con CUD + ~1,1M con PNC + ~50.000 prestadores + ~5M familiares directos.",
+    tags: ["Salud","Plata","País"],
+    fuente: "Boletín Oficial — Ley 27.793 + Decreto 681/2025 + Decreto 84/2026 reglamentación. Fallo Juzgado Federal Campana 12-dic-2025. Oficina de Presupuesto del Congreso.",
+    impact: function(p) {
+      const dims = [];
+      // Persona con discapacidad propia con CUD
+      if (p.discapacidad === 'propia_cud') {
+        dims.push({ name: "Salud", icon: "❤️", level: "pos_strong",
+          body: "Garantía de continuidad de tus terapias (kinesiología, fonoaudiología, psicología, terapia ocupacional, hidroterapia) que estaban al borde por colapso de prestadores. La compensación de emergencia evita que tu terapeuta cierre el consultorio." });
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Si cobrás PNC por invalidez, la ley garantiza financiamiento sostenible. El haber venía perdiendo contra inflación. Recomposición prevista." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_strong",
+          body: "Tu Centro de Día, Hogar, Taller Protegido tiene continuidad asegurada. Sin la ley, riesgo concreto de cierre." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "pos",
+          body: "Los talleres protegidos y servicios de rehabilitación son tu vía a participar productivamente. Su continuidad refuerza tu autonomía." });
+      }
+      // Persona con discapacidad propia sin CUD (similar pero leve menor)
+      if (p.discapacidad === 'propia_sin_cud') {
+        dims.push({ name: "Salud", icon: "❤️", level: "pos",
+          body: "La ley refuerza el sistema general de discapacidad. Si todavía no tenés CUD, la ley puede facilitar el acceso por reorientación de presupuestos del área Social." });
+      }
+      // Familiar a cargo con CUD
+      if (p.discapacidad === 'familiar_cud') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Antes de la ley, tenías que cubrir de tu bolsillo la diferencia que las obras sociales/prepagas no pagaban a los prestadores (aranceles oficiales congelados, terapeutas pedían 'plus'). Con la compensación de emergencia, esa presión se reduce." });
+        dims.push({ name: "Salud", icon: "❤️", level: "pos",
+          body: "Tu propio bienestar mejora cuando tu hijo/madre/hermano tiene atención garantizada. El estrés del 'no hay terapeuta disponible' baja." });
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "pos",
+          body: "La crisis del sistema de discapacidad implica que la familia carga lo que el Estado no provee. Si los prestadores funcionan, vos respirás." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "pos",
+          body: "Menos preocupación cotidiana sobre la continuidad de los servicios." });
+      }
+      // Familiar a cargo sin CUD
+      if (p.discapacidad === 'familiar_sin_cud') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "El refuerzo presupuestario al sistema puede facilitar acceso al CUD y a coberturas." });
+      }
+      // Contribuyente general (perfiles sin conexión directa con discapacidad)
+      if (!p.discapacidad || p.discapacidad === 'no') {
+        // Solo el impacto fiscal indirecto
+        const noEsVulnerable = !['trab_informal','desempleado'].includes(p.ocupacion);
+        if (noEsVulnerable) {
+          dims.push({ name: "Plata", icon: "💰", level: "soft",
+            body: "Impacto fiscal estimado (Oficina Presupuesto del Congreso): 0,22-0,42% del PBI. Se financia con recursos generales del Tesoro, lo que indirectamente toca a contribuyentes. Es el costo de garantizar derechos consagrados en la Convención Internacional de Derechos de Personas con Discapacidad." });
+        }
+        dims.push({ name: "Salud", icon: "❤️", level: "pos_soft",
+          body: "Sostener un sistema de discapacidad que funciona ahorra al sistema de salud general (los problemas no atendidos terminan en hospitales públicos)." });
+      }
+      // Sociedad en general
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "pos",
+        body: "Rechazo del veto por 2/3 + fallo Campana contra el 'veto encubierto' del Decreto 681 = ejercicio claro de los poderes constitucionales. Congreso y Justicia ejerciendo su rol frente al Ejecutivo. Buena salud institucional." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Persona con CUD que usa terapias", sub: "Discapacidad propia c/CUD", badges: { Salud: "pos_strong", Plata: "pos_strong", Estabilidad: "pos_strong", "Movilidad social": "pos" } },
+      { name: "Familia con hijo con CUD", sub: "Empleado priv. · Hijo c/CUD", badges: { Plata: "pos_strong", Salud: "pos", "Vida familiar / ocio": "pos", "Carga mental": "pos" } },
+      { name: "Pensión no contributiva discapacidad", sub: "Pensionado · PNC discap.", badges: { Plata: "pos_strong", Salud: "pos_strong", Estabilidad: "pos_strong" } },
+      { name: "Empleado público sector ANDIS", sub: "Empleado público · Discapacidad", badges: { "País / Equilibrio institucional": "pos" } },
+      { name: "Contribuyente sin discapacidad familiar", sub: "Empleado priv. · Sin CUD", badges: { Plata: "soft", Salud: "pos_soft", "País / Equilibrio institucional": "pos" } }
+    ]
+  },
+
+  {
+    id: "eliminacion_impuestos_internos_lujo",
+    title: "Eliminación de Impuestos Internos a bienes de lujo",
+    date: "2026-02-15",
+    meta: "Ley de Modernización Laboral art. 192 · feb-2026 · vigente",
+    desc: "Eliminó Impuestos Internos a autos de gama media-alta (escala 1: 20% — $41-75M) y de lujo (escala 2: 35% — $75M+), motos cilindrada media-alta ($15-23M), embarcaciones, aeronaves, objetos suntuarios (joyería, perfumería premium), seguros generales, telefonía celular y satelital. Implementación gradual feb-2025 (suspensión escala 1) → 2025 (escala 2 baja a 18%) → feb-2026 (eliminación completa). Rebajas en autos premium 10-15%, hasta USD 26.000 por unidad en top gama. Modelos afectados arrancan en USD 70.000.",
+    tags: ["Plata","Fiscal","Lujo"],
+    fuente: "Boletín Oficial — Ley de Modernización Laboral art. 192 (feb-2026). Infobae, El Economista, El Cronista, Chequeado.",
+    impact: function(p) {
+      const dims = [];
+      // Comprador potencial de bienes premium (proxy: ingreso muy alto)
+      const ingresoMuyAlto = p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoMuyAlto || p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Si comprás auto premium (BMW Serie 3, Audi A4 o equivalente): ahorrás 10-15% del precio (USD 6-12k en autos de USD 60-80k). En top gama (Porsche, M5, AMG), ahorrás hasta USD 26.000 por unidad." });
+        dims.push({ name: "Movilidad", icon: "🛤️", level: "pos",
+          body: "Acceso a vehículos premium que antes estaban encarecidos." });
+      }
+      // Empleado privado / Autónomo / Monotributista con ingreso medio o bajo
+      const ingresoMedioBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m' || p.ingreso === '1.5m_3m';
+      const esTrabajadorComun = p.ocupacion === 'empleado_priv' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib';
+      if (esTrabajadorComun && ingresoMedioBajo) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Recaudación perdida del Estado se compensa de dos formas que sí te tocan: (a) más presión sobre IVA, Ganancias y aportes que vos sí pagás, o (b) reducción de gasto público en áreas que vos sí usás (salud pública, ANSES, educación)." });
+      }
+      // Jubilado / Pensionado
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "La merma recaudatoria presiona presupuestos sociales a mediano plazo. ANSES, PAMI, planes sociales pueden verse afectados." });
+      }
+      // Empleado público
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Presión presupuestaria sobre el aparato estatal que financia tu trabajo." });
+      }
+      // Persona con discapacidad
+      if (p.discapacidad && p.discapacidad !== 'no') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Las partidas de PNC y prestadores de discapacidad compiten con otras prioridades del presupuesto. Menor recaudación = más presión sobre prioridades sociales." });
+      }
+      // Estudiante / Trabajador informal / Cuidado hogar / Desempleado
+      const perfilVulnerable = p.ocupacion === 'estudiante' || p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa' || p.ocupacion === 'desempleado';
+      if (perfilVulnerable) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Disminución de base recaudatoria afecta indirectamente planes que vos sí podés usar (Progresar, AUH, Tarjeta Alimentar)." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "Política fiscal que beneficia consumos de élite y no a la base productiva ni a la formación." });
+      }
+      // Sociedad en general
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Es decisión política de qué consumos premiar. Reducir impuesto a un BMW vs. mantener impuestos a productos masivos cambia la distribución del peso tributario. El argumento del gobierno es 'simplificación + más volumen = más recaudación a futuro'. El argumento opositor es 'regresividad fiscal: el que más tiene paga menos'. El dato objetivo es que la base recaudatoria del Estado se redujo en el corto plazo." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empresario que compra auto premium", sub: "Empresario · USD 60-80k", badges: { Plata: "pos_strong", Movilidad: "pos" } },
+      { name: "Comprador top gama (Porsche, M5)", sub: "Gran empresario · USD 100k+", badges: { Plata: "pos_strong", Movilidad: "pos" } },
+      { name: "Empleado privado ingreso medio", sub: "Empleado · $1,5M-3M", badges: { Plata: "soft" } },
+      { name: "Jubilado mínima sin discapacidad", sub: "Jubilado · Sin compra premium", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Empleado público nacional", sub: "Empleado público · Cualquier sector", badges: { Plata: "soft" } },
+      { name: "Familia con CUD y trabajadora informal", sub: "Trabajo informal · Familiar c/CUD", badges: { Plata: "soft", "Movilidad social": "soft" } }
+    ]
   }
 ];
 
