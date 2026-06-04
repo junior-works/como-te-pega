@@ -1257,12 +1257,14 @@
 <script type="module">
   import { calcularClaseSocial, CLASES_SOCIALES, PERFILES_ARQUETIPICOS } from './js/clases-sociales.js';
   import { loadData, queryMeasures } from './js/data.js';
+  import { DIM_ICONS } from './js/medidas-base.js';
 
   // Puente para el script clásico (onclick globales).
   window.calcularClaseSocial = calcularClaseSocial;
   window.CLASES_SOCIALES = CLASES_SOCIALES;
   window.PERFILES_ARQUETIPICOS = PERFILES_ARQUETIPICOS;
   window.queryMeasures = queryMeasures;
+  window.DIM_ICONS = DIM_ICONS;
 
   (async () => {
     let res;

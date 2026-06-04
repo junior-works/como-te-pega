@@ -190,6 +190,11 @@ function persistLastMeasure(id) { if (id) lsSet(LS.lastMeasure, id); }
 
 function perfilComplete(p) { return !!p && PERFIL_REQUIRED.every(f => p[f]); }
 
+// Ícono de una dimensión: el inline gana; si la regla lo omitió, lo resuelve
+// del catálogo window.DIM_ICONS (medidas-base.js) por nombre; "•" como último
+// recurso. Así una medida futura puede no repetir el emoji.
+function dimIcon(d) { return d.icon || (window.DIM_ICONS || {})[d.name] || "•"; }
+
 // Restaura las clases .sel / .sel-multi de los chips de perfil según state.perfil.
 function restoreChipSelections() {
   document.querySelectorAll('.chips').forEach(group => {
@@ -656,7 +661,7 @@ function renderImpact() {
         const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos_strong: "Positivo Fuerte", pos: "Positivo Medio", pos_soft: "Positivo Leve", none: "No aplica" }[d.level];
         card.innerHTML = `
           <div class="dim-head">
-            <div class="dim-name"><span class="dim-icon">${d.icon || "•"}</span>${d.name}</div>
+            <div class="dim-name"><span class="dim-icon">${dimIcon(d)}</span>${d.name}</div>
             <div class="dim-tag tag-${d.level}">${tagText}</div>
           </div>
           <div class="dim-body">${d.body}</div>
@@ -805,7 +810,7 @@ function aggregateDims(scored) {
   const tally = {};
   scored.forEach(s => {
     s.dims.forEach(d => {
-      if (!tally[d.name]) tally[d.name] = { icon: d.icon || "•", pos: 0, neg: 0, items: 0 };
+      if (!tally[d.name]) tally[d.name] = { icon: dimIcon(d), pos: 0, neg: 0, items: 0 };
       tally[d.name].items += 1;
       if (isPos(d.level)) tally[d.name].pos += 1;
       else if (d.level !== "none") tally[d.name].neg += 1;

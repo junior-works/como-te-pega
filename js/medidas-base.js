@@ -19,6 +19,38 @@
  * columna de fecha calendario; es lo que ordena el historial cronológico.
  * ------------------------------------------------------------------ */
 
+/* DIM_ICONS — catálogo canónico de dimensiones → ícono.
+ * ------------------------------------------------------------------
+ * Fuente única de verdad para el emoji de cada dimensión. Las reglas
+ * impact() siguen pudiendo pasar el ícono inline (`dims.push({ icon })`),
+ * pero si lo omiten, render.js lo resuelve desde acá por `name`. Así una
+ * medida nueva puede hacer `{ name: "Ahorro", level: "pos", body: ... }`
+ * sin repetir el emoji. Mantené las claves EXACTAS a los `name` de las dims.
+ * "Servicios" y "Calidad de servicios" comparten 🔌 a propósito.
+ * ------------------------------------------------------------------ */
+export const DIM_ICONS = {
+  "Plata": "💰",
+  "Vivienda": "🏠",
+  "Trabajo": "🛠️",
+  "Salud": "❤️",
+  "Carga mental": "🧠",
+  "Tiempo": "⏰",
+  "Estabilidad": "🛡️",
+  "Servicios": "🔌",
+  "Calidad de servicios": "🔌",
+  "Movilidad": "♿",
+  "Movilidad social": "🛤️",
+  "Vida familiar / ocio": "👨‍👩‍👧",
+  "Vida familiar": "👨‍👩‍👧",
+  "Educación": "📚",
+  "País / Equilibrio institucional": "🏛️",
+  // Disponibles para medidas futuras (paritarias, jubilaciones, ley de
+  // vacaciones, jornada laboral, etc.). Todavía sin medida que las use.
+  "Ahorro": "🐷",
+  "Vacaciones": "🏖️",
+  "Ocio": "🎭"
+};
+
 export const MEASURES_BASE = [
   {
     id: "alquileres",
