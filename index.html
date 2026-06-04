@@ -672,6 +672,9 @@
   .const-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--accent); }
   .const-foot { font-size: 11px; color: var(--ink-mute); font-style: italic; line-height: 1.5; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
 
+  /* Medida real sin reglas de impacto cargadas todavía. */
+  .impact-prep { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; padding: 14px 16px; background: var(--paper-soft); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; }
+
   /* ============== v0.6 — HISTORIAL ============== */
   .hist-timeline .tl-item.hist { cursor: pointer; }
   .tl-item.hist::before { background: var(--ink-mute); }
@@ -934,8 +937,8 @@
       <div id="dimList"></div>
     </div>
     <div id="constitucionBox"></div>
-    <button class="btn ghost" onclick="show('compare')">Ver cómo le pega al resto →</button>
-    <button class="btn ghost" onclick="show('sectores')" style="margin-top: 8px;">Ver cómo le pega a cada clase social →</button>
+    <button class="btn ghost" id="btnCompare" onclick="show('compare')">Ver cómo le pega al resto →</button>
+    <button class="btn ghost" id="btnSectores" onclick="show('sectores')" style="margin-top: 8px;">Ver cómo le pega a cada clase social →</button>
     <button class="btn ghost" onclick="show('balance')" style="margin-top: 8px;">📊 Ver tu balance histórico</button>
     <div class="src" id="sourceBox" style="margin-top: 14px;"></div>
   </section>

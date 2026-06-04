@@ -195,19 +195,22 @@ function renderHome() {
   // --- Trending: "Lo que están discutiendo todos" (cobertura ≥ 5/6) ---
   const trendingEl = document.getElementById('trendingSection');
   if (trendingEl) {
+    // "Lo que están discutiendo todos": las más cubiertas por los 6 medios que
+    // seguimos. Top 10 por popularidad (≥ 2 medios), de mayor a menor.
     const trending = measures
-      .filter(m => (m.cobertura?.length || 0) >= 5)
-      .sort((a, b) => (b.cobertura.length - a.cobertura.length) || String(b.date).localeCompare(String(a.date)));
+      .filter(m => (m.popularidad || 0) >= 2)
+      .sort((a, b) => ((b.popularidad || 0) - (a.popularidad || 0)) || String(b.date).localeCompare(String(a.date)))
+      .slice(0, 10);
     if (!trending.length) {
       trendingEl.innerHTML = '';
     } else {
       let cards = trending.map(m => {
-        const n = m.cobertura.length, tot = m.coberturaTotal || 6;
-        const medios = m.cobertura.map(c => {
+        const n = m.popularidad || (m.cobertura?.length || 0), tot = m.coberturaTotal || 6;
+        const medios = (m.cobertura || []).map(c => {
           const st = medioStyle(c.medioId);
           return `<span class="medio-badge" style="background:${st.color}" title="${c.nombre}${c.titular ? ' — ' + c.titular : ''}">${st.inicial}</span>`;
         }).join('');
-        const tagsHtml = (m.tags || []).map(t => `<span class="measure-tag">${t}</span>`).join('');
+        const tagsHtml = (m.tags || []).slice(0, 3).map(t => `<span class="measure-tag">${t}</span>`).join('');
         return `<div class="card measure trending-card" data-id="${m.id}">
           <div class="trending-top">
             <span class="cobertura-badge">${n}/${tot}</span>
@@ -220,7 +223,7 @@ function renderHome() {
       trendingEl.innerHTML = `
         <div class="trending-head">
           <h2 class="step" style="margin:0;">Lo que están discutiendo todos</h2>
-          <p class="step-sub" style="margin:4px 0 14px;">Medidas que cubrieron al menos 5 de los 6 medios que seguimos. El badge muestra cuántos las cubrieron.</p>
+          <p class="step-sub" style="margin:4px 0 14px;">Las medidas más cubiertas por los 6 medios que seguimos. El badge muestra cuántos medios la cubrieron.</p>
         </div>
         ${cards}`;
       trendingEl.querySelectorAll('.trending-card').forEach(card => {
@@ -291,9 +294,9 @@ function renderMeasureList() {
   measures.forEach(m => {
     const card = document.createElement('div');
     card.className = 'card measure';
-    const tagsHtml = (m.tags || []).map(t => `<span class="measure-tag">${t}</span>`).join('');
-    const cob = (m.cobertura?.length || 0);
-    const cobBadge = cob >= 5 ? `<span class="cobertura-badge sm" title="Cobertura mediática">${cob}/${m.coberturaTotal || 6}</span>` : '';
+    const tagsHtml = (m.tags || []).slice(0, 4).map(t => `<span class="measure-tag">${t}</span>`).join('');
+    const pop = (m.popularidad || 0);
+    const cobBadge = pop >= 2 ? `<span class="cobertura-badge sm" title="Cobertura mediática">${pop}/${m.coberturaTotal || 6}</span>` : '';
     const obsIcon = (m.observaciones?.length) ? '<span class="const-icon" title="Tiene observaciones constitucionales">⚖️</span>' : '';
     card.innerHTML = `
       <div class="measure-head"><h3>${m.title}</h3><div class="measure-flags">${cobBadge}${obsIcon}</div></div>
@@ -318,25 +321,38 @@ function renderImpact() {
   if (m.fuenteUrl) fuenteHtml += `${fuenteHtml ? '<br>' : ''}<a href="${m.fuenteUrl}" target="_blank" rel="noopener">Ver en el Boletín Oficial ↗</a>`;
   document.getElementById('sourceBox').innerHTML = fuenteHtml || '';
 
-  const dims = (typeof m.impact === 'function') ? m.impact(state.perfil) : [];
   const dimList = document.getElementById('dimList');
   dimList.innerHTML = '';
-  if (!dims.length) {
-    dimList.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">Con este perfil no detectamos impacto directo de esta medida.</div>';
+  // Botones de comparación / sectores: solo tienen sentido si hay reglas.
+  const btnCompare = document.getElementById('btnCompare');
+  const btnSectores = document.getElementById('btnSectores');
+
+  if (!m.hasRules) {
+    // Medida real del catálogo DB sin reglas de impacto cargadas todavía.
+    dimList.innerHTML = '<div class="impact-prep">Análisis de impacto para esta medida en preparación. Pronto vas a poder ver cómo te pega según tu perfil.</div>';
+    if (btnCompare) btnCompare.style.display = 'none';
+    if (btnSectores) btnSectores.style.display = 'none';
   } else {
-    dims.forEach(d => {
-      const card = document.createElement('div');
-      card.className = 'dim-card hit-' + d.level;
-      const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos: "Positivo", none: "No aplica" }[d.level];
-      card.innerHTML = `
-        <div class="dim-head">
-          <div class="dim-name"><span class="dim-icon">${d.icon || "•"}</span>${d.name}</div>
-          <div class="dim-tag tag-${d.level}">${tagText}</div>
-        </div>
-        <div class="dim-body">${d.body}</div>
-      `;
-      dimList.appendChild(card);
-    });
+    if (btnCompare) btnCompare.style.display = '';
+    if (btnSectores) btnSectores.style.display = '';
+    const dims = m.impact(state.perfil);
+    if (!dims.length) {
+      dimList.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">Con este perfil no detectamos impacto directo de esta medida.</div>';
+    } else {
+      dims.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'dim-card hit-' + d.level;
+        const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos: "Positivo", none: "No aplica" }[d.level];
+        card.innerHTML = `
+          <div class="dim-head">
+            <div class="dim-name"><span class="dim-icon">${d.icon || "•"}</span>${d.name}</div>
+            <div class="dim-tag tag-${d.level}">${tagText}</div>
+          </div>
+          <div class="dim-body">${d.body}</div>
+        `;
+        dimList.appendChild(card);
+      });
+    }
   }
 
   renderConstitucion(m);
@@ -658,6 +674,10 @@ function renderSectores() {
   document.getElementById('sectoresTitle').textContent = `Cómo le pega "${m.title}" a cada clase social`;
   const list = document.getElementById('sectoresList');
   list.innerHTML = '';
+  if (!m.hasRules) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">Análisis de impacto para esta medida en preparación.</div>';
+    return;
+  }
   const clases = window.CLASES_SOCIALES || [];
   const perfiles = window.PERFILES_ARQUETIPICOS || {};
   if (!clases.length) {

@@ -15,12 +15,12 @@
 import { SUPABASE_REST, SUPABASE_HEADERS } from "../config.js";
 import { MEASURES_BASE, MEASURES_BASE_BY_ID } from "./medidas-base.js";
 
-const CACHE_KEY = "ctp-data-v0.6";
+const CACHE_KEY = "ctp-data-v0.6.1";
 const TTL_MS = 6 * 60 * 60 * 1000; // 6 horas
 
 // Endpoints de solo-lectura. select explícito = payload chico y estable.
 const ENDPOINTS = {
-  medidas:        "medidas_con_popularidad?select=id,titulo,descripcion,tags,area,estado,vigente,tipo_norma,numero,fuente_url,popularidad_medios,nivel_popularidad,created_at",
+  medidas:        "medidas_con_popularidad?select=id,fecha_bora,titulo,descripcion,tags,area,estado,vigente,tipo_norma,numero,fuente_url,fuente_descripcion,popularidad_medios,nivel_popularidad,created_at",
   cobertura:      "cobertura_mediatica?select=medida_id,medio_id,cubierto,fecha_cobertura,titular&cubierto=is.true",
   observaciones:  "observaciones_constitucionales?select=medida_id,articulo_numero,estado,fallo_referencia,fecha_fallo,resumen,fuente_url",
   articulos:      "articulos_constitucion?select=numero,nombre,resumen",
@@ -62,14 +62,26 @@ function isFresh(parsed) {
   return parsed && (Date.now() - parsed.ts) < TTL_MS;
 }
 
-// ---- merge: Supabase ENCIMA del base v0.5 ---------------------------------
+// "comercio_exterior" → "Comercio Exterior"; para mostrar el área lindo.
+function capitalizeArea(a) {
+  if (!a) return "Otras";
+  return String(a).split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
+const NOIMPACT = () => [];
+
+// ---- build: catálogo DRIVEN POR LA DB ------------------------------------
+// El listado de medidas SON las filas de la DB (67 hitos reales). El v0.5
+// (medidas-base.js) solo aporta las reglas impact()/compareProfiles cuando el
+// id coincide; si no coincide, la medida se muestra igual pero sin análisis de
+// impacto (mensaje neutro en la pantalla de impacto).
 function buildMeasures(db) {
   const medios = (db.medios || []).slice().sort((a, b) => (a.orden || 0) - (b.orden || 0));
   const totalMedios = medios.length || 6;
   const mediosById = Object.fromEntries(medios.map(m => [m.id, m]));
   const articulosByNum = Object.fromEntries((db.articulos || []).map(a => [a.numero, a]));
 
-  // Agrupar cobertura y observaciones por medida.
+  // Agrupar cobertura (solo cubierto=true) y observaciones por medida.
   const coberturaPorMedida = {};
   (db.cobertura || []).forEach(c => {
     if (!c.cubierto) return;
@@ -80,20 +92,16 @@ function buildMeasures(db) {
     (obsPorMedida[o.medida_id] ||= []).push(o);
   });
 
-  const dbById = Object.fromEntries((db.medidas || []).map(m => [m.id, m]));
+  const rows = db.medidas || [];
+  // DB vacía → fallback al catálogo v0.5 (offline / pre-seed).
+  if (!rows.length) return buildFallback();
 
-  // Conjunto de ids: base + cualquier medida de la DB que aún no esté en base.
-  const ids = [];
-  MEASURES_BASE.forEach(m => ids.push(m.id));
-  (db.medidas || []).forEach(m => { if (!MEASURES_BASE_BY_ID[m.id]) ids.push(m.id); });
-
-  const measures = ids.map(id => {
+  const measures = rows.map(row => {
+    const id = row.id;
     const base = MEASURES_BASE_BY_ID[id];
-    const row = dbById[id];
+    const hasRules = !!(base && typeof base.impact === "function");
 
-    // Cobertura mediática enriquecida con el medio.
-    const coberturaRaw = coberturaPorMedida[id] || [];
-    const cobertura = coberturaRaw
+    const cobertura = (coberturaPorMedida[id] || [])
       .map(c => ({
         medioId: c.medio_id,
         nombre: mediosById[c.medio_id]?.nombre || c.medio_id,
@@ -103,7 +111,6 @@ function buildMeasures(db) {
       }))
       .sort((a, b) => a.orden - b.orden);
 
-    // Observaciones constitucionales enriquecidas con el artículo.
     const observaciones = (obsPorMedida[id] || []).map(o => ({
       articuloNumero: o.articulo_numero,
       articuloNombre: articulosByNum[o.articulo_numero]?.nombre || null,
@@ -115,45 +122,23 @@ function buildMeasures(db) {
       fuenteUrl: o.fuente_url || null
     }));
 
-    if (base) {
-      // Base v0.5 + override editorial de la DB (si existe la fila).
-      return {
-        ...base,
-        title: row?.titulo ?? base.title,
-        desc:  row?.descripcion ?? base.desc,
-        tags:  (Array.isArray(row?.tags) && row.tags.length) ? row.tags : base.tags,
-        area:  row?.area ?? base.area,
-        estado: row?.estado ?? base.estado,
-        // meta y fuente ricos del v0.5 se conservan (el schema no los guarda).
-        meta: base.meta,
-        fuente: base.fuente,
-        fuenteUrl: row?.fuente_url ?? null,
-        popularidad: row?.popularidad_medios ?? cobertura.length,
-        nivelPopularidad: row?.nivel_popularidad ?? null,
-        cobertura,
-        coberturaTotal: totalMedios,
-        observaciones,
-        hasDb: !!row
-      };
-    }
-
-    // Medida que solo existe en la DB (catálogo extendido futuro). Sin reglas
-    // impact() todavía → devolvemos vacío hasta que se carguen en v0.7.
     return {
       id,
-      date: (row?.created_at || "").slice(0, 10) || "2023-12-10",
-      title: row?.titulo || id,
-      meta: [row?.tipo_norma, row?.numero].filter(Boolean).join(" ") || "—",
-      desc: row?.descripcion || "",
-      tags: Array.isArray(row?.tags) ? row.tags : [],
-      area: row?.area || "Otras",
-      estado: row?.estado || "vigente",
-      fuente: null,
-      fuenteUrl: row?.fuente_url || null,
-      impact: () => [],
-      compareProfiles: [],
-      popularidad: row?.popularidad_medios ?? cobertura.length,
-      nivelPopularidad: row?.nivel_popularidad ?? null,
+      // fecha_bora ordena el historial; si faltara, created_at como respaldo.
+      date: row.fecha_bora || (row.created_at || "").slice(0, 10) || "",
+      title: row.titulo || (base ? base.title : id),
+      meta: base ? base.meta : [row.tipo_norma, row.numero].filter(Boolean).join(" ") || "—",
+      desc: row.descripcion ?? (base ? base.desc : ""),
+      tags: (Array.isArray(row.tags) && row.tags.length) ? row.tags : (base ? base.tags : []),
+      area: capitalizeArea(row.area),
+      estado: row.estado || "vigente",
+      fuente: row.fuente_descripcion || (base ? base.fuente : null),
+      fuenteUrl: row.fuente_url || null,
+      impact: hasRules ? base.impact : NOIMPACT,
+      hasRules,
+      compareProfiles: base ? base.compareProfiles : [],
+      popularidad: row.popularidad_medios ?? cobertura.length,
+      nivelPopularidad: row.nivel_popularidad ?? null,
       cobertura,
       coberturaTotal: totalMedios,
       observaciones,
@@ -170,6 +155,7 @@ function buildMeasures(db) {
 function buildFallback() {
   const measures = MEASURES_BASE.map(m => ({
     ...m,
+    hasRules: typeof m.impact === "function",
     fuenteUrl: null,
     popularidad: null,
     nivelPopularidad: null,
