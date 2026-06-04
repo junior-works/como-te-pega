@@ -167,15 +167,70 @@ const state = {
   filters: { areas: [], estados: [], popKeys: [], fecha: "todas", busqueda: "" },
   list: { items: [], total: 0, loading: false },
   listLoaded: false,
-  searchTimer: null
+  searchTimer: null,
+  autoCloseTimer: null // v0.8: cierre automático del panel de filtros
 };
 
 function getMeasures() { return window.MEASURES || []; }
+
+// ============== v0.8 — PERSISTENCIA (localStorage) ==============
+// Guardamos en CADA cambio relevante y restauramos al cargar la app. Todo
+// envuelto en try/catch porque localStorage puede tirar (modo privado, cuota).
+const LS = { perfil: "ctp.perfil", filters: "ctp.filters", lastMeasure: "ctp.lastMeasure" };
+const PERFIL_REQUIRED = ["ocupacion", "zona", "vivienda", "ingreso", "transporte"];
+const FILTERS_DEFAULT = () => ({ areas: [], estados: [], popKeys: [], fecha: "todas", busqueda: "" });
+
+function lsGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+function persistPerfil() { lsSet(LS.perfil, state.perfil); }
+function persistFilters() { lsSet(LS.filters, state.filters); }
+function persistLastMeasure(id) { if (id) lsSet(LS.lastMeasure, id); }
+
+function perfilComplete(p) { return !!p && PERFIL_REQUIRED.every(f => p[f]); }
+
+// Restaura las clases .sel / .sel-multi de los chips de perfil según state.perfil.
+function restoreChipSelections() {
+  document.querySelectorAll('.chips').forEach(group => {
+    const field = group.dataset.field;
+    const multi = group.dataset.multi === 'true';
+    const val = state.perfil[field];
+    group.querySelectorAll('.chip').forEach(btn => {
+      btn.classList.remove('sel', 'sel-multi');
+      if (multi) {
+        if (Array.isArray(val) && val.includes(btn.dataset.v)) btn.classList.add('sel-multi');
+      } else if (val === btn.dataset.v) {
+        btn.classList.add('sel');
+      }
+    });
+  });
+}
+
+// Carga perfil + filtros guardados. Devuelve true si hay un perfil válido.
+function restoreSession() {
+  const savedFilters = lsGet(LS.filters);
+  if (savedFilters && typeof savedFilters === 'object') {
+    state.filters = Object.assign(FILTERS_DEFAULT(), savedFilters);
+    if (!Array.isArray(state.filters.areas)) state.filters.areas = [];
+    if (!Array.isArray(state.filters.estados)) state.filters.estados = [];
+    if (!Array.isArray(state.filters.popKeys)) state.filters.popKeys = [];
+  }
+  const savedPerfil = lsGet(LS.perfil);
+  if (perfilComplete(savedPerfil)) {
+    state.perfil = Object.assign({ asistencia: [] }, savedPerfil);
+    if (!Array.isArray(state.perfil.asistencia)) state.perfil.asistencia = [];
+    restoreChipSelections();
+    return true;
+  }
+  return false;
+}
 
 function show(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById('screen-' + screenId);
   if (el) el.classList.add('active');
+  if (screenId === 'hero') renderHeroResume();
   if (screenId === 'measures') { renderHome(); updateMiniBar(); }
   if (screenId === 'profile') updateProfileSummary();
   if (screenId === 'impact') { updateProfileSummary(); }
@@ -217,6 +272,7 @@ function wireChips() {
           btn.classList.add('sel');
           state.perfil[field] = btn.dataset.v;
         }
+        persistPerfil(); // v0.8
         checkProfileComplete();
       });
     });
@@ -263,6 +319,7 @@ window.updateProfileSummary = updateProfileSummary;
 // ============== HOME / TRENDING (vista A) ==============
 function renderHome() {
   updateProfileSummary();
+  renderLastMeasureBanner(); // v0.8
   const measures = getMeasures();
 
   // --- Trending: "Lo que están discutiendo todos" ---
@@ -317,9 +374,11 @@ function openMeasure(id) {
   const m = getMeasures().find(x => x.id === id);
   if (!m) return;
   state.measure = m;
+  persistLastMeasure(id); // v0.8
   renderImpact();
   show('impact');
 }
+window.openMeasure = openMeasure;
 
 // ============== v0.7 — FILTROS COLAPSABLES ==============
 function activeFilterCount() {
@@ -340,11 +399,23 @@ function toggleFilters() {
 window.toggleFilters = toggleFilters;
 
 function clearFilters() {
-  state.filters = { areas: [], estados: [], popKeys: [], fecha: "todas", busqueda: "" };
+  if (state.autoCloseTimer) { clearTimeout(state.autoCloseTimer); state.autoCloseTimer = null; }
+  state.filters = FILTERS_DEFAULT();
+  persistFilters(); // v0.8 — limpiar NO cierra el panel (queda abierto para seguir jugando)
   renderFilters();
   loadFirstPage();
 }
 window.clearFilters = clearFilters;
+
+// v0.8: cierra el panel ~400ms después de APLICAR un filtro (toggle a true).
+function scheduleFilterAutoClose() {
+  if (state.autoCloseTimer) clearTimeout(state.autoCloseTimer);
+  state.autoCloseTimer = setTimeout(() => {
+    state.autoCloseTimer = null;
+    state.filtersOpen = false;
+    renderFilters();
+  }, 400);
+}
 
 function renderFilters() {
   const el = document.getElementById('measureFilters');
@@ -356,7 +427,11 @@ function renderFilters() {
   const n = activeFilterCount();
 
   if (toggle) toggle.classList.toggle('open', state.filtersOpen);
-  if (countEl) { countEl.textContent = n; countEl.classList.toggle('on', n > 0); }
+  // v0.8: la etiqueta del botón cambia según el estado.
+  const labelEl = document.getElementById('filterToggleLabel');
+  if (labelEl) labelEl.textContent = state.filtersOpen ? 'Cerrar filtros' : 'Filtros';
+  // El badge (N) solo cuando está cerrado y hay filtros aplicados.
+  if (countEl) { countEl.textContent = n; countEl.classList.toggle('on', !state.filtersOpen && n > 0); }
   if (clearEl) clearEl.style.display = n > 0 ? '' : 'none';
 
   el.hidden = !state.filtersOpen;
@@ -386,18 +461,30 @@ function renderFilters() {
   el.querySelectorAll('.fchip').forEach(b => {
     b.onclick = () => {
       const v = b.dataset.v, kind = b.dataset.kind;
+      // `applied` = el toggle dejó un filtro ACTIVO (true). Solo en ese caso
+      // cerramos el panel automáticamente (v0.8). Destildar lo deja abierto.
+      let applied = false;
       if (kind === 'area') {
         // Multi-select: nada marcado = todas. Toggle como Estado/Cobertura.
-        f.areas = f.areas.includes(v) ? f.areas.filter(x => x !== v) : [...f.areas, v];
+        const had = f.areas.includes(v);
+        f.areas = had ? f.areas.filter(x => x !== v) : [...f.areas, v];
+        applied = !had;
       } else if (kind === 'fecha') {
         f.fecha = v; // single-select
+        applied = (v !== 'todas');
       } else if (kind === 'estado') {
-        f.estados = f.estados.includes(v) ? f.estados.filter(x => x !== v) : [...f.estados, v];
+        const had = f.estados.includes(v);
+        f.estados = had ? f.estados.filter(x => x !== v) : [...f.estados, v];
+        applied = !had;
       } else if (kind === 'pop') {
-        f.popKeys = f.popKeys.includes(v) ? f.popKeys.filter(x => x !== v) : [...f.popKeys, v];
+        const had = f.popKeys.includes(v);
+        f.popKeys = had ? f.popKeys.filter(x => x !== v) : [...f.popKeys, v];
+        applied = !had;
       }
+      persistFilters(); // v0.8
       renderFilters();
       loadFirstPage();
+      if (applied) scheduleFilterAutoClose(); // ~400ms para que se vea el toggle
     };
   });
 
@@ -411,6 +498,7 @@ function renderFilters() {
         if (cnt) { const n2 = activeFilterCount(); cnt.textContent = n2; cnt.classList.toggle('on', n2 > 0); }
         const cl = document.getElementById('filterClear');
         if (cl) cl.style.display = activeFilterCount() > 0 ? '' : 'none';
+        persistFilters(); // v0.8 — la búsqueda NO cierra el panel
         loadFirstPage();
       }, 300);
     };
@@ -796,7 +884,7 @@ function renderBalance() {
     if (posDims.length) summary += (summary ? ' · ' : '') + `Beneficia: ${posDims.join(', ')}`;
     if (!summary) summary = 'Sin impacto directo en tu perfil.';
     item.innerHTML = `<div class="tl-date">${formatDate(s.m.date)}</div><div class="tl-title">${s.m.title}</div><span class="tl-pill ${s.bucket}">${label}</span><div class="tl-summary">${summary}</div>`;
-    item.onclick = () => { state.measure = s.m; renderImpact(); show('impact'); };
+    item.onclick = () => openMeasure(s.m.id);
     timeline.appendChild(item);
   });
 
@@ -1001,14 +1089,81 @@ function renderHistorial() {
   });
 }
 
+// ============== v0.8 — PERSISTENCIA (UI) ==============
+// Banner "Última medida que viste" arriba del listado. Solo aparece si hay un
+// id guardado Y esa medida sigue existiendo en los datos cargados.
+function renderLastMeasureBanner() {
+  const el = document.getElementById('lastMeasureBanner');
+  if (!el) return;
+  const id = lsGet(LS.lastMeasure);
+  const m = id ? getMeasures().find(x => x.id === id) : null;
+  if (!m) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="last-measure">
+    <div class="last-measure-txt">
+      <span class="last-measure-lbl">Última medida que viste</span>
+      <span class="last-measure-title">${m.title}</span>
+    </div>
+    <button class="last-measure-btn" onclick="openLastMeasure()">Ver</button>
+  </div>`;
+}
+
+function openLastMeasure() {
+  const id = lsGet(LS.lastMeasure);
+  if (id) openMeasure(id);
+}
+window.openLastMeasure = openLastMeasure;
+
+// Cartel discreto en el hero cuando ya hay un perfil cargado (p. ej. tocaron back).
+function renderHeroResume() {
+  const el = document.getElementById('heroResume');
+  if (!el) return;
+  if (perfilComplete(state.perfil)) {
+    el.innerHTML = `<div class="hero-resume">
+      <span>Ya tenés un perfil cargado.</span>
+      <div class="hero-resume-actions">
+        <button class="btn-mini-primary" onclick="show('measures')">Continuar</button>
+        <button class="btn-mini-ghost" onclick="nuevaPrueba()">Empezar de nuevo</button>
+      </div>
+    </div>`;
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+// "Empezar nueva prueba": confirma, limpia localStorage + state y vuelve al hero.
+function nuevaPrueba() {
+  if (!window.confirm('¿Empezar una prueba nueva? Se borra el perfil que cargaste.')) return;
+  lsDel(LS.perfil); lsDel(LS.filters); lsDel(LS.lastMeasure);
+  if (state.autoCloseTimer) { clearTimeout(state.autoCloseTimer); state.autoCloseTimer = null; }
+  if (state.searchTimer) { clearTimeout(state.searchTimer); state.searchTimer = null; }
+  state.perfil = { asistencia: [] };
+  state.filters = FILTERS_DEFAULT();
+  state.filtersOpen = false;
+  state.measure = null;
+  state.listLoaded = false;
+  state.list = { items: [], total: 0, loading: false };
+  document.querySelectorAll('.chips .chip').forEach(c => c.classList.remove('sel', 'sel-multi'));
+  checkProfileComplete();
+  updateProfileSummary();
+  show('hero');
+}
+window.nuevaPrueba = nuevaPrueba;
+
 // ============== INIT ==============
 // Llamado por el bootstrap de módulos una vez que window.MEASURES está cargado.
 function initApp() {
   injectBalanceScreen();
   wireChips();
+  // v0.8: restaurar sesión (perfil + filtros) ANTES de decidir qué pantalla mostrar.
+  const tienePerfil = restoreSession();
   checkProfileComplete();
   updateProfileSummary();
-  // Si ya estamos parados en la home (raro al inicio), refrescamos.
-  if (document.getElementById('screen-measures')?.classList.contains('active')) renderHome();
+  if (tienePerfil) {
+    // Perfil completo guardado → saltar el hero y entrar directo al listado.
+    show('measures');
+  } else if (document.getElementById('screen-measures')?.classList.contains('active')) {
+    // Si ya estamos parados en la home (raro al inicio), refrescamos.
+    renderHome();
+  }
 }
 window.initApp = initApp;

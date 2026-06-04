@@ -9,10 +9,11 @@
 <style>
   :root {
     --bg: #f7f5f0;
+    --bg-grad: linear-gradient(135deg, #f7f5f0 0%, #f1ecdf 100%);
     --paper: #ffffff;
     --paper-soft: #fbfaf6;
     --ink: #181d27;
-    --ink-soft: #4a5160;
+    --ink-soft: #3a4150;
     --ink-mute: #8a8f9b;
     --line: #e8e4da;
     --line-soft: #f1eee5;
@@ -27,6 +28,7 @@
     --shadow-sm: 0 1px 2px rgba(24,29,39,0.04);
     --shadow: 0 2px 12px rgba(24,29,39,0.07);
     --shadow-lg: 0 8px 30px rgba(24,29,39,0.10);
+    --ease: cubic-bezier(0.2, 0.9, 0.3, 1);
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -34,11 +36,15 @@
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
     background: var(--bg);
+    background: var(--bg-grad);
+    background-attachment: fixed;
     color: var(--ink);
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.55;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "kern";
   }
   .app {
     max-width: 580px;
@@ -77,9 +83,17 @@
   }
   /* ============== SCREENS ============== */
   .screen { display: none; }
-  .screen.active { display: block; animation: in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1); }
+  .screen.active { display: block; animation: in 0.25s var(--ease); }
   @keyframes in {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes chipPop {
+    from { transform: scale(1.02); }
+    to { transform: scale(1); }
+  }
+  @keyframes filtersIn {
+    from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: none; }
   }
   h2.step {
@@ -96,11 +110,13 @@
   }
   /* ============== CARDS ============== */
   .card {
-    background: var(--paper);
-    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(232, 228, 218, 0.6);
     border-radius: 16px;
     padding: 18px 20px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 14px rgba(24, 29, 39, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     margin-bottom: 14px;
   }
   .card-section {
@@ -684,11 +700,15 @@
   .tl-pop { background: var(--ink); color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px; }
 
   /* ============== v0.7 — FILTROS COLAPSABLES + PAGINACIÓN ============== */
-  .filterbar {
-    position: sticky; top: 86px; z-index: 4; background: var(--bg);
-    padding: 8px 0; margin-bottom: 10px; border-bottom: 1px solid var(--line-soft);
+  /* v0.8: solo el BOTÓN es sticky. El panel fluye en el documento y empuja
+     el listado hacia abajo (no queda flotando encima). */
+  .filterbar { margin-bottom: 10px; }
+  .filterbar-head {
+    position: sticky; top: 86px; z-index: 4;
+    background: var(--bg); background: var(--bg-grad);
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--line-soft);
   }
-  .filterbar-head { display: flex; align-items: center; gap: 10px; }
   .filter-toggle {
     display: inline-flex; align-items: center; gap: 7px; font-family: inherit;
     border: 1.5px solid var(--line); background: var(--paper); color: var(--ink);
@@ -698,6 +718,7 @@
   .filter-toggle:hover { border-color: var(--accent); }
   .filter-toggle.open { background: var(--accent); color: #fff; border-color: var(--accent); }
   .filter-toggle::before { content: "⚙"; font-size: 14px; }
+  .filter-toggle.open::before { content: "✕"; font-size: 13px; }
   .filter-count {
     background: var(--accent); color: #fff; min-width: 18px; height: 18px; padding: 0 5px;
     border-radius: 99px; font-size: 11px; font-weight: 800; display: none;
@@ -711,6 +732,8 @@
   }
   .filter-clear:hover { text-decoration: underline; }
   .filters { padding-top: 12px; }
+  /* v0.8: el panel anima al abrirse (display none→block reinicia la animación). */
+  #measureFilters:not([hidden]) { animation: filtersIn 0.2s var(--ease); }
   /* Bloque por filtro: titulito arriba (no al costado) + chips a ancho completo. */
   .filter-group { margin-bottom: 16px; }
   .filter-group:last-child { margin-bottom: 4px; }
@@ -758,6 +781,137 @@
     background: var(--paper-soft); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0;
   }
   .impact-notice strong { color: var(--ink); }
+
+  /* ============== v0.8 — GLASS + BRILLOS ============== */
+  /* Superficies blancas con borde neutro completo → glassmorphism. */
+  .hero .examples, .impact-desc, .cob-card, .const-card,
+  .bal-card, .donut-wrap, .tl-item, .filter-search {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(232, 228, 218, 0.6);
+    box-shadow: 0 4px 14px rgba(24, 29, 39, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  /* dim-card conserva su borde-izquierdo de color: solo glass de fondo. */
+  .dim-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    box-shadow: 0 4px 14px rgba(24, 29, 39, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  /* Botones primarios: gradiente + profundidad. */
+  .btn.accent, .btn-balance {
+    background: linear-gradient(180deg, #324f57 0%, #1e3338 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(44, 74, 82, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .btn.accent:hover, .btn-balance:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 18px rgba(44, 74, 82, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .btn.accent:active, .btn-balance:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 7px rgba(44, 74, 82, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  /* Botón base (oscuro) y ghost: feedback de tap. */
+  .btn { transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), opacity 0.15s ease; }
+  .btn:active { transform: scale(0.97); }
+  .btn.ghost {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .btn.ghost:hover { background: rgba(255, 255, 255, 0.85); border-color: var(--ink-soft); }
+
+  /* Chips de perfil: activos con glow; togglear = pop sutil. */
+  .chip.sel {
+    box-shadow: 0 2px 8px rgba(44, 74, 82, 0.35);
+    animation: chipPop 0.18s var(--ease);
+  }
+  /* Chips de filtro: borde nítido + glow al seleccionar. */
+  .fchip {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .fchip.sel {
+    background: var(--accent);
+    box-shadow: 0 2px 8px rgba(44, 74, 82, 0.35);
+    animation: chipPop 0.18s var(--ease);
+  }
+  .filter-toggle.open { box-shadow: 0 2px 8px rgba(44, 74, 82, 0.35); }
+
+  /* Cards al hover (desktop): leve elevación. */
+  @media (hover: hover) {
+    .measure:hover, .trending-card:hover { transform: translateY(-2px); }
+  }
+
+  /* ============== v0.8 — PERSISTENCIA (UI) ============== */
+  .perfil-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px; }
+  .perfil-row .perfil-box { flex: 1; margin-bottom: 0; }
+  .btn-nueva {
+    flex-shrink: 0; font-family: inherit; cursor: pointer;
+    background: rgba(255, 255, 255, 0.6); color: var(--ink-soft);
+    border: 1.5px solid rgba(0, 0, 0, 0.08); border-radius: 99px;
+    padding: 8px 13px; font-size: 12px; font-weight: 700; line-height: 1.1;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: all 0.15s var(--ease); white-space: nowrap;
+  }
+  .btn-nueva:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-nueva:active { transform: scale(0.96); }
+
+  .last-measure {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    padding: 11px 14px; border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--accent-soft);
+  }
+  .last-measure-txt { flex: 1; min-width: 0; line-height: 1.3; }
+  .last-measure-lbl {
+    display: block; font-size: 10px; font-weight: 700; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px;
+  }
+  .last-measure-title {
+    display: block; font-size: 13px; font-weight: 700; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .last-measure-btn {
+    flex-shrink: 0; font-family: inherit; cursor: pointer; color: #fff;
+    background: var(--accent); border: 0; border-radius: 99px;
+    padding: 7px 16px; font-size: 12.5px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(44, 74, 82, 0.30); transition: all 0.15s var(--ease);
+  }
+  .last-measure-btn:hover { transform: translateY(-1px); }
+  .last-measure-btn:active { transform: scale(0.96); }
+
+  .hero-resume {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    gap: 10px; margin: 0 auto 18px; max-width: 460px;
+    padding: 11px 16px; border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--accent-soft); font-size: 13px; color: var(--ink-soft);
+  }
+  .hero-resume-actions { display: flex; gap: 8px; }
+  .btn-mini-primary, .btn-mini-ghost {
+    font-family: inherit; cursor: pointer; border-radius: 99px;
+    padding: 7px 15px; font-size: 12.5px; font-weight: 700;
+    transition: all 0.15s var(--ease);
+  }
+  .btn-mini-primary {
+    color: #fff; border: 0; background: linear-gradient(180deg, #324f57 0%, #1e3338 100%);
+    box-shadow: 0 2px 8px rgba(44, 74, 82, 0.30);
+  }
+  .btn-mini-primary:active { transform: scale(0.96); }
+  .btn-mini-ghost {
+    color: var(--ink-soft); background: rgba(255, 255, 255, 0.5);
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+  }
+  .btn-mini-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-mini-ghost:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -770,6 +924,7 @@
   <!-- ============== HERO ============== -->
   <section id="screen-hero" class="screen active">
     <div class="hero">
+      <div id="heroResume"></div>
       <span class="pill">Prototipo · jun 2026</span>
       <p class="pitch">Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial te impacta — <strong>no solo en el bolsillo</strong>, también en tu tiempo, tu salud, tu vivienda y tu vida. <em>Misma regla para cualquier gobierno.</em></p>
       <button class="btn accent" onclick="show('profile')">Empezar</button>
@@ -984,7 +1139,11 @@
   <!-- ============== MEASURES / HOME ============== -->
   <section id="screen-measures" class="screen">
     <div class="crumb" onclick="show('profile')">← Editar perfil</div>
-    <div class="perfil-box" id="perfilSummary"><strong>TU PERFIL</strong>—</div>
+    <div class="perfil-row">
+      <div class="perfil-box" id="perfilSummary"><strong>TU PERFIL</strong>—</div>
+      <button class="btn-nueva" id="btnNuevaPrueba" onclick="nuevaPrueba()" title="Borrar el perfil y empezar de nuevo">↻ Nueva prueba</button>
+    </div>
+    <div id="lastMeasureBanner"></div>
     <button class="btn-balance" onclick="show('balance')">
       <span>📊 Ver tu balance histórico</span>
       <span class="bar-mini" id="miniBar"></span>
@@ -998,7 +1157,7 @@
     <div class="filterbar">
       <div class="filterbar-head">
         <button class="filter-toggle" id="filterToggle" onclick="toggleFilters()">
-          <span>Filtros</span><span class="filter-count" id="filterCount"></span>
+          <span id="filterToggleLabel">Filtros</span><span class="filter-count" id="filterCount"></span>
         </button>
         <button class="filter-clear" id="filterClear" onclick="clearFilters()" style="display:none;">Limpiar filtros</button>
       </div>
@@ -1075,7 +1234,7 @@
   </section>
 
   <footer class="foot">
-    <strong>Prototipo v0.7 · datos desde Supabase</strong> · junio 2026<br>
+    <strong>Prototipo v0.8 · datos desde Supabase</strong> · junio 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
