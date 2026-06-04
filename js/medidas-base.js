@@ -1481,6 +1481,303 @@ export const MEASURES_BASE = [
       { name: "Empleado público sector salud", sub: "Empleado público · Hosp. nacional", badges: { Trabajo: "pos", "País / Equilibrio institucional": "pos" } },
       { name: "Contribuyente sin hijos pequeños", sub: "Monotributista · Sin hijos", badges: { Plata: "soft", "País / Equilibrio institucional": "pos" } }
     ]
+  },
+  {
+    id: "devaluacion_diciembre_2023",
+    title: "Devaluación inicial diciembre 2023",
+    date: "2023-12-13",
+    meta: "Comunicación BCRA 'A' 7917 · vigente",
+    desc: "Modificación del régimen cambiario. Tipo de cambio mayorista pasó de $367 a $799,97 (+118% en un día; BCRA la mide 54,2% por matemática del cambio inverso). Inflación dic-2023: 25,5% mensual, 211,4% anual (peor en 32 años). Salario real privado -20% en 2 meses. Indigencia: 9,6% → 15% (sumó 2,5M personas). Pobreza: 44,7% → 57,4% (sumó 5,7M personas). Canasta básica +72,9% en Q4 2023.",
+    tags: ["Plata","Cambiario","Pobreza"],
+    fuente: "BCRA — Comunicación A 7917. INDEC, Infobae, Ámbito.",
+    impact: function(p) {
+      const dims = [];
+      const esAsalariado = p.ocupacion === 'empleado_priv' || p.ocupacion === 'empleado_pub' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib' || p.ocupacion === 'domestica_reg' || p.ocupacion === 'domestica_no_reg';
+      if (esAsalariado) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Tu sueldo en pesos perdió 20% real en 2 meses. Si ganabas $500k reales (lo que comprabas) en nov-2023, en feb-2024 comprabas $400k con el mismo nominal aumentado a $700k. Pérdida documentada por INDEC." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "Incertidumbre + congelamiento real de poder adquisitivo afecta planificación familiar." });
+      }
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Haberes en pesos con fórmula de movilidad rezagada vs devaluación. Bono fijo $70k congelado desde su creación = mes a mes vale menos. La pérdida real fue mayor que en privados porque la actualización tardaba meses." });
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "Insumos y medicamentos importados subieron de inmediato. Sin actualización paralela del haber, postergación de tratamientos." });
+      }
+      if (p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa' || p.ocupacion === 'desempleado') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Sin paritarias ni mecanismos de actualización, perdiste poder de compra completo en 2 meses. Canasta básica +73% en un trimestre. La indigencia subió del 9,6% al 15% en 90 días." });
+      }
+      const tieneAsistencia = Array.isArray(p.asistencia) && p.asistencia.length > 0 && !p.asistencia.includes('ninguno');
+      if (tieneAsistencia) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Los planes con monto en pesos sin actualización inmediata: AUH valía 30% menos después de la devaluación. Recomposiciones llegaron en cuotas." });
+      }
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Si tu PyME usa insumos importados, tus costos en pesos se duplicaron. Si tus precios estaban con margen ajustado, dejaste de ser rentable hasta poder ajustar." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Reducción de plantilla por margen achicado." });
+      }
+      const ingresoMuyAlto = p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoMuyAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si tenés ahorros en dólares: tu pesos-equivalente se duplicó. Comprar inmuebles, auto, viajar: mejor momento del año. Si exportás o tu ingreso depende de USD, margen explota a favor." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Asalariada privada", sub: "Empleada · ≤$1,5M", badges: { Plata: "strong", Estabilidad: "mid" } },
+      { name: "Jubilada mínima sola", sub: "Jubilada · PAMI · CABA", badges: { Plata: "strong", Salud: "mid" } },
+      { name: "Beneficiaria AUH con 2 hijos", sub: "Cuidado hogar · AUH/Alimentar", badges: { Plata: "strong" } },
+      { name: "PyME industrial con insumos", sub: "Empresario PyME · Importa partes", badges: { Plata: "mid", Trabajo: "mid" } },
+      { name: "Exportador agropecuario", sub: "PyME · Agro · USD", badges: { Plata: "pos" } },
+      { name: "Empresario con ahorro en USD", sub: "Empresario · +$6M", badges: { Plata: "pos" } }
+    ]
+  },
+  {
+    id: "blanqueo_capitales_2024",
+    title: "Blanqueo de capitales 2024 (Régimen de Regularización de Activos)",
+    date: "2024-07-08",
+    meta: "Ley 27.743 Tit. II · Dto 608/2024 · RG ARCA 5528 · USD 31.252M reportados blanqueados",
+    desc: "Régimen de Regularización de Activos. Alícuotas escalonadas 5% (hasta 30-sep-2024) / 10% (oct-dic 2024) / 15% (ene-mar 2025). USD 100k umbral exento. Mediante Cuenta Especial de Regularización (CERA) en banco argentino con inmovilización hasta 31-ene-2025: alícuota 0%. Exonera Bienes Personales hasta 31-dic-2023 sobre lo blanqueado. Adhesión hasta 31-mar-2025. Excluidos: funcionarios públicos y sus familias.",
+    tags: ["Plata","Fiscal"],
+    fuente: "Boletín Oficial — Ley 27.743 Tit. II + Decreto 608/2024 + RG ARCA 5528. Chequeado, Tributum.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoMuyAlto = p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoMuyAlto || p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Por una alícuota baja (5% en la primera etapa, 10-15% en posteriores) regularizás patrimonio histórico que estaba en negro. Si depositabas en una Cuenta Especial de Regularización (CERA) en banco argentino y dejabas inmovilizado hasta 31-ene-2025: 0%, exento. La operatoria normal de blanquear en mercado paralelo costaba 30-50% más. Adicionalmente exonera Bienes Personales hasta 2023." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos",
+          body: "Tu patrimonio entra al sistema formal: podés comprar, vender, heredar sin riesgo de penalización por origen." });
+      }
+      const esTrabajadorTransparente = p.ocupacion === 'empleado_priv' || p.ocupacion === 'empleado_pub' || p.ocupacion === 'monotrib' || p.ocupacion === 'autonomo';
+      const ingresoMedioBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m' || p.ingreso === '1.5m_3m';
+      if (esTrabajadorTransparente && ingresoMedioBajo) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Asimetría real: vos pagaste IVA, Ganancias e impuestos todos los años a tasa plena. El que evadió ahora regularizó con 5%. La merma fiscal del blanqueo (Bienes Personales exonerado por 5 años) se compensa con presión sobre los que ya estaban en el sistema." });
+      }
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Costo fiscal indirecto: la merma recaudatoria del blanqueo presiona partidas que financian ANSES, PAMI, planes sociales." });
+      }
+      if (p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa' || p.ocupacion === 'desempleado') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Costo fiscal indirecto sobre tu vida cotidiana vía servicios públicos, ANSES, planes sociales." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Es el tercer blanqueo del siglo XXI (Macri 2017, Massa 2022/2023, Milei 2024). Cultura del 'esperar el próximo blanqueo' como estrategia tributaria. Erosiona la cultura de cumplimiento." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Profesional con USD en exterior", sub: "Autónomo · USD no declarados", badges: { Plata: "pos_strong", Estabilidad: "pos" } },
+      { name: "Empresa exportadora", sub: "PyME · Exportador · USD", badges: { Plata: "pos_strong", Estabilidad: "pos" } },
+      { name: "Asalariado cumplidor", sub: "Empleado · Siempre pagó", badges: { Plata: "soft" } },
+      { name: "Jubilado dependiente ANSES", sub: "Jubilado mín. · Sin patrimonio", badges: { Plata: "soft" } },
+      { name: "Trabajadora informal AUH", sub: "Cuidado hogar · AUH", badges: { Plata: "soft" } }
+    ]
+  },
+  {
+    id: "bienes_personales_reforma_2024",
+    title: "Reforma del Impuesto sobre Bienes Personales",
+    date: "2024-07-08",
+    meta: "Ley 27.743 Tit. III · Dto 608/2024 · vigente",
+    desc: "MNI sube de $27M a $100M. Mínimo casa habitación: $137M → $350M. Alícuotas bajan escalonadas hacia 2027 (proporcional única). REIBP: pago adelantado por 5 años (0,45% no regularizado, 0,50% blanqueado). Contribuyentes cumplidores (declararon 2020-2022 + no blanquearon): 0,375% por 2023-2025.",
+    tags: ["Plata","Fiscal"],
+    fuente: "Boletín Oficial — Ley 27.743 Tit. III + Decreto 608/2024. Chequeado.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoAlto = p.ingreso === '3m_6m' || p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Mínimo no imponible más alto + alícuotas menores. Si tenías que pagar $50M de Bienes Personales en 2023, ahora pagás $20-30M. Reducción real del orden del 40-60% según patrimonio." });
+      }
+      if (p.ocupacion === 'pyme' && !ingresoAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si tu patrimonio está entre $27M-$100M (depto + auto + plazo fijo): antes pagabas Bienes Personales; ahora no pagás nada." });
+      }
+      const ingresoMedioBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m' || p.ingreso === '1.5m_3m';
+      const esTrabajador = p.ocupacion === 'empleado_priv' || p.ocupacion === 'empleado_pub' || p.ocupacion === 'monotrib' || p.ocupacion === 'autonomo';
+      if (esTrabajador && ingresoMedioBajo) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Nunca pagaste Bienes Personales. La reforma no te toca directamente, pero la recaudación patrimonial que cayó se compensa con IVA y Ganancias que sí pagás." });
+      }
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Merma recaudatoria presiona presupuestos sociales." });
+      }
+      if (p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa' || p.ocupacion === 'desempleado') {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Costo fiscal indirecto: el sistema tributario se vuelve más regresivo (más peso de IVA, menos peso de impuestos patrimoniales)." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Se alivia el impuesto patrimonial (progresivo) y se mantiene la carga sobre IVA y Ganancias (regresivos en la práctica). El sistema fiscal argentino se vuelve más regresivo en el corto plazo." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Gran empresario con patrimonio +$500M", sub: "Empresario · Patrimonio alto", badges: { Plata: "pos_strong" } },
+      { name: "Profesional con depto + auto + plazo fijo", sub: "Autónomo · Patrimonio $50-100M", badges: { Plata: "pos" } },
+      { name: "Asalariada de ingresos medios", sub: "Empleada priv. · $700k-1,5M", badges: { Plata: "soft" } },
+      { name: "Jubilada mínima sin patrimonio", sub: "Jubilada · Casa propia chica", badges: { Plata: "soft" } },
+      { name: "Trabajadora informal", sub: "Cuidado hogar · AUH", badges: { Plata: "soft" } }
+    ]
+  },
+  {
+    id: "eliminacion_sira_creacion_sedi",
+    title: "Eliminación SIRA → SEDI → eliminación SEDI",
+    date: "2023-12-26",
+    meta: "RGC 5466/2023 + RGC 5651/2025 + Comunicación BCRA 'A' 7917 · vigente",
+    desc: "Resolución General Conjunta 5466/2023 (27-dic-2023) derogó SIRA, creó SEDI + Padrón de Deuda Comercial. Resolución General Conjunta 5651/2025 (24-feb-2025) derogó SEDI: importaciones quedan libres de control previo. Importaciones de bienes terminados +129% en cantidad. Sectores sustitutivos afectados: Tierra del Fuego electrónica (Mirgor 760 despidos + Newsan 1000 suspensiones, >15% de los 13.000 metalúrgicos provinciales), textil/calzado (20.700 puestos perdidos), electrodomésticos.",
+    tags: ["Trabajo","Importaciones","Industria"],
+    fuente: "Boletín Oficial — RGC 5466/2023 + RGC 5651/2025. Comunicación BCRA A 7917. AIERA, La Nación, ANRed.",
+    impact: function(p) {
+      const dims = [];
+      const esPymeIndustrial = p.ocupacion === 'pyme';
+      if (esPymeIndustrial) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Tu producto compite ahora con importaciones que entran sin restricción. Si producís electrodomésticos, electrónica, textil o calzado, te cae demanda. Cadenas grandes prefieren importar directo." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Reducción de plantilla para sostenerse. Sectores con cierre de líneas documentado." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "Riesgo concreto de cierre si no podés competir en costo." });
+      }
+      const esTrabajadorIndustrial = p.ocupacion === 'empleado_priv';
+      const enZonaIndustrial = p.zona === 'patagonia' || p.zona === 'gba_oeste' || p.zona === 'gba_sur' || p.zona === 'cba_int' || p.zona === 'santafe_int' || p.zona === 'noa' || p.zona === 'nea';
+      if (esTrabajadorIndustrial && enZonaIndustrial) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Sin SIRA/SEDI las importaciones entran sin control. Tierra del Fuego electrónica: Mirgor 760 despidos + Newsan 1000 suspensiones + Radio Victoria 130 = >15% de los 13.000 metalúrgicos provinciales afectados. Conurbano industrial: efecto cascada. El golpe específico vino después con decretos sectoriales (textil 236/2025, celulares 333/2025) pero el SIRA/SEDI fue la habilitación general." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Tu sector tiene horizonte incierto." });
+      }
+      const ingresoMedioAlto = p.ingreso === '1.5m_3m' || p.ingreso === '3m_6m' || p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoMedioAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Más oferta y mejor disponibilidad de productos importados. Electrónica, indumentaria, electrodomésticos, vehículos." });
+        dims.push({ name: "Movilidad", icon: "🛤️", level: "pos_soft",
+          body: "Acceso a productos premium que antes estaban limitados." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Decisión de desindustrializar sin política industrial complementaria. El argumento 'el SIRA era ineficiente y corrupto' es válido; el 'barrer todo el control sin reemplazar con criterio productivo' es otra discusión." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Operario electrónica Tierra del Fuego", sub: "Empleado priv. · Patagonia · Mirgor/Newsan", badges: { Trabajo: "strong", Estabilidad: "strong" } },
+      { name: "PyME textil Catamarca", sub: "Empresario PyME · NOA", badges: { Plata: "strong", Trabajo: "strong", Estabilidad: "mid" } },
+      { name: "Importador formal CABA", sub: "Empresario · CABA · Retail", badges: { Plata: "pos_strong", Trabajo: "pos" } },
+      { name: "Consumidor ingreso medio", sub: "Empleado priv. · $1,5-3M", badges: { Plata: "pos_soft", Movilidad: "pos_soft" } },
+      { name: "Productor de partes electrónicas continente", sub: "PyME · CABA · Proveedor", badges: { Trabajo: "mid" } }
+    ]
+  },
+  {
+    id: "transformacion_inta_inti",
+    title: "Transformación de INTA, INTI y disolución INASE/INAFCI",
+    date: "2025-07-08",
+    meta: "Decreto 462/2025 · facultades delegadas Ley Bases · vigente",
+    desc: "INTA pasa de organismo descentralizado autárquico a desconcentrado bajo Sec. Bioeconomía del Min. Economía: pierde autonomía institucional y financiera, presidente unipersonal designado por PEN. INTI pierde autonomía: depende de Sec. Industria y Comercio. INASE (semillas) disuelto. INAFCI (agricultura familiar) disuelto. INTA: 75 años, ~6.000 trabajadores, 53 estaciones experimentales. INTI: ~3.000 trabajadores, certificaciones técnicas. INAFCI canalizaba programas para ~250.000 productores familiares.",
+    tags: ["Trabajo","Salud","País"],
+    fuente: "Boletín Oficial — Decreto 462/2025. CARBAP, Infobae, La Nación, Motivar.",
+    impact: function(p) {
+      const dims = [];
+      const enZonaAgro = p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cuyo' || p.zona === 'patagonia' || p.zona === 'pueblo' || p.zona === 'cba_int' || p.zona === 'santafe_int';
+      if (p.ocupacion === 'pyme' && enZonaAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Sin asistencia técnica gratuita del INTA, los productores chicos pierden la herramienta que les permitía competir tecnológicamente con productores grandes. Tenés que contratar consultor privado (caro) o adoptar paquetes tecnológicos comerciales (con sesgo al producto del proveedor)." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Tu modelo productivo depende del know-how que el INTA aportaba." });
+      }
+      if (p.ocupacion === 'pyme' && !enZonaAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Sin certificaciones INTI accesibles, tenés que ir a laboratorios privados (más caros). Afecta sectores con normativas técnicas (alimentos, juguetes, materiales constructivos, eléctrico)." });
+      }
+      if (p.ocupacion === 'trab_informal' && enZonaAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "El INAFCI canalizaba programas específicos para tu sector (~250.000 productores familiares). Su disolución elimina la única ventanilla específica nacional para vos." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Asesoramiento técnico, microcréditos, capacitación quedan sin marco institucional federal." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
+          body: "Tu transición de productor familiar a formalizado dependía de programas que ahora se diluyen." });
+      }
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si trabajás en INTA/INTI/INASE/INAFCI: riesgo concreto de no renovación, reorganización con pérdida de cargo, mudanza forzosa. Trabajadores con 20-30 años de carrera ven incierto su futuro." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Pérdida de autonomía institucional implica que las decisiones sobre tu cargo dependen ahora de prioridades del Min. Economía." });
+      }
+      if (p.zona === 'pueblo') {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "Muchas estaciones experimentales del INTA eran motor productivo y social de pueblos chicos. Su debilitamiento afecta la economía local." });
+      }
+      dims.push({ name: "Salud", icon: "❤️", level: "mid",
+        body: "INTI hacía certificaciones de seguridad alimentaria, ensayos de productos para el hogar (juguetes, biberones, electrodomésticos, materiales constructivos), equipamiento médico hospitalario y calidad de agua. Sin autonomía técnica, esa función pasa al Min. Economía bajo Sec. Industria y Comercio — riesgo concreto de que productos defectuosos lleguen al mercado, especialmente importaciones aceleradas sin filtro. Casos históricos cuando ANMAT/INTI bajaron capacidad: medicamentos adulterados, agua contaminada, juguetes con plomo." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
+        body: "Eliminación de autonomías institucionales construidas en 75 años (INTA es de 1956). Centralización del poder técnico en el Min. Economía. Pérdida de capacidad de investigación pública aplicada con criterio territorial. Argentina queda como caso atípico vs Brasil (EMBRAPA fortalecida), Chile (INIA con autonomía), Uruguay (INIA con presupuesto creciente)." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Productor agropecuario chico NOA", sub: "PyME · Agricultura familiar", badges: { Plata: "strong", Trabajo: "mid" } },
+      { name: "Productor familiar campesino", sub: "Trabajo informal · NEA · INAFCI", badges: { Plata: "strong", Trabajo: "mid", "Movilidad social": "mid" } },
+      { name: "Trabajador INTA estación experimental", sub: "Empleado público · INTA", badges: { Trabajo: "strong", Estabilidad: "strong" } },
+      { name: "PyME industrial con certificaciones", sub: "Empresario PyME · CABA · INTI cliente", badges: { Plata: "mid" } },
+      { name: "Habitante pueblo con estación INTA", sub: "Cualquier ocupación · Pueblo", badges: { "Calidad de servicios": "mid", Salud: "mid" } },
+      { name: "Consumidor de productos para el hogar", sub: "Empleado priv. · CABA · Familia", badges: { Salud: "mid" } }
+    ]
+  },
+  {
+    id: "aranceles_celulares_electronicos",
+    title: "Aranceles celulares y electrónicos — Decreto 333/2025",
+    date: "2025-05-20",
+    meta: "Decreto 333/2025 · arancel celulares 16% → 8% → 0% (15-ene-2026) · vigente",
+    desc: "Decreto 333/2025: arancel de importación de celulares 16% → 8% → 0% (15-ene-2026). Mismo esquema para consolas de videojuegos, televisores, monitores y aires acondicionados. Impuestos internos: 17% → 9,5% importados; 0% para fabricados en Tierra del Fuego bajo Ley 19.640. Tierra del Fuego: 190.000 habitantes, 13.000 metalúrgicos directos + 40-50k indirectos. Mirgor 760 despidos + Newsan 1.000 suspensiones + Radio Victoria 130. BGH+NewSan+Mirgor presentaron plan que arriesga 50% de los puestos. 6.000 empleos en riesgo concreto.",
+    tags: ["Trabajo","Plata","Industria"],
+    fuente: "Boletín Oficial — Decreto 333/2025. Infobae, ADNSUR, Beccar Varela, Fundar.",
+    impact: function(p) {
+      const dims = [];
+      if (p.zona === 'patagonia' && (p.ocupacion === 'empleado_priv' || p.ocupacion === 'pyme' || p.ocupacion === 'trab_informal')) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "El sector electrónica fueguino perdió capacidad competitiva. Si trabajás en Mirgor, Newsan, BGH, IATEC: tu trabajo está en la lista de los 6.000 puestos en riesgo. Suspensiones sin paga, despidos por tandas, plan empresarial que admite el 50% de los puestos como sacrificables." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Sin marco temporal claro de protección a la industria fueguina. La Ley 19.640 sigue formalmente pero queda vaciada." });
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Suspensiones sin paga + indemnizaciones con tope DNU 70 = pérdida real de ingreso para sostener una familia en una provincia con costo de vida 30-40% más alto que el promedio nacional." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "strong",
+          body: "La provincia se construyó con migración promovida por la Ley 19.640. Si la industria se vacía, se invierte la migración. Familias enteras vuelven al continente, escuelas con menos alumnos, comercios cerrando." });
+        dims.push({ name: "Vivienda", icon: "🏠", level: "mid",
+          body: "Mercado inmobiliario de TDF se derrumba: propietarios vendieron al 40-50% del valor 2023; quienes alquilaban perdieron inquilinos." });
+      }
+      if (p.zona === 'patagonia') {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "Provincia con menos recaudación = menos inversión municipal y provincial. Servicios públicos (recolección, transporte urbano, salud, escuelas) sufren al achicarse la base económica." });
+      }
+      const ingresoMedioBajo = p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m' || p.ingreso === '1.5m_3m';
+      const ingresoAlto = p.ingreso === '3m_6m' || p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
+      if (ingresoMedioBajo || ingresoAlto) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Celulares bajaron 25-40% en precio final en pesos durante 2025-2026. Modelos premium de USD 1.500 ahora rondan USD 900-1.000. Smart TVs grandes -30-35%. Acceso a tecnología que para muchas familias era inalcanzable." });
+      }
+      if (p.ocupacion === 'estudiante' || p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa') {
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "pos_soft",
+          body: "Acceso a herramientas digitales (celular, monitor) que sirven para estudiar, trabajar, hacer trámites." });
+      }
+      if (p.ocupacion === 'pyme' && p.zona !== 'patagonia') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si sos importador formal o cadena retail electrónica, mejor margen + más rotación. Cadenas grandes (Frávega, Garbarino, Mercado Libre): ganadores estructurales." });
+      }
+      dims.push({ name: "Salud", icon: "❤️", level: "soft",
+        body: "Productos electrónicos importados sin filtro completo (combinación de eliminación SIRA/SEDI + reducción capacidad INTI + arancel cero): riesgo concreto de productos con baterías defectuosas, cargadores no homologados, materiales con compuestos no permitidos. Importaciones de marcas no consolidadas crecieron 200%+ en 2024-2025." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "Decisión de abandonar el régimen industrial fueguino sin política de transición ni reconversión. Argentina sale del segmento de ensamblaje electrónico nacional. Brasil y México mantienen sus equivalentes; nosotros perdimos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Operario Mirgor / Newsan TDF", sub: "Empleado priv. · Patagonia", badges: { Trabajo: "strong", Estabilidad: "strong", Plata: "strong" } },
+      { name: "Comerciante en Río Grande / Ushuaia", sub: "PyME · Patagonia · Local", badges: { Trabajo: "strong", "Movilidad social": "strong" } },
+      { name: "Habitante TDF con familia metalúrgica", sub: "Cuidado hogar · Patagonia", badges: { Vivienda: "mid", "Calidad de servicios": "mid" } },
+      { name: "Estudiante CABA que compra celular", sub: "Estudiante · CABA · Tecnología", badges: { Plata: "pos", "Movilidad social": "pos_soft" } },
+      { name: "Comerciante de electrónica continente", sub: "PyME · CABA · Retail", badges: { Plata: "pos" } },
+      { name: "Consumidor familiar ingreso medio", sub: "Empleado priv. · $1,5-3M · Hijos", badges: { Plata: "pos", Salud: "soft" } }
+    ]
   }
 ];
 
