@@ -394,6 +394,87 @@ export const MEASURES_BASE = [
       { name: "Repartidor Rappi solo, sin otro ingreso", sub: "Único ingreso plataforma", badges: { Trabajo: "strong", Plata: "mid", Salud: "pos", "Carga mental": "strong" } },
       { name: "Estudiante que hace Pedidos Ya algunas horas", sub: "Estudiante + plataforma", badges: { Trabajo: "mid", Plata: "soft", Salud: "soft", "Carga mental": "mid" } }
     ]
+  },
+
+  {
+    id: "veto_financiamiento_universitario_2025",
+    date: "2025-10-02",
+    title: "Veto rechazado del Financiamiento Universitario",
+    meta: "Ley 27.795 · veto rechazado por Congreso (Dto 647/2025) · vigente",
+    desc: "El Ejecutivo vetó la Ley 27.795 de Financiamiento Universitario por Decreto 647/2025. Diputados (181-60-1 el 17-sep-2025) y Senado (58-7-4 el 02-oct-2025) ratificaron la ley con los 2/3 constitucionales. La ley quedó promulgada por insistencia.",
+    tags: ["Educación", "Salud", "País"],
+    area: "Educación",
+    estado: "vigente",
+    fuente: "Boletín Oficial · Ley 27.795 · Decreto 647/2025 · Diario de Sesiones HCDN 17-sep-2025 · HSN 02-oct-2025",
+    impact: function(p) {
+      const dims = [];
+
+      // BRANCH 1 — Estudiante (cualquier ingreso/ubicación)
+      if (p.ocupacion === 'estudiante') {
+        dims.push({ name: "Educación", icon: "📚", level: "pos_strong",
+          body: "Garantiza continuidad de cursada sin aranceles encubiertos y restaura el fondo de becas. Si cursás en universidad nacional, tu carrera sigue en pie." });
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Becas restituidas (Progresar y otras) con ajuste mensual que recupera el poder de compra perdido durante el congelamiento previo." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "pos_soft",
+          body: "La universidad pública sigue siendo vía concreta de progreso para sectores medios y bajos." });
+        dims.push({ name: "Carga mental", icon: "🧠", level: "pos_soft",
+          body: "Menor incertidumbre sobre el futuro de tu carrera." });
+      }
+
+      // BRANCH 2 — Cualquier perfil con hijos a cargo (no estudiante)
+      const tieneHijos = p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas';
+      if (tieneHijos && p.ocupacion !== 'estudiante') {
+        dims.push({ name: "Educación", icon: "📚", level: "pos_strong",
+          body: "Continuidad del sistema donde tus hijos van o pueden ir a estudiar." });
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "No tenés que cubrir aranceles privados ni becas perdidas." });
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "pos_soft",
+          body: "Menos estrés económico extra alrededor de la carrera de tus hijos." });
+      }
+
+      // BRANCH 3 — Empleado público (cualquier nivel)
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos",
+          body: "Si trabajás en el sector universitario, recomposición salarial garantizada. Si trabajás en otro sector público, sienta precedente: el Ejecutivo no puede recortar partidas que el Congreso votó." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
+          body: "La defensa de partidas votadas refuerza el rol del sector público." });
+      }
+
+      // BRANCH 4 — Jubilado / Pensionado / Cuidado hogar / desempleado / trabajador informal sin hijos
+      const sinHijos = !tieneHijos;
+      const perfilSistemico = ['jubilado_min','jubilado_med','pensionado','ama_casa','desempleado','trab_informal','domestica_reg','domestica_no_reg'].includes(p.ocupacion);
+      if (perfilSistemico && sinHijos) {
+        dims.push({ name: "Salud", icon: "❤️", level: "pos_soft",
+          body: "La universidad pública es la fábrica de médicos, enfermeros y kinesiólogos que vas a necesitar los próximos años. Defenderla = más profesionales formados disponibles a futuro." });
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "pos_soft",
+          body: "Misma lógica para abogados, contadores, ingenieros, agrónomos. La calidad futura de los servicios que vos consumís depende de quién se forma hoy." });
+        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "pos",
+          body: "El rechazo del veto por los 2/3 demuestra que el Congreso ejerce su rol constitucional sobre el presupuesto (art. 75:8 CN). Refuerza el equilibrio de poderes que la Constitución diseña." });
+      }
+
+      // BRANCH 5 — Empleado privado / autónomo / monotrib / PyME sin hijos (impacto sistémico futuro)
+      const perfilProductivo = ['empleado_priv','autonomo','monotrib','pyme'].includes(p.ocupacion);
+      if (perfilProductivo && sinHijos) {
+        dims.push({ name: "Educación", icon: "📚", level: "pos_soft",
+          body: "Si en el futuro vos o tu familia quieren cursar, el sistema sigue disponible. Es una opción concreta para movilidad social." });
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "pos_soft",
+          body: "Profesionales calificados disponibles a futuro para tu vida y trabajo." });
+        if (p.ocupacion === 'pyme') {
+          dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+            body: "RRHH calificado (ingenieros, contadores, profesionales) disponibles a futuro para contratar." });
+        }
+      }
+
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Estudiante UBA, alquila CABA", sub: "Estudiante, alquila, sin hijos, hasta $700k", badges: { Educación: "pos_strong", Plata: "pos", Movilidad: "pos_soft", "Carga mental": "pos_soft" } },
+      { name: "Empleado privado con 2 hijos en universidad", sub: "Empleado privado, propio, 2 hijos, $1,5M-3M", badges: { Educación: "pos_strong", Plata: "pos_soft", Familia: "pos_soft" } },
+      { name: "Empleado público (sector universitario)", sub: "Empleado público, alquila, 1 hijo, $700k-1,5M", badges: { Educación: "pos_strong", Plata: "pos_soft", Familia: "pos_soft", Trabajo: "pos", Estabilidad: "pos_soft" } },
+      { name: "Jubilado mínima sin familia en universidad", sub: "Jubilado mínima, propio, sin hijos, hasta $700k", badges: { Salud: "pos_soft", Servicios: "pos_soft", País: "pos" } },
+      { name: "Monotributista sin hijos", sub: "Monotributista, propio, sin hijos, $700k-1,5M", badges: { Educación: "pos_soft", Servicios: "pos_soft" } },
+      { name: "PyME del interior", sub: "PyME, propio, sin hijos, $3M-6M", badges: { Educación: "pos_soft", Servicios: "pos_soft", Trabajo: "pos_soft" } }
+    ]
   }
 ];
 

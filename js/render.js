@@ -653,7 +653,7 @@ function renderImpact() {
       dims.forEach(d => {
         const card = document.createElement('div');
         card.className = 'dim-card hit-' + d.level;
-        const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos: "Positivo", none: "No aplica" }[d.level];
+        const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos_strong: "Positivo Fuerte", pos: "Positivo Medio", pos_soft: "Positivo Leve", none: "No aplica" }[d.level];
         card.innerHTML = `
           <div class="dim-head">
             <div class="dim-name"><span class="dim-icon">${d.icon || "•"}</span>${d.name}</div>
@@ -769,7 +769,12 @@ function renderCompare() {
 }
 
 // ============== BALANCE FEATURE ==============
-const LEVEL_WEIGHT = { pos: 1, none: 0, soft: -1, mid: -2, strong: -3 };
+const LEVEL_WEIGHT = { pos_strong: 3, pos: 1, pos_soft: 1, none: 0, soft: -1, mid: -2, strong: -3 };
+
+// Niveles "a favor" del perfil. Lo usan el balance y el agregado por dimensión
+// para contar positivos vs negativos (las gradaciones pos_* cuentan como positivas).
+const POS_LEVELS = new Set(["pos", "pos_strong", "pos_soft"]);
+const isPos = (lvl) => POS_LEVELS.has(lvl);
 
 function scoreMeasure(m) {
   if (!state.perfil.ocupacion) return { score: 0, dims: [], bucket: 'neutral' };
@@ -802,7 +807,7 @@ function aggregateDims(scored) {
     s.dims.forEach(d => {
       if (!tally[d.name]) tally[d.name] = { icon: d.icon || "•", pos: 0, neg: 0, items: 0 };
       tally[d.name].items += 1;
-      if (d.level === "pos") tally[d.name].pos += 1;
+      if (isPos(d.level)) tally[d.name].pos += 1;
       else if (d.level !== "none") tally[d.name].neg += 1;
     });
   });
@@ -877,8 +882,8 @@ function renderBalance() {
     const item = document.createElement('div');
     item.className = 'tl-item ' + s.bucket;
     const label = bucketLabel(s.bucket);
-    const negDims = s.dims.filter(d => d.level !== 'none' && d.level !== 'pos').map(d => d.name).slice(0, 3);
-    const posDims = s.dims.filter(d => d.level === 'pos').map(d => d.name);
+    const negDims = s.dims.filter(d => d.level !== 'none' && !isPos(d.level)).map(d => d.name).slice(0, 3);
+    const posDims = s.dims.filter(d => isPos(d.level)).map(d => d.name);
     let summary = '';
     if (negDims.length) summary += `Pega en: ${negDims.join(', ')}`;
     if (posDims.length) summary += (summary ? ' · ' : '') + `Beneficia: ${posDims.join(', ')}`;
