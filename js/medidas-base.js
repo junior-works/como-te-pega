@@ -2152,6 +2152,366 @@ export const MEASURES_BASE = [
       { name: "Hogar de ingresos bajos con subsidio", sub: "Trabajo informal · ≤$700k · SEF", badges: { Plata: "soft" } },
       { name: "Hogar bajo que perdió el beneficio", sub: "Trabajo informal · $700k-1,5M", badges: { Plata: "mid" } }
     ]
+  },
+
+  {
+    id: "disolucion_afip_creacion_arca",
+    date: "2024-10-25",
+    title: "Se disolvió la AFIP y nació ARCA",
+    meta: "Decreto 953/2024 · BORA 25-oct-2024 · disuelve la AFIP y crea ARCA (Agencia de Recaudación y Control Aduanero)",
+    desc: "La AFIP dejó de existir como ente y fue reemplazada por ARCA, ente autárquico en la órbita del Ministerio de Economía, con un Director Ejecutivo designado por el Presidente por 4 años, más la DGI (impositiva) y la DGA (aduana). El decreto recortó cerca del 45% de las autoridades superiores y 31% de los niveles inferiores. ARCA es la sucesora legal de la AFIP: las claves, CUIT y obligaciones de los contribuyentes siguen vigentes.",
+    tags: ["Trabajo", "Impuestos", "Estabilidad"],
+    fuente: "Boletín Oficial — Decreto 953/2024 (25-oct-2024). Datos de estructura: Argentina.gob.ar (resumen oficial), El Economista, Consejo Profesional de Ciencias Económicas.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "La disolución de la AFIP recortó cerca del <strong>45% de las autoridades superiores y el 31% de los niveles inferiores</strong> al crear ARCA. Si trabajás en el Estado, y más aún en el área de recaudación, el mensaje es de reestructuración: alrededor de 1.500 cargos jerárquicos quedaron expuestos entre despidos y retiros." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "ARCA tiene un Director Ejecutivo designado directamente por el Presidente por 4 años. Para el empleado público significa una estructura más controlable desde la política y con menos capas intermedias que antes daban estabilidad de carrera." });
+      }
+      if (p.ocupacion === 'monotrib' || p.ocupacion === 'autonomo' || p.ocupacion === 'pyme') {
+        dims.push({ name: "Tiempo", icon: "⏰", level: "soft",
+          body: "ARCA es la sucesora legal de la AFIP: tu CUIT, tus claves y tus obligaciones siguen igual. Pero todo cambio de organismo trae demoras de transición (sistemas, nombres, ventanillas). Si tenés un trámite en curso conviene seguirlo de cerca durante el traspaso." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El ahorro presupuestario salarial es real y el Estado se saca de encima una estructura sobredimensionada. El riesgo de corto plazo es la capacidad de fiscalizar y de controlar la aduana: menos personal jerárquico en frontera y la curva de aprendizaje del nuevo organismo pueden dejar baches mientras se reordena." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empleado jerárquico de AFIP/ARCA", sub: "Empleado pub. · CABA", badges: { Trabajo: "mid", Estabilidad: "mid" } },
+      { name: "Monotributista con trámites en curso", sub: "Monotrib. · interior", badges: { Tiempo: "soft" } },
+      { name: "PyME que opera con la aduana", sub: "Empresario PyME · CABA", badges: { Tiempo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "reforma_migratoria_dnu_366",
+    date: "2025-05-29",
+    title: "Reforma migratoria y deportación exprés",
+    meta: "DNU 366/2025 · BORA 29-may-2025 · modifica la Ley 25.871 (Migraciones) y la Ley 346 (Ciudadanía)",
+    desc: "El DNU endurece la política migratoria: habilita expulsar a extranjeros con antecedentes penales antes de sentencia firme (delitos con pena menor a 5 años bastan para denegar ingreso o deportar), prohíbe el reingreso por 5 años (o de forma permanente en delitos graves), exige 2 años continuos de residencia sin salidas para regularizarse y habilita arancelar la salud y la educación pública para no residentes. El ingreso y egreso solo puede hacerse por pasos habilitados.",
+    tags: ["Estabilidad", "Trabajo", "Salud", "País"],
+    fuente: "Boletín Oficial — DNU 366/2025 (29-may-2025), modifica Ley 25.871 y Ley 346. Análisis: EY Argentina, La Causa Laboral, El Diario de San Luis.",
+    impact: function(p) {
+      const dims = [];
+      const frontera = ['nea', 'noa', 'cuyo'].includes(p.zona);
+      dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
+        body: "Si valorás que un extranjero con antecedentes penales graves sea expulsado rápido, el DNU lo habilita: permite deportar antes de la sentencia firme. Tiene base real, antes una expulsión podía demorar de 3 a 5 años con apelaciones. Para vos es percepción de mayor orden." });
+      if (frontera) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "En provincias de frontera (NEA, NOA, Cuyo) el trabajo y la vida social están entrelazados con el cruce de personas. El nuevo requisito de <strong>2 años continuos sin salidas</strong> para regularizar la residencia es difícil de cumplir para quien trabaja cerca del límite o tiene familia del otro lado. Cambia la dinámica laboral de toda la zona." });
+      }
+      if (p.salud === 'hosp_pub') {
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "El DNU habilita arancelar la salud pública para no residentes. Si tu hospital de referencia atiende a población migrante de frontera, la reglamentación puede sumar controles de DNI y residencia en la ventanilla que terminan demorando la atención de todos, incluido vos." });
+      }
+      if (p.hijos && p.hijos !== '0') {
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "soft",
+          body: "En familias mixtas (un hijo argentino con padre o madre extranjero deportable) la expulsión antes de sentencia firme puede separar a la familia. Choca con el interés superior del niño de la Convención de los Derechos del Niño, que en Argentina tiene rango constitucional." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El debate de fondo es el debido proceso: deportar antes de una condena firme, y por delitos con pena menor a 5 años, reduce garantías que la Constitución reconoce a toda persona, no solo a los ciudadanos. Es una medida con respaldo de parte de la sociedad y con objeciones serias de organismos de derechos humanos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Ciudadano que pide más orden", sub: "Empleado priv. · CABA", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajador de provincia de frontera", sub: "Empleado priv. · NEA", badges: { Trabajo: "mid", Estabilidad: "pos_soft" } },
+      { name: "Familia mixta con hijo argentino", sub: "Trabajo informal · NEA · con hijos", badges: { "Vida familiar / ocio": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Paciente de hospital público de frontera", sub: "Hosp. público · NOA", badges: { Salud: "mid" } }
+    ]
+  },
+
+  {
+    id: "belgrano_cargas_privatizacion",
+    date: "2025-02-10",
+    title: "Privatización del Belgrano Cargas",
+    meta: "Decreto 67/2025 · BORA 10-feb-2025 · Ley Bases 27.742 art. 7° · privatización total de Belgrano Cargas y Logística",
+    desc: "El decreto autorizó la privatización total de Belgrano Cargas y Logística S.A. mediante desintegración vertical: remate público del material rodante (vagones y locomotoras) y concesión de obra pública para las vías, inmuebles y talleres. La empresa opera las líneas General Belgrano, San Martín y Urquiza, mueve unos 6 millones de toneladas al año (granos y minerales del NOA hacia los puertos) y tiene alrededor de 5.000 empleados.",
+    tags: ["Trabajo", "Estabilidad", "País"],
+    fuente: "Boletín Oficial — Decreto 67/2025 (10-feb-2025), bajo Ley 27.742 art. 7°. Datos operativos: Abogados.com.ar, Perfil, Palabras del Derecho.",
+    impact: function(p) {
+      const dims = [];
+      const traza = ['noa', 'nea', 'santafe_int', 'cba_int', 'rosario', 'tucuman'].includes(p.zona);
+      if ((p.ocupacion === 'empleado_priv' || p.ocupacion === 'trab_informal' || p.ocupacion === 'empleado_pub') && traza) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Belgrano Cargas tiene cerca de <strong>5.000 empleados</strong> y mueve unos 6 millones de toneladas por año (granos y minerales del NOA). La privatización es <em>total y por desintegración vertical</em>: remate del material rodante y concesión de las vías. Un proceso así casi siempre arranca con reestructuración de planteles. Los gremios (La Fraternidad, Unión Ferroviaria, APDFA) están en conflicto." });
+      }
+      if (traza) {
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "Los pueblos sobre la traza ferroviaria dependen del tren para mover su producción y, a veces, para conectarse. Si el privado prioriza solo los tramos rentables (los centrales hacia Rosario y Buenos Aires), ramales y estaciones de zonas chicas pueden quedar sin servicio." });
+      }
+      if ((p.ocupacion === 'pyme' || p.extra === 'renta') && traza) {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
+          body: "Si tu actividad es agro o logística en el NOA, una operadora privada que invierta puede mejorar la eficiencia de la bajada al puerto y bajar tu costo de flete. Es un beneficio condicional: depende de que el concesionario invierta de verdad en la red y no solo la explote." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro cobra el precio de venta y deja de subsidiar una operadora deficitaria. A cambio, un insumo logístico crítico para sacar los granos del país queda en manos privadas: si la red se fragmenta entre lo rentable y lo que no lo es, el costo recae sobre las regiones que menos pesan comercialmente." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Ferroviario del Belgrano Cargas", sub: "Empleado priv. · NOA", badges: { Trabajo: "mid", "Movilidad social": "soft" } },
+      { name: "Pueblo sobre la traza ferroviaria", sub: "Trabajo informal · NOA", badges: { "Movilidad social": "soft" } },
+      { name: "Productor agro del NOA", sub: "Empresario PyME · NOA", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "enarsa_hidroelectricas_privatizacion",
+    date: "2025-08-19",
+    title: "Venta de las hidroeléctricas del Comahue (ENARSA)",
+    meta: "Decreto 590/2025 · BORA 19-ago-2025 · escisión y venta de los activos hidroeléctricos de ENARSA",
+    desc: "El decreto autorizó vender, por concurso público nacional e internacional y sin precio base, las cuatro represas del Comahue que ENARSA y NASA reorganizaron en sociedades anónimas: Alicurá, El Chocón, Cerros Colorados y Piedra del Águila (98% ENARSA, 2% NASA). Generan cerca del 15% de la electricidad del país. El decreto reemplazó al 564/2025, anulado por defectos formales en el informe que avalaba la privatización.",
+    tags: ["Plata", "Vivienda", "País", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decreto 590/2025 (19-ago-2025), deja sin efecto el Decreto 564/2025. Activos y proceso: Barreiro Abogados, Perfil, NODAL.",
+    impact: function(p) {
+      const dims = [];
+      if (p.zona === 'patagonia') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Las cuatro represas (Alicurá, El Chocón, Cerros Colorados y Piedra del Águila) están sobre los ríos del Comahue, en tu región. Sus planteles y el royalty hidroeléctrico que cobran las provincias quedan atados a lo que decida el nuevo dueño privado. Para Neuquén y Río Negro es renta y empleo que pasan a manos externas." });
+      }
+      dims.push({ name: "Plata", icon: "💰", level: "soft",
+        body: "Las represas del Comahue generan cerca del <strong>15% de la electricidad del país</strong> y son la fuente más barata (una vez construida, el agua no se paga). El Estado las vende por concurso <em>sin base</em>, es decir sin precio mínimo. Si el privado captura esa renta barata, a mediano plazo hay menos margen para contener tu boleta de luz." });
+      dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+        body: "La generación hidro es la que estabiliza el sistema en los picos de demanda. Que pase a privados no cambia tu luz mañana, pero sí quién decide cuándo y cómo se genera la energía más barata del país, algo que repercute en el precio mayorista que termina en tu factura." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "El Tesoro cobra el precio de venta, pero el país resigna control sobre su generación eléctrica más eficiente. Este decreto reemplazó al 564/2025, anulado por defectos formales en el informe que avalaba la privatización: la operación arrastra cuestionamientos de procedimiento." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Habitante del Comahue", sub: "Empleado pub. · Patagonia", badges: { Trabajo: "mid", Plata: "soft" } },
+      { name: "Usuario eléctrico común", sub: "Empleado priv. · CABA", badges: { Plata: "soft", "Calidad de servicios": "soft" } },
+      { name: "Familia que mira la boleta de luz", sub: "Trabajo informal · $700k-1,5M", badges: { Plata: "soft" } },
+      { name: "Contribuyente que mira soberanía", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "mid" } }
+    ]
+  },
+
+  {
+    id: "aysa_licitacion_privatizacion",
+    date: "2025-07-22",
+    title: "Privatización de AySA (agua y cloacas del AMBA)",
+    meta: "Decreto 494/2025 · BORA 22-jul-2025 + Resolución MEcon 704/2026 (BORA 15-may-2026) · venta del 90% de AySA",
+    desc: "Se declaró a AySA sujeta a privatización y se lanzó la licitación pública nacional e internacional para vender el 90% del capital (primero al menos el 51% a un operador estratégico, el resto en bolsa); el 10% queda para los trabajadores vía Programa de Propiedad Participada. AySA presta agua potable y cloacas a unos 14 millones de personas en CABA y 26 partidos del GBA. La presentación de ofertas se previó hasta el 27-ago-2026.",
+    tags: ["Plata", "Vivienda", "Calidad de servicios", "Salud"],
+    fuente: "Boletín Oficial — Decreto 494/2025 (22-jul-2025) y Resolución Ministerio de Economía 704/2026 (15-may-2026). Esquema de venta: Ámbito, iAgua, AySA (sección Privatización).",
+    impact: function(p) {
+      const dims = [];
+      const amba = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste'].includes(p.zona);
+      if (amba) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "AySA da agua potable y cloacas a <strong>14 millones de personas</strong> en CABA y 26 partidos del GBA. Se privatiza el 90% (primero el 51% a un operador estratégico). La referencia histórica preocupa: con la concesión anterior (Aguas Argentinas/Suez, 1993-2006) la tarifa real se multiplicó varias veces antes de la rescisión. Tu boleta de agua probablemente sube." });
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "Una operadora privada puede mejorar el servicio si invierte, pero también tiende a priorizar las zonas más rentables. Si vivís en un barrio con red en buen estado el cambio se nota menos; si la red de tu zona es vieja, la inversión puede tardar en llegar." });
+      }
+      if (amba && (p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m')) {
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "En barrios populares del GBA, donde la red de agua y cloacas todavía es precaria, que el privado priorice rentabilidad puede dejar postergada la extensión de cañerías. Agua segura y cloacas son salud directa: su demora se mide en enfermedades evitables." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado deja de poner subsidios y cobra el precio de venta; el 10% de las acciones queda para los trabajadores (Programa de Propiedad Participada). El punto en discusión es quién regula, y con qué fuerza, la tarifa y la calidad de un servicio esencial y monopólico como el agua." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Familia del GBA usuaria de AySA", sub: "Empleado priv. · GBA Sur", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
+      { name: "Hogar de barrio popular sin cloacas", sub: "Trabajo informal · ≤$700k · GBA", badges: { Salud: "mid", Plata: "mid" } },
+      { name: "Usuario de CABA", sub: "Empleado priv. · CABA", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
+      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "ley_movilidad_jubilatoria_vetada",
+    date: "2024-09-02",
+    title: "Veto a la nueva movilidad jubilatoria",
+    meta: "Ley 27.756 (sancionada ago-2024) vetada por Decreto 782/2024 · BORA 2-sep-2024 · veto sostenido",
+    desc: "El Congreso sancionó la Ley 27.756, que daba a los jubilados una recomposición del 8,1% para reparar el salto de inflación de comienzos de 2024 que la nueva fórmula no trasladó al haber, más un bono en el cálculo. El Poder Ejecutivo la vetó en forma total por el Decreto 782/2024 y el veto se sostuvo porque en el Congreso no se reunió la mayoría especial para insistir.",
+    tags: ["Plata", "Jubilación", "Estabilidad"],
+    fuente: "Boletín Oficial — Decreto 782/2024 (veto, 2-sep-2024) sobre Ley 27.756. Datos: SAIJ, La Nación, Infobae, Centro CEPA.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'jubilado_min') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "La Ley 27.756 te habría dado una recomposición del <strong>8,1%</strong> para reparar el salto de inflación de comienzos de 2024 que la nueva fórmula no trasladó al haber. El veto la dejó sin efecto. Como cobrás el mínimo, lo único que compensa es el bono fijo congelado en $70.000, que no alcanza a cubrir ese 8,1% perdido." });
+      } else if (p.ocupacion === 'jubilado_med') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Sos el caso más golpeado por el veto: la Ley 27.756 te daba el <strong>8,1%</strong> de recomposición, pero como tu haber supera el mínimo <em>no cobrás el bono</em> que sí reciben los de la mínima. Resultado: perdés todo ese 8,1% sin ninguna compensación." });
+      } else if (p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Las pensiones también quedaron sin la recomposición del 8,1% que traía la ley vetada. Con haberes ya bajos, y a veces con demoras en altas y auditorías de padrones, cada punto que no se recompone se siente entero." });
+      }
+      if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "El veto se sostuvo porque en el Congreso no se juntó la mayoría especial para insistir. Para vos significa que la recomposición no vuelve por esta vía: el haber queda atado a la fórmula del Gobierno, sin el piso que el Congreso había intentado garantizar por ley." });
+      }
+      if (p.adultos === '1' || p.adultos === '2mas') {
+        dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "soft",
+          body: "Si tenés un adulto mayor a cargo, el 8,1% que no se recompuso es plata que sale de tu bolsillo para sostenerlo. El veto traslada parte del costo del ajuste previsional a las familias que ayudan a sus jubilados." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El objetivo fiscal es explícito: el Gobierno estimó que aplicar la ley costaba el equivalente a cerca de medio punto del PBI por año y lo usó como argumento del veto para sostener el superávit. El ahorro del Tesoro es real; lo paga el poder de compra de 7,2 millones de jubilados." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Jubilado de la mínima", sub: "Jubilado mínima · CABA", badges: { Plata: "strong", Estabilidad: "mid" } },
+      { name: "Jubilado de haber medio (sin bono)", sub: "Jubilado media-alta · CABA", badges: { Plata: "strong", Estabilidad: "mid" } },
+      { name: "Pensión no contributiva", sub: "Pensionado · GBA", badges: { Plata: "strong", Estabilidad: "mid" } },
+      { name: "Hijo/a que sostiene a un jubilado", sub: "Empleado priv. · adulto a cargo", badges: { "Vida familiar": "soft" } }
+    ]
+  },
+
+  {
+    id: "bono_jubilatorio_congelado_70000",
+    date: "2024-03-25",
+    title: "El bono jubilatorio, congelado en $70.000",
+    meta: "Decreto 274/2024 (mar-2024) + prórrogas mensuales (Decretos 440/2024, 552/2024, 783/2024, 47/2025 y sucesivos) · bono sin actualizar",
+    desc: "Junto con la nueva fórmula de movilidad mensual atada a la inflación, el Gobierno fijó un bono de refuerzo de $70.000 para quienes cobran el haber mínimo y lo fue prorrogando mes a mes sin actualizarlo nunca. Desde marzo de 2024 el bono perdió cerca del 49% de su poder de compra: representaba alrededor del 30% del ingreso de un jubilado de la mínima y hoy pesa apenas un 12-13%.",
+    tags: ["Plata", "Jubilación", "Vivienda", "Salud"],
+    fuente: "Boletín Oficial — Decreto 274/2024 y decretos de prórroga del refuerzo previsional (440/2024, 552/2024, 783/2024, 47/2025 y sucesivos). Datos de licuación: Chequeado, Infobae, Zona Norte Hoy.",
+    impact: function(p) {
+      const dims = [];
+      const cobraBono = p.ocupacion === 'jubilado_min' || p.ocupacion === 'pensionado';
+      if (p.ocupacion === 'jubilado_min') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "El bono de refuerzo de <strong>$70.000</strong> para haberes mínimos está congelado desde marzo de 2024: no se actualiza por inflación ni por la fórmula. Entonces era cerca del 30% de tu ingreso mensual; hoy pesa apenas un 12-13% y perdió alrededor del <strong>49% de su poder de compra</strong>. Es plata que valía mucho más y se fue licuando sola." });
+      } else if (p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si cobrás una pensión equivalente al haber mínimo, el bono de $70.000 también te alcanza, y también está congelado desde marzo de 2024. Perdió cerca del 49% de su valor real: el complemento que más pesaba en tu ingreso es justo el que no se actualiza." });
+      }
+      const urbanoCaro = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario'].includes(p.zona);
+      if (cobraBono && urbanoCaro) {
+        dims.push({ name: "Vivienda", icon: "🏠", level: "mid",
+          body: "En CABA y el GBA, donde alquiler, expensas y servicios sin subsidio son más caros, ese bono congelado se evapora en pocas semanas. La parte fija de tu costo de vivir creció muy por encima de los $70.000 que no se mueven desde 2024." });
+      }
+      if (p.salud === 'pami' && cobraBono) {
+        dims.push({ name: "Salud", icon: "❤️", level: "mid",
+          body: "Con PAMI y vademécum recortado, los medicamentos que antes cubría el bono ahora compiten con la comida y los servicios. Para un adulto mayor con tratamiento crónico, $70.000 que valen la mitad que en 2024 significan menos adherencia al tratamiento." });
+      }
+      if ((p.asistencia || []).includes('sub_pami') && cobraBono) {
+        dims.push({ name: "Carga mental", icon: "🧠", level: "soft",
+          body: "Mantener el Subsidio Social PAMI exige renovar trámites; sumado a un bono que pierde valor cada mes, la planificación del gasto se vuelve un cálculo permanente de qué se puede pagar y qué no." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Congelar el bono en lugar de actualizarlo es una forma silenciosa de ajuste: se licúa solo con la inflación, sin necesidad de un decreto que lo recorte. El Tesoro ahorra alrededor de medio punto del PBI; lo pagan 4,5 millones de jubilados de la mínima." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Jubilada de la mínima en CABA", sub: "Jubilado mínima · CABA · PAMI", badges: { Plata: "strong", Vivienda: "mid", Salud: "mid" } },
+      { name: "Jubilado de la mínima en el interior", sub: "Jubilado mínima · pueblo", badges: { Plata: "strong" } },
+      { name: "Pensionado de la mínima en el GBA", sub: "Pensionado · GBA Sur", badges: { Plata: "strong", Vivienda: "mid" } },
+      { name: "Jubilado de la mínima con tratamiento", sub: "Jubilado mínima · PAMI · Subsidio Social", badges: { Plata: "strong", Salud: "mid", "Carga mental": "soft" } }
+    ]
+  },
+
+  {
+    id: "dnu70_reforma_medios",
+    date: "2023-12-21",
+    title: "Desregulación de medios y comunicaciones (DNU 70)",
+    meta: "DNU 70/2023 · BORA 21-dic-2023 · modifica la Ley 26.522 (Servicios de Comunicación Audiovisual) y la Ley 27.078 (Argentina Digital)",
+    desc: "El DNU desreguló el sector audiovisual: cayó el tope a la cantidad de licencias que un mismo dueño puede tener a nivel nacional, se habilitó que servicios de TV paga e internet satelital (DirecTV, Claro, Starlink) operen sin las restricciones cruzadas anteriores, se reclasificó la TV por internet y los servicios satelitales bajo el marco más laxo de Argentina Digital, y cayó el piso obligatorio de contenido nacional, independiente y local en TV y radio.",
+    tags: ["Trabajo", "País", "Calidad de servicios"],
+    fuente: "Boletín Oficial — DNU 70/2023 (21-dic-2023), capítulo de desregulación que modifica Ley 26.522 y Ley 27.078. Concentración del mercado: informes sectoriales y gremiales (SiPreBA, FATPREN, SATSAID).",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "Cae el tope que impedía a un mismo dueño acumular licencias en todo el país. La radio o el canal de tu zona puede ser comprado por una red nacional y pasar a emitir desde Buenos Aires: menos noticias del pueblo, menos voz local. En Argentina ya hay alta concentración: cerca de 3 grupos manejan alrededor del 80% del mercado de medios pagos." });
+        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+          body: "Sin el piso de producción local y con el tope de licencias caído, la pluralidad informativa en el interior se debilita. La contracara concreta: los servicios satelitales (Starlink, DirecTV) entran sin restricciones cruzadas y pueden llevar internet a zonas rurales que no lo tenían, aunque a un costo (equipo más abono en dólares) que no es accesible para todos." });
+      }
+      if ((p.ocupacion === 'monotrib' || p.ocupacion === 'autonomo' || p.ocupacion === 'trab_informal') && interior) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si trabajás en medios o producción audiovisual (periodista, técnico, locutor, productora), cae el piso obligatorio de contenido nacional e independiente que rondaba el 60% en TV. El mercado de producción local puede achicarse entre un 30 y un 50% si la concentración avanza, y con él tus changas o contratos." });
+      } else if (interior) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "La caída del piso de producción nacional e independiente golpea al trabajo audiovisual y periodístico local (gremios SiPreBA, FATPREN, SATSAID). Aunque no trabajes en el sector, tu pueblo pierde empleo calificado y voces propias." });
+      }
+      if (!interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "En las grandes ciudades hay más oferta, así que la concentración se nota menos en lo inmediato. Pero la caída del tope de licencias y del piso de producción nacional empuja a un mercado con menos voces independientes y posibilidad de empaquetar de forma obligatoria TV paga más internet." });
+      }
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Periodista o técnico de medios del interior", sub: "Monotrib. · NEA", badges: { Trabajo: "mid", "Calidad de servicios": "mid", "País / Equilibrio institucional": "mid" } },
+      { name: "Familia de pueblo chico", sub: "Trabajo informal · pueblo", badges: { "Calidad de servicios": "mid", "País / Equilibrio institucional": "mid" } },
+      { name: "Usuario rural sin internet (Starlink)", sub: "Autónomo · Patagonia", badges: { "Calidad de servicios": "mid", "País / Equilibrio institucional": "mid" } },
+      { name: "Usuario de medios en CABA", sub: "Empleado priv. · CABA", badges: { "Calidad de servicios": "soft" } }
+    ]
+  },
+
+  {
+    id: "dnu70_gondolas",
+    date: "2023-12-21",
+    title: "Derogación de la Ley de Góndolas (DNU 70)",
+    meta: "DNU 70/2023 · BORA 21-dic-2023 · deroga la Ley 27.545 de Góndolas",
+    desc: "El DNU derogó la Ley de Góndolas, que obligaba a los supermercados a reservar el 25% del espacio para PyMEs, prohibía que un mismo grupo económico ocupara más del 30% de la góndola, garantizaba precios visibles y comparables y prohibía cobros por exhibición. Sin esas reglas, las cadenas vuelven a negociar libremente con las marcas, sin techo de espacio ni obligación de informar su estructura de costos.",
+    tags: ["Plata", "Trabajo", "Calidad de servicios"],
+    fuente: "Boletín Oficial — DNU 70/2023 (21-dic-2023), deroga Ley 27.545. Alcance de la ley derogada: Comercio y Justicia, WSC Legal, PAGBAM Abogados.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'pyme' || p.ocupacion === 'monotrib') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "La Ley de Góndolas obligaba a los súper a reservar el <strong>25% del espacio para PyMEs</strong> y prohibía que un mismo grupo ocupara más del 30%. Derogada, si producís alimentos, bebidas o limpieza a escala chica (cervezas regionales, lácteos, panificados), perdés el acceso garantizado a la góndola: competís contra las marcas líderes por lugar y volvés a pagar por exhibición." });
+      }
+      const pocaCompetencia = ['pueblo', 'nea', 'noa', 'cuyo', 'patagonia', 'cba_int', 'santafe_int'].includes(p.zona);
+      if (pocaCompetencia) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "En pueblos o zonas con una sola cadena, sin la regla de góndola la cadena prioriza las marcas grandes que le dejan más margen. Tenés menos variedad real: productos regionales y de cooperativas pueden desaparecer del estante." });
+      }
+      const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza'].includes(p.zona);
+      if (granUrbano) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Si comprás en grandes ciudades con varias cadenas, en lo inmediato podés ver más promociones de marcas líderes (descuentos cruzados por exclusividad). Es un beneficio acotado: la contracara es menos competencia de marcas chicas que solían presionar los precios hacia abajo." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Gobierno deja de intervenir en cómo se ordena la góndola y las empresas no tienen que informar su estructura de costos. Ganan las grandes cadenas (Coto, Carrefour, Día, Cencosud) y las marcas líderes (Arcor, Molinos, Mastellone, Unilever); pierden las PyMEs alimenticias y la política de variedad local." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "PyME alimenticia regional", sub: "Empresario PyME · interior", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Consumidor de pueblo con una sola cadena", sub: "Trabajo informal · pueblo", badges: { "Calidad de servicios": "soft" } },
+      { name: "Consumidor de gran ciudad", sub: "Empleado priv. · CABA", badges: { Plata: "pos_soft" } },
+      { name: "Productor cooperativo", sub: "Monotrib. · interior", badges: { Trabajo: "mid" } }
+    ]
+  },
+
+  {
+    id: "eliminacion_retenciones_carne_vacuna",
+    date: "2024-08-06",
+    title: "Quita de retenciones a la carne vacuna",
+    meta: "Decreto 697/2024 · BORA 6-ago-2024 · elimina derechos de exportación a la carne de vaca (cat. A-E) y baja al resto",
+    desc: "El decreto llevó a 0% los derechos de exportación (retenciones) para el producto de la faena de vaca (categorías A, B, C, D y E), bajó el resto de la carne vacuna al 6,75% y las menudencias al 3,75%, dentro de una reducción general del 25% a las proteínas animales; también eliminó retenciones a la cadena porcina y láctea. Al hacer más atractivo exportar, presiona el precio interno hacia arriba. El costo fiscal de toda la baja agroindustrial se estimó en unos USD 130 millones.",
+    tags: ["Plata", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decreto 697/2024 (6-ago-2024). Detalle de alícuotas y costo fiscal: Valor Carne, El Rural, Infocampo, Tristán y Asociados.",
+    impact: function(p) {
+      const dims = [];
+      const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      if (ingresoBajoMedio) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "El decreto llevó a 0% las retenciones a la carne de vaca (categorías A a E) y bajó el resto de la carne vacuna al 6,75%. Cuando exportar rinde más, parte de la producción se va afuera y eso presiona el precio interno hacia arriba. Para un hogar de ingresos como el tuyo, donde la carne es central en la dieta, el costo del asado y de los cortes de consumo masivo siente esa suba (estimaciones de +5 a +12%)." });
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "No es que falte carne: es que la misma carne compite ahora con un mercado externo que paga en dólares. Tu poder de compra de proteína animal cae aunque el sueldo no cambie." });
+      } else {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "La eliminación de retenciones a la carne de vaca (a 0%) y la baja del resto al 6,75% tiende a empujar el precio interno al alza porque mejora el atractivo de exportar. Con ingresos más altos lo absorbés mejor, pero igual lo ves en la carnicería." });
+      }
+      if ((p.ocupacion === 'pyme' || p.extra === 'renta') && ['noa', 'nea', 'cba_int', 'santafe_int', 'pueblo', 'patagonia'].includes(p.zona)) {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
+          body: "Si tu actividad está ligada a la ganadería o a los frigoríficos, la quita de retenciones mejora el margen por kilo exportado y se traslada en parte al precio que recibe el productor. Es un beneficio real para la cadena cárnica, sobre todo la exportadora." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro resigna recaudación (el costo fiscal de toda la baja agroindustrial se estimó en unos USD 130 millones sobre lo tributado en 2023) a cambio de competitividad exportadora y divisas. El precio de la mesa argentina queda más atado al valor internacional de la carne." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Familia que vive del asado", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
+      { name: "Hogar de ingresos altos", sub: "Empleado priv. · $6-15M", badges: { Plata: "soft" } },
+      { name: "Productor ganadero / frigorífico", sub: "Empresario PyME · interior", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
   }
 ];
 
