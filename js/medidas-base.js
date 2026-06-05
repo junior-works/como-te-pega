@@ -3188,6 +3188,133 @@ export const MEASURES_BASE = [
       { name: "Familia con un hijo en la universidad", sub: "Empleado priv. · interior", badges: { "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
       { name: "Contribuyente que mira el déficit", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
     ]
+  },
+
+  {
+    id: "dnu70_abastecimiento",
+    date: "2023-12-21",
+    title: "Derogación de la Ley de Abastecimiento y del Observatorio de Precios",
+    meta: "DNU 70/2023 · BORA 21-dic-2023 · deroga la Ley 20.680 de Abastecimiento (vigente desde 1974) y la Ley 26.992 que creó el Observatorio de Precios; el Estado pierde la facultad de fijar precios máximos, exigir continuidad de producción y sancionar el desabastecimiento, y se discontinúa el monitoreo oficial de precios y stock (SIPRE)",
+    desc: "El DNU 70/2023 derogó la Ley 20.680 de Abastecimiento —que desde 1974 permitía al Estado fijar precios máximos, obligar a continuar la producción y sancionar la especulación y el desabastecimiento de bienes esenciales— y la Ley 26.992, que había creado el Observatorio de Precios para monitorear precios y disponibilidad y detectar abusos. Con ellas cae también el andamiaje de información de precios y stock (SIPRE) que daba sustento a esos controles. El argumento oficial es que menos intervención libera la oferta; la contracara es que el consumidor pierde el paraguas legal frente a precios abusivos en bienes esenciales.",
+    tags: ["Plata", "Calidad de servicios", "Estabilidad"],
+    fuente: "Boletín Oficial — DNU 70/2023 (BORA 21-dic-2023), derogación de la Ley 20.680 de Abastecimiento y de la Ley 26.992 del Observatorio de Precios. Alcance de las facultades derogadas (precios máximos, continuidad de producción, sanción del desabastecimiento) y del monitoreo (SIPRE): Allende & Brea, Marval, Ámbito, InfoLeg.",
+    impact: function(p) {
+      const dims = [];
+      const bajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      const jubilado = ['jubilado_min', 'jubilado_med', 'pensionado'].includes(p.ocupacion);
+      dims.push({ name: "Plata", icon: "💰", level: (bajoMedio || jubilado) ? "mid" : "soft",
+        body: "Hasta ahora, frente a un precio que parecía abusivo en un bien esencial —pan, leche, garrafa, un medicamento de venta libre— existía una herramienta legal (la Ley de Abastecimiento) que habilitaba al Estado a fijar precios máximos o a sancionar la especulación. Esa herramienta ya no existe. Para un hogar con el gasto concentrado en pocos bienes básicos, perder ese respaldo legal deja el precio librado a lo que decidan las empresas que dominan cada góndola." });
+      if (bajoMedio || jubilado) {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "El golpe es mayor cuanto más chico es el presupuesto y más concentrado está en esenciales. Jubilados y familias de ingresos bajos gastan casi todo en alimentos, remedios y servicios: justamente los rubros donde la Ley de Abastecimiento era el último recurso del Estado para frenar un abuso. Sin ese paraguas, la previsibilidad del costo de vida queda atada a la competencia real de cada mercado, que en alimentos y medicamentos está muy concentrada." });
+      }
+      dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+        body: "Cae también el Observatorio de Precios y el sistema oficial que seguía precios y stock (SIPRE). Eran los datos con los que Defensa del Consumidor y la propia política de precios detectaban maniobras de concentración o cartelización. Sin ese monitoreo, el Estado pierde la capacidad de ver —y por lo tanto de probar— un abuso de posición dominante en bienes masivos." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado renuncia a una batería de controles de precios que en los hechos se usaba poco y de modo discrecional, pero que operaba como amenaza disuasoria. Ganan las empresas con poder de fijación de precios en alimentos, combustibles y medicamentos, y la narrativa de que menos intervención trae más oferta. Pierden el consumidor de bienes esenciales y los organismos de defensa del consumidor, que se quedan sin una herramienta procesal y sin la información para usarla." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Familia con el gasto en bienes esenciales", sub: "Empleado priv. · GBA · ≤$1,5M", badges: { Plata: "mid", Estabilidad: "soft" } },
+      { name: "Jubilado/a que compra alimentos y remedios", sub: "Jubilado mínima · interior", badges: { Plata: "mid", Estabilidad: "soft" } },
+      { name: "Consumidor/a de ingresos medios-altos", sub: "Autónomo · CABA · $6-15M", badges: { Plata: "soft", "Calidad de servicios": "soft" } },
+      { name: "Ciudadano que mira la defensa del consumidor", sub: "Autónomo · CABA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "dnu70_cielos_abiertos",
+    date: "2023-12-21",
+    title: "\"Cielos abiertos\": base legal de la desregulación aerocomercial (DNU 70)",
+    meta: "DNU 70/2023 · BORA 21-dic-2023 · capítulo aerocomercial: modifica el Código Aeronáutico (Ley 17.285), deroga la Ley 19.030 de servicios aerocomerciales, el Decreto-Ley 12.507/56 de Política Aeronáutica Nacional y el Decreto 1654/2002 de emergencia; habilita el cabotaje por compañías extranjeras sin reciprocidad y libera las tarifas. Es la habilitación legal del régimen que luego reglamenta el Decreto 599/2024",
+    desc: "Este es el capítulo aerocomercial del DNU 70/2023: la base legal del \"cielos abiertos\". Modificó el Código Aeronáutico (Ley 17.285) y derogó la Ley 19.030 (normas de los servicios aerocomerciales), el Decreto-Ley 12.507/56 (Política Aeronáutica Nacional) y el Decreto 1654/2002 (emergencia del transporte aéreo). Habilita que cualquier aerolínea con solvencia técnica y financiera opere rutas internas e internacionales sin exigir tratados de reciprocidad, permite el cabotaje por compañías y tripulaciones extranjeras y elimina pisos y techos tarifarios. La reglamentación operativa llegó después con el Decreto 599/2024 —que ya está en este catálogo—; esta ficha cubre la habilitación legal original.",
+    tags: ["Trabajo", "Movilidad social", "País"],
+    fuente: "Boletín Oficial — DNU 70/2023 (BORA 21-dic-2023), capítulo aerocomercial: modifica el Código Aeronáutico (Ley 17.285) y deroga la Ley 19.030, el Decreto-Ley 12.507/56 y el Decreto 1654/2002. Cabotaje extranjero sin reciprocidad y tarifas libres: Bruchou & Funes de Rioja, PAGBAM, Beccar Varela, Argentina.gob.ar.",
+    impact: function(p) {
+      const dims = [];
+      const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza', 'tucuman'].includes(p.zona);
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      if (granUrbano) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "La ley habilita más aerolíneas y tarifas sin pisos ni techos. En las rutas troncales con mucha demanda que salen de las grandes ciudades, esa apertura tiende a abaratar el pasaje: más competencia entre low-cost, más promociones. Si volás seguido desde un gran centro urbano, la habilitación legal del cielos abiertos juega a tu favor." });
+      }
+      if (interior) {
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "El DNU elimina la reserva de cabotaje y deja las rutas al criterio comercial de cada operador. Las conexiones del interior profundo que hoy cubre casi en exclusiva Aerolíneas Argentinas (capitales del sur, tramos de baja rentabilidad) son las más expuestas: si la low-cost no las toma, podés quedar con menos frecuencias o sin vuelo. Para quien depende del avión para moverse desde el interior, más apertura no garantiza más conectividad." });
+      }
+      dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+        body: "La habilitación del cabotaje extranjero sin reciprocidad pone a Aerolíneas Argentinas —y sus más de 11.000 empleados— a competir contra operadoras que pueden volar barato sin las cargas de una aerolínea de bandera. Para pilotos, tripulantes y técnicos (APLA, AAA, APTA), la apertura presiona salarios y condiciones. Gana el pasajero de las rutas con volumen; la tensión la absorbe el empleo aeronáutico." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Al derogar la Política Aeronáutica Nacional y la reserva de cabotaje, el Estado renuncia a regular qué se vuela y quién lo vuela, y resigna una herramienta de soberanía sobre su espacio aéreo interno. Ganan los consumidores de las rutas rentables, las low-cost y las extranjeras interesadas en el cabotaje argentino; el costo lo pueden cargar las conexiones que solo cerraban con subsidio cruzado, el empleo de Aerolíneas y la aviación general." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Pasajero frecuente de rutas troncales", sub: "Empleado priv. · CABA", badges: { Plata: "pos_soft" } },
+      { name: "Habitante del interior con ruta exclusiva de Aerolíneas", sub: "Empleado priv. · Patagonia", badges: { "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajador/a aeronáutico", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Ciudadano que mira la soberanía aérea", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "dnu70_turismo",
+    date: "2023-12-21",
+    title: "Desregulación del turismo, la hotelería y las agencias de viaje (DNU 70)",
+    meta: "DNU 70/2023 · BORA 21-dic-2023 · arts. 348-350: deroga la Ley 18.828 de alojamientos turísticos (clasificación hotelera por estrellas), la Ley 18.829 de agencias de viaje (Registro y licencia previa obligatorios) y la Ley 26.356 de tiempo compartido. La Ley Nacional de Turismo 25.997 sigue vigente. Junto con la derogación de la Ley de Alquileres, potencia el alquiler temporario tipo Airbnb",
+    desc: "El DNU 70/2023 derogó la Ley 18.828 (que regulaba los alojamientos turísticos y su clasificación por estrellas), la Ley 18.829 (que exigía a las agencias de viaje inscribirse en un Registro y obtener licencia previa) y la Ley 26.356 (tiempo compartido). La clasificación hotelera deja de ser obligatoria y las agencias pueden operar sin el registro habilitante. La Ley Nacional de Turismo 25.997 no fue derogada y sigue vigente. En paralelo, la derogación de la Ley de Alquileres —también por el DNU 70— liberó los contratos y aceleró el viraje de propietarios hacia el alquiler temporario tipo Airbnb, con efecto sobre el mercado residencial de las ciudades turísticas.",
+    tags: ["Trabajo", "Vivienda", "Calidad de servicios"],
+    fuente: "Boletín Oficial — DNU 70/2023 (BORA 21-dic-2023), arts. 348-350: deroga las Leyes 18.828, 18.829 y 26.356; la Ley 25.997 sigue vigente. Crecimiento del alquiler temporario en CABA (más de 15.000 unidades, +62% desde 2019) y presión sobre el alquiler residencial: El Cronista, Infobae, Ámbito Turístico, Abogados.com.ar.",
+    impact: function(p) {
+      const dims = [];
+      const ciudadTuristica = ['caba', 'mendoza', 'cba_cap', 'patagonia', 'rosario', 'gba_norte'].includes(p.zona);
+      const hosteleria = ['empleado_priv', 'trab_informal', 'monotrib'].includes(p.ocupacion);
+      dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+        body: "Como viajero, la desregulación amplía la oferta de alojamiento: además de hoteles aparecen con menos trabas departamentos temporarios, hospedajes y figuras informales, y las tarifas quedan libres. Para quien arma una escapada con presupuesto ajustado, más opciones suelen significar precios más peleados. La contracara es que la clasificación por estrellas deja de ser obligatoria: el precio ya no garantiza una categoría verificada." });
+      dims.push({ name: "Vivienda", icon: "🏠", level: ciudadTuristica ? "mid" : "soft",
+        body: "El efecto más fuerte no es para el turista sino para el que vive en una ciudad turística. Al liberarse los contratos y la actividad de alojamiento, muchos propietarios pasaron sus departamentos al alquiler temporario: en CABA hay más de <strong>15.000 unidades</strong> en ese régimen (eran 9.338 en 2019, un 62% más). Eso quita oferta del alquiler residencial y empuja los precios: los alquileres llegaron a subir cerca del 125% interanual. Si alquilás para vivir en un barrio turístico, competís contra la renta temporaria." });
+      if (hosteleria) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "La hotelería formal y las agencias de viaje con personal en convenio (UTHGRA) ahora compiten contra alojamientos informales y operadores sin registro ni cargas. Para el empleo del sector, esa competencia desregulada presiona condiciones y formalidad. Gana el propietario que pone su departamento en alquiler temporario; la tensión la absorbe el trabajador de hotelería y turismo tradicional." });
+      }
+      dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+        body: "Sin el Registro de Agentes de Viajes, al consumidor le cuesta más distinguir una agencia legítima de una que no responde si algo sale mal. Sin clasificación hotelera obligatoria ni fiscalización de los alojamientos informales, tampoco hay un estándar mínimo verificado de salubridad o servicio. La desregulación abarata y agiliza, pero traslada al usuario la tarea de controlar la calidad por su cuenta." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Inquilino/a de un barrio turístico", sub: "Empleado priv. · CABA · ≤$1,5M", badges: { Plata: "pos_soft", Vivienda: "mid", "Calidad de servicios": "soft" } },
+      { name: "Propietario/a que alquila temporario", sub: "Monotrib. · CABA", badges: { Plata: "pos_soft", Trabajo: "soft", Vivienda: "mid" } },
+      { name: "Trabajador/a de hotelería formal", sub: "Empleado priv. · Mendoza", badges: { Trabajo: "soft", "Calidad de servicios": "soft" } },
+      { name: "Viajero/a con presupuesto ajustado", sub: "Empleado priv. · interior", badges: { Plata: "pos_soft", "Calidad de servicios": "soft" } }
+    ]
+  },
+
+  {
+    id: "impuesto_pais_suba_diciembre_2023",
+    date: "2023-12-13",
+    title: "Suba del Impuesto PAÍS a importaciones: 7,5% → 17,5%",
+    meta: "Decreto 29/2023 · BORA 13-dic-2023 · vigencia 13-dic-2023 · eleva del 7,5% al 17,5% la alícuota del Impuesto PAÍS sobre la importación de bienes y sobre fletes y transporte de comercio exterior (excepto combustibles, energía e insumos de la canasta básica). Fue una de las primeras medidas tras la asunción, junto con la devaluación del 13-dic-2023",
+    desc: "El decreto elevó del 7,5% al 17,5% la alícuota del Impuesto PAÍS aplicable a la compra de divisas para importar bienes y para pagar fletes y transporte de comercio exterior —diez puntos más sobre cada importación—, con excepciones para combustibles, lubricantes, energía e insumos directos de la canasta básica alimentaria. Fue una de las primeras medidas del Gobierno, parte del paquete inicial junto con la fuerte devaluación del 13-dic-2023 (Comunicación BCRA \"A\" 7917, ya en este catálogo). Después la alícuota bajaría al 7,5% en septiembre de 2024 (Decreto 777/2024) y el impuesto terminaría venciendo el 22-dic-2024.",
+    tags: ["Plata", "Impuestos", "Cambiario"],
+    fuente: "Boletín Oficial — Decreto 29/2023 (BORA 13-dic-2023), suba del Impuesto PAÍS sobre importaciones de bienes y fletes del 7,5% al 17,5%, con excepciones para combustibles, energía y canasta básica. Peso fiscal (el PAÍS pasó del 0,4% del PBI en 2022 al 0,8% en 2023) y traslado a precios de durables: Infobae, El Cronista, Chequeado, EY.",
+    impact: function(p) {
+      const dims = [];
+      const importador = ['pyme', 'autonomo', 'monotrib'].includes(p.ocupacion);
+      dims.push({ name: "Plata", icon: "💰", level: importador ? "strong" : "mid",
+        body: "El Impuesto PAÍS sobre importaciones pasó de <strong>7,5% a 17,5%</strong>: diez puntos más que carga cada bien que entra al país. Eso se traslada a los precios con un pass-through alto (del orden del 60% al 90%) en electrónica, electrodomésticos, motos y autos importados, celulares y repuestos. Si estabas por comprar un bien durable importado a fines de 2023 o principios de 2024, lo pagaste sensiblemente más caro por esta suba." });
+      if (importador) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Si tu actividad usa insumos o bienes importados —electrónica, autopartes, textiles sintéticos, maquinaria—, la suba de diez puntos encarece de golpe tu costo de reposición y tu capital de trabajo. Para una PyME o un cuentapropista con cadena importada, eso aprieta el margen y obliga a trasladar a precio o absorber la pérdida: el impuesto pega antes en el costo que en la venta." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "La suba apuntó a recaudar y a contener importaciones en plena emergencia cambiaria: el Impuesto PAÍS, que en 2022 valía 0,4% del PBI, trepó a alrededor del 0,8% en 2023 y siguió siendo una pata clave de la caja en 2024. Gana el Tesoro, que estabiliza cuentas en el corto plazo; pierden el importador de insumos y el consumidor de bienes durables, que pagan el impuesto vía precios mientras dura." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "PyME que importa insumos del interior", sub: "PyME · interior", badges: { Plata: "strong", Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Comprador/a de electrónica y electrodomésticos", sub: "Empleado priv. · CABA", badges: { Plata: "mid" } },
+      { name: "Cuentapropista con cadena importada", sub: "Monotrib. · GBA", badges: { Plata: "strong", Trabajo: "soft" } },
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { Plata: "strong", "País / Equilibrio institucional": "soft" } }
+    ]
   }
 ];
 
