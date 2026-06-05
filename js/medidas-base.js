@@ -2855,6 +2855,339 @@ export const MEASURES_BASE = [
       { name: "Contratado precario del Estado", sub: "Empleado púb. · ≤$700k", badges: { Plata: "strong", Estabilidad: "mid", "Carga mental": "soft" } },
       { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
     ]
+  },
+
+  {
+    id: "impuesto_pais_baja_septiembre_2024",
+    date: "2024-09-02",
+    title: "Baja del Impuesto PAÍS a importaciones: 17,5% → 7,5%",
+    meta: "Decreto 777/2024 · BORA 2-sep-2024 · vigencia 3-sep-2024 · reduce del 17,5% al 7,5% la alícuota del Impuesto PAÍS sobre importación de bienes (no suntuarios ni exentos) y sobre fletes y transporte de comercio exterior; antesala del fin del impuesto previsto para el 22-dic-2024",
+    desc: "El decreto retrotrajo la alícuota del Impuesto PAÍS para la compra de divisas destinada a importar bienes y a pagar fletes y transporte de comercio exterior, del 17,5% al 7,5%. Esa alícuota del 17,5% había sido fijada por el Decreto 29/2023 al asumir el Gobierno. El argumento oficial fue contribuir a estabilizar precios. Fue el paso previo al vencimiento del Impuesto PAÍS, que caducó el 22 de diciembre de 2024.",
+    tags: ["Plata", "Impuestos", "Cambiario"],
+    fuente: "Boletín Oficial — Decreto 777/2024 (2-sep-2024), vigencia 3-sep-2024. Adecuación del pago a cuenta: AFIP RG 5559/2024. Alcance y efecto en precios e importaciones: Infobae, Chequeado, CIRA, Marval.",
+    impact: function(p) {
+      const dims = [];
+      const importador = ['pyme', 'autonomo', 'monotrib'].includes(p.ocupacion);
+      dims.push({ name: "Plata", icon: "💰", level: "pos",
+        body: "La alícuota del Impuesto PAÍS sobre importaciones bajó de <strong>17,5% a 7,5%</strong>: diez puntos menos que cargaba cada bien que entra al país. Parte de esa baja se traslada al precio de la electrónica, los electrodomésticos, los autos y los insumos importados. Para quien estaba por comprar un bien durable, es un alivio directo frente a los precios de unos meses atrás." });
+      if (importador) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "El efecto depende de tu rubro. Si usás insumos importados, bajás costos: la misma importación paga diez puntos menos de impuesto. Pero si fabricás o vendés algo que compite con el importado —textil, calzado, electrónica de Tierra del Fuego, juguetes—, ahora competís contra productos que entran más baratos. Comprador de insumos gana; productor local que sustituía importaciones queda más expuesto." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro resigna recaudación (el Impuesto PAÍS llegó a aportar más del 1% del PBI en 2024) a cambio de bajar la presión sobre los precios de los importados. Fue la antesala del fin del impuesto, que venció el 22-dic-2024. Ganan el consumidor de bienes y el importador de insumos; pierden la caja fiscal y la industria local que competía al amparo del impuesto." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Consumidor de tecnología y electrodomésticos", sub: "Empleado priv. · CABA", badges: { Plata: "pos" } },
+      { name: "PyME industrial que importa insumos", sub: "PyME · CABA", badges: { Plata: "pos", Trabajo: "soft" } },
+      { name: "Comerciante que compite con el importado", sub: "Monotrib. · GBA", badges: { Plata: "pos", Trabajo: "soft" } },
+      { name: "Contribuyente que mira la caja fiscal", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "incaa_reestructuracion",
+    date: "2024-07-24",
+    title: "Reestructuración del INCAA",
+    meta: "Decreto 662/2024 · BORA 24-jul-2024 (firmado 23-jul) · reglamenta la Ley 17.741 de Fomento Cinematográfico: los subsidios no pueden superar el 20% del Fondo de Fomento ni el 50% del costo total del proyecto, prioriza calidad/recupero sobre criterios ideológicos y dispone reducción de personal y reestructuración",
+    desc: "El decreto reglamentó la Ley 17.741 y reordenó el INCAA. Los subsidios pasan a estar topeados: no pueden exceder el 20% del Fondo de Fomento Cinematográfico ni representar más del 50% del costo total de una producción (antes podían cubrir mucho más), de modo que cada proyecto debe conseguir al menos la mitad de su financiamiento por fuera. Se cambian los criterios de asignación hacia calidad, potencial de exhibición, audiencia y recupero del fondo, \"por sobre preferencias ideológicas\" (texto del decreto), y se dispone reestructuración y reducción de personal: el organismo pasó de unos 90 agentes en 2000 a más de 900.",
+    tags: ["Trabajo", "Plata", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decreto 662/2024 (BORA 24-jul-2024, firmado 23-jul). Tope de subsidios (20% del Fondo / 50% del costo), nuevos criterios y reducción de planta: Infobae, Ámbito, iProfesional, Perfil, AFIP biblioteca.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
+      const esArtista = ['monotrib', 'autonomo', 'trab_informal'].includes(p.ocupacion);
+      if (esArtista) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si trabajás en el cine —dirección, guion, técnica, actuación—, el subsidio del INCAA ya no puede cubrir más del <strong>50% del costo</strong> de una película ni superar el 20% del Fondo de Fomento. Cada proyecto debe conseguir la otra mitad por su cuenta. Para el cine que no es comercial, eso achica el universo de películas que se llegan a filmar, y con ellas el trabajo de los equipos que viven de cada rodaje." });
+      }
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "El INCAA financiaba cine documental, regional e independiente que no tiene salida comercial y que casi no se produce fuera de Buenos Aires. Al priorizar potencial de audiencia y recupero del fondo, el cine del NOA, NEA y la Patagonia —que necesitaba el subsidio integral para existir— es el más expuesto a desaparecer de la pantalla." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro deja de sostener un organismo que pasó de 90 a más de 900 agentes y arrastraba déficit. El argumento de eficiencia es atendible; la contracara es que el Estado se corre del fomento al cine que no se sostiene solo en taquilla. Ganan la caja pública y el cine comercial con potencial de público; pierden el documental, el cine regional, los festivales y los técnicos audiovisuales." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Realizador/a de cine independiente", sub: "Monotrib. · CABA", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Documentalista del interior", sub: "Autónomo · NOA", badges: { Trabajo: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Técnico/a audiovisual", sub: "Trabajo informal · GBA", badges: { Trabajo: "mid" } },
+      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "desregulacion_aerocomercial_decreto_599",
+    date: "2024-07-10",
+    title: "\"Cielos abiertos\": desregulación aerocomercial",
+    meta: "Decreto 599/2024 · BORA 10-jul-2024 · reglamenta el capítulo aerocomercial del DNU 70/2023 y modifica el Código Aeronáutico: libre acceso al mercado con trámites simplificados, tarifas desreguladas, y autorización de cabotaje a transportadores extranjeros bajo reciprocidad",
+    desc: "El decreto liberalizó el sector aéreo: acceso al mercado para nuevos operadores mediante procedimientos breves, eliminación de pisos y techos tarifarios, y la posibilidad de que transportadores extranjeros hagan rutas internas (cabotaje) en condiciones de estricta reciprocidad. El objetivo declarado es promover competencia y bajar barreras que regían desde mediados del siglo pasado.",
+    tags: ["Trabajo", "Movilidad social", "País"],
+    fuente: "Boletín Oficial — Decreto 599/2024 (10-jul-2024), modifica el Código Aeronáutico y reglamenta el capítulo aerocomercial del DNU 70/2023. Alcance (libre acceso, tarifas libres, cabotaje extranjero por reciprocidad): Infobae, Ámbito, El Cronista, InfoLeg.",
+    impact: function(p) {
+      const dims = [];
+      const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza', 'tucuman'].includes(p.zona);
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      if (granUrbano) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Más aerolíneas y tarifas sin pisos ni techos suelen abaratar los pasajes en las rutas troncales con mucha demanda (Buenos Aires–Mendoza, Buenos Aires–Bariloche). Si volás seguido desde una ciudad grande, la competencia entre low-cost juega a tu favor: más oferta y precios más peleados." });
+      }
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "El riesgo está en las rutas poco rentables que hoy cubre casi en exclusiva Aerolíneas Argentinas (capitales del sur, conexiones del interior profundo). Con tarifas libres y operadores que eligen dónde volar, las rutas que no dan ganancia pueden quedar con menos frecuencias o sin servicio. Si dependés del avión para moverte desde el interior, la desregulación puede dejarte con menos vuelos, no más." });
+      }
+      dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+        body: "Aerolíneas Argentinas pierde rutas no rentables y compite contra low-cost extranjeras que pueden hacer cabotaje. Para sus trabajadores y para pilotos y tripulación en general, la apertura presiona salarios y condiciones a la baja. Gana el pasajero de las rutas con volumen; la presión la absorbe el empleo aeronáutico." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado abre el cielo a la competencia y se corre de sostener una aerolínea de bandera con subsidios. Ganan los consumidores de las rutas rentables y las low-cost; el costo lo pueden pagar las conexiones del interior que solo cerraban con subsidio cruzado y el empleo de Aerolíneas." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Pasajero frecuente de rutas troncales", sub: "Empleado priv. · CABA", badges: { Plata: "pos_soft" } },
+      { name: "Habitante del interior con ruta exclusiva de Aerolíneas", sub: "Empleado priv. · Patagonia", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajador/a aeronáutico", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Ciudadano que mira la aerolínea de bandera", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "ley_bases_emergencia_facultades",
+    date: "2024-07-08",
+    title: "Ley Bases: emergencia pública y facultades delegadas",
+    meta: "Ley 27.742, Caps. I y II · BORA 8-jul-2024 (sancionada 27-jun-2024) · declara emergencia administrativa, económica, financiera y energética por 1 año (prorrogable) y delega en el Ejecutivo facultades del art. 76 CN para reorganizar/disolver organismos y reformar el empleo público",
+    desc: "La Ley Bases declaró la emergencia pública en materia administrativa, económica, financiera y energética por un año, prorrogable, y delegó en el Poder Ejecutivo facultades del artículo 76 de la Constitución: reorganizar o disolver organismos descentralizados (salvo los protegidos por el art. 75 inc. 19 CN), modificar el régimen de empleo público y avanzar con reformas que normalmente requerirían leyes del Congreso. El Ejecutivo debe informar mensualmente al Congreso el uso de esas facultades.",
+    tags: ["Estabilidad", "País", "Trabajo"],
+    fuente: "Boletín Oficial — Ley 27.742, Capítulos I (Emergencia) y II (Facultades delegadas), BORA 8-jul-2024. Alcance de la delegación y debate constitucional sobre el art. 76 CN: InfoLeg, Argentina.gob.ar, doctrina (Abogados.com.ar).",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "La ley faculta al Ejecutivo a reorganizar y disolver organismos del Estado y a modificar el régimen de empleo público (movilidad, retiros). Si trabajás en la administración nacional, tu organismo, tu cargo o tus condiciones pueden cambiar por decreto, sin pasar por una ley específica. Es una fuente concreta de incertidumbre sobre tu puesto." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "La emergencia y las facultades delegadas concentran en el Ejecutivo decisiones que antes requerían debate legislativo. Para el empleado público, eso reduce las garantías de estabilidad: lo que se decide rápido por decreto también puede afectarte rápido." });
+      }
+      dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+        body: "Gobernar por facultades delegadas da previsibilidad de corto plazo (las reglas se cambian rápido) pero la cuelga de la decisión de una sola persona. Reglas que se fijan por decreto pueden revertirse por decreto: para quien necesita horizonte largo, es estabilidad aparente." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "El núcleo del costo es institucional: el Congreso resigna durante un año el control sobre los ámbitos delegados y el Ejecutivo legisla de hecho sobre organismos, empresas y empleo público. El debate constitucional gira en torno a si la delegación excede el art. 76 CN. Gana la capacidad de reforma rápida del Gobierno; pierde el equilibrio de poderes y el control sobre cómo se ejerce." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empleado/a de un organismo descentralizado", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", Estabilidad: "mid", "País / Equilibrio institucional": "mid" } },
+      { name: "Empleado/a público de planta", sub: "Empleado púb. · interior", badges: { Trabajo: "mid", Estabilidad: "mid" } },
+      { name: "Ciudadano que mira el equilibrio de poderes", sub: "Autónomo · CABA", badges: { Estabilidad: "soft", "País / Equilibrio institucional": "mid" } },
+      { name: "Inversor que busca reglas estables", sub: "PyME · CABA", badges: { Estabilidad: "soft", "País / Equilibrio institucional": "mid" } }
+    ]
+  },
+
+  {
+    id: "ley_bases_privatizaciones",
+    date: "2024-07-08",
+    title: "Ley Bases: empresas sujetas a privatización",
+    meta: "Ley 27.742, art. 7° y anexo · BORA 8-jul-2024 · declara sujetas a privatización total a ENARSA, Intercargo, AySA y Belgrano Cargas, y a privatización parcial a Nucleoeléctrica Argentina y Yacimientos Carboníferos Río Turbio; el Senado retiró del listado a Aerolíneas, Banco Nación, YPF, Correo y RTA",
+    desc: "El artículo 7° y su anexo declararon sujetas a privatización un grupo de empresas estatales. Privatización total: Energía Argentina (ENARSA), Intercargo, Agua y Saneamientos Argentinos (AySA) y Belgrano Cargas y Logística. Privatización parcial: Nucleoeléctrica Argentina y Yacimientos Carboníferos Río Turbio. El listado original era más amplio: el Senado retiró Aerolíneas Argentinas, Banco Nación, YPF, Correo Argentino y RTA. A lo largo de 2025 el Gobierno fue iniciando los procesos (ENARSA, Intercargo, Belgrano Cargas, AySA) mediante decretos y resoluciones específicos.",
+    tags: ["Trabajo", "Estabilidad", "Calidad de servicios", "País"],
+    fuente: "Boletín Oficial — Ley 27.742, art. 7° y anexo, BORA 8-jul-2024. Empresas del listado e inicio de los procesos en 2025 (Decs 198/2025, 286/2025; Res 1049/2025, 1050/2025, 1067/2025): InfoLeg, Infobae, Ámbito, Allende & Brea.",
+    impact: function(p) {
+      const dims = [];
+      const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata'].includes(p.zona);
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Si trabajás en ENARSA, Intercargo, AySA, Belgrano Cargas, Nucleoeléctrica o Río Turbio, tu empresa está en la lista de privatización. Para el conjunto de empresas listadas hablamos de decenas de miles de empleos directos. La privatización suele venir con revisión de planta, retiros y cambios de convenio: es la mayor fuente de riesgo concreto sobre tu puesto." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "El paso a manos privadas cambia las reglas de tu relación laboral y la continuidad del servicio. La Ley prevé Programas de Propiedad Participada (hasta 10% para el personal), pero la incertidumbre sobre quién será el dueño y bajo qué condiciones es alta." });
+      }
+      if (granUrbano) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "AySA da agua y cloacas a CABA y el conurbano. Privatizar un servicio esencial puede mejorar inversión, pero también suele traer aumentos de tarifa y discusión sobre cobertura en zonas no rentables. Como usuario, el precio y la calidad del agua quedan atados a quién la opere y con qué regulación." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro deja de subsidiar estas empresas y suma ingresos por su venta; a cambio resigna control sobre energía, agua y logística ferroviaria, sectores con peso estratégico. Ganan el fisco y los operadores privados; el costo lo cargan los trabajadores de las empresas y los usuarios de servicios cuya tarifa y cobertura pasan a depender del mercado." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Trabajador/a de una empresa del listado", sub: "Empleado púb. · CABA", badges: { Trabajo: "strong", Estabilidad: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Usuario de AySA (agua y cloacas)", sub: "Empleado priv. · GBA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Habitante sobre la traza del Belgrano Cargas", sub: "Empleado priv. · NOA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira la venta de activos", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "ley_bases_capitulo_laboral",
+    date: "2024-07-08",
+    title: "Ley Bases: reforma laboral (modernización del trabajo)",
+    meta: "Ley 27.742, Títulos IV y V · BORA 8-jul-2024 · vigencia para relaciones iniciadas desde el 9-jul-2024 · reglamentada por Decreto 847/2024 (BORA 26-sep-2024): período de prueba a 6 meses, fondo de cese opcional, derogación de multas por trabajo no registrado y figura del trabajador independiente con colaboradores",
+    desc: "Los Títulos IV y V legitimaron por ley buena parte de lo que el DNU 70/2023 había dispuesto. El período de prueba pasó de 3 a 6 meses (los convenios pueden extenderlo hasta 8 meses en empresas de 6 a 100 trabajadores y hasta 1 año en las de hasta 5). Se habilitó un fondo de cese laboral opcional vía convenio, alternativo a la indemnización del art. 245 LCT. Se derogaron las multas por trabajo no registrado de los arts. 8 a 17 y 120 inc. a) de la Ley Nacional de Empleo 24.013. Se creó la figura del trabajador independiente con hasta 5 colaboradores que no genera relación de dependencia. Rige para relaciones iniciadas desde el 9-jul-2024 y fue reglamentada por el Decreto 847/2024.",
+    tags: ["Trabajo", "Estabilidad", "Plata"],
+    fuente: "Boletín Oficial — Ley 27.742, Títulos IV y V, BORA 8-jul-2024; Decreto reglamentario 847/2024 (26-sep-2024). Período de prueba, fondo de cese y derogación de multas (arts. 8-17 y 120 inc. a) Ley 24.013): O'Farrell, Deloitte, CECO, Microjuris.",
+    impact: function(p) {
+      const dims = [];
+      const empleador = ['pyme', 'autonomo', 'monotrib'].includes(p.ocupacion);
+      if (p.ocupacion === 'empleado_priv') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si entrás a un trabajo nuevo, el período de prueba pasó a <strong>6 meses</strong> (extensible por convenio), durante los cuales te pueden desvincular sin indemnización. Además bajan las multas por trabajo no registrado y se habilita reemplazar la indemnización tradicional por un fondo de cese. En conjunto, abaratan y vuelven más predecible el despido: para el trabajador, menos protección frente a la salida." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "La derogación de las multas por empleo en negro (arts. 8 a 17 de la Ley 24.013) quita un incentivo fuerte que tenía el empleador para registrarte bien. Si quedás mal registrado, perdés una de las herramientas que más presionaba a regularizar la relación." });
+      }
+      if (empleador) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+          body: "Como empleador o cuentapropista que contrata, el costo de despedir se vuelve más previsible (fondo de cese, multas más bajas, período de prueba largo) y aparece la figura del trabajador independiente con hasta 5 colaboradores. En teoría eso anima a formalizar empleo que antes se evitaba por miedo al juicio; el efecto real depende de que la economía traccione." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "La promesa fue que abaratar el despido y bajar las multas formalizaría empleo. Los datos de 2024 son ambiguos: el empleo registrado privado cayó durante buena parte del año y recién repuntó en agosto-septiembre, mejora que el Gobierno atribuye a la reforma. Ganan los empleadores en previsibilidad de costos; el trabajador resigna protecciones a cambio de una formalización que todavía no está demostrada de manera contundente." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Trabajador/a que busca empleo formal", sub: "Empleado priv. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Empleado/a en empresa que reestructura", sub: "Empleado priv. · GBA", badges: { Trabajo: "mid", Estabilidad: "soft" } },
+      { name: "PyME que duda en tomar personal", sub: "PyME · CABA", badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Cuentapropista que contrata colaboradores", sub: "Monotrib. · interior", badges: { Trabajo: "pos_soft" } }
+    ]
+  },
+
+  {
+    id: "aumento_gas_pist_abril_2024",
+    date: "2024-03-27",
+    title: "Aumento del gas (PIST) y cuadros tarifarios",
+    meta: "Resolución 41/2024 Secretaría de Energía · BORA 27-mar-2024 · vigencia desde 1-abr-2024 · actualiza el precio del gas en el Punto de Ingreso al Sistema de Transporte (PIST) y lo traslada a las boletas en tres tramos hasta fin de año; el consumo residencial promedio en el PIST pasó de ~$2.074 a ~$6.505",
+    desc: "La resolución actualizó el precio mayorista del gas en el PIST —lo que las distribuidoras pagan a los productores— y dispuso trasladarlo a las boletas finales en tres tramos: abril, invierno (mayo-septiembre) y octubre-diciembre. El valor del gas para un consumo residencial promedio pasó de unos $2.074 (marzo) a unos $6.505 (desde abril), un salto cercano al 300% que se reflejó en aumentos fuertes de las facturas de hogares, comercios e industrias.",
+    tags: ["Plata", "Vivienda", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Resolución 41/2024 Secretaría de Energía (27-mar-2024), vigencia 1-abr-2024; cuadros tarifarios de ENARGAS. Salto del PIST (~$2.074 → ~$6.505) y aumentos cercanos al 300% en tres tramos: Ámbito, ENARGAS, Estudio O'Farrell.",
+    impact: function(p) {
+      const dims = [];
+      const bajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      const fria = ['patagonia', 'cuyo', 'mendoza', 'cba_int', 'santafe_int'].includes(p.zona);
+      dims.push({ name: "Plata", icon: "💰", level: "strong",
+        body: "El precio del gas en el PIST que se traslada a tu boleta pasó de unos <strong>$2.074 a unos $6.505</strong> para un consumo residencial promedio: cerca de un <strong>300% de aumento</strong>, aplicado en tres tramos desde abril. El gas dejó de ser un renglón menor para volverse un gasto pesado del mes, sobre todo en los meses de calefacción." });
+      dims.push({ name: "Vivienda", icon: "🏠", level: bajoMedio ? "strong" : "mid",
+        body: "El gas es un costo fijo del hogar que no se puede esquivar en invierno. Con aumentos del orden del 300%, la boleta empieza a competir con el alquiler o las expensas dentro del gasto de vivienda. En hogares de ingresos bajos y medios el golpe es mayor: la tarifa pesa mucho más sobre un presupuesto chico." });
+      if (fria) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "En zonas frías (Patagonia, Cuyo, sierras) el consumo de gas para calefacción es alto varios meses al año. Ahí el aumento del PIST golpea más fuerte que en zonas templadas: misma suba porcentual sobre muchos más metros cúbicos consumidos." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado reduce subsidios a la energía y traslada el precio real del gas a las boletas. Ganan los productores (mejor precio realizable) y el Tesoro (menos subsidios); el costo lo absorben los hogares —en especial los de menores ingresos— y las industrias gas-intensivas." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Familia tipo que paga la boleta de gas", sub: "Empleado priv. · CABA · ≤$1,5M", badges: { Plata: "strong", Vivienda: "strong" } },
+      { name: "Hogar de ingresos medios-altos", sub: "Autónomo · CABA · $3-6M", badges: { Plata: "strong", Vivienda: "mid" } },
+      { name: "Hogar de zona fría", sub: "Empleado priv. · Patagonia · ≤$1,5M", badges: { Plata: "strong", Vivienda: "strong", "Calidad de servicios": "soft" } },
+      { name: "Jubilado/a con tarifa de gas", sub: "Jubilado mínima · interior", badges: { Plata: "strong", Vivienda: "strong" } }
+    ]
+  },
+
+  {
+    id: "segmentacion_electricidad_resolucion_7_2024",
+    date: "2024-02-05",
+    title: "Suba del precio mayorista de la luz (verano 2024)",
+    meta: "Resolución 7/2024 Secretaría de Energía · BORA 5-feb-2024 · reprogramación trimestral de verano (1-feb a 30-abr-2024) del Mercado Eléctrico Mayorista: aumentos de hasta ~124% en el precio mayorista para usuarios N1 (altos ingresos, ~30% de los hogares), manteniendo subsidios a N2 y N3",
+    desc: "La resolución aprobó la reprogramación estacional de verano del Mercado Eléctrico Mayorista y aplicó aumentos de hasta alrededor del 124% en el precio mayorista de la energía para los usuarios de Nivel 1 (altos ingresos o que no pidieron subsidio), que representan cerca del 30% de los hogares. Para los Niveles 2 (bajos ingresos) y 3 (ingresos medios) se mantuvo el subsidio. Fue la primera suba grande de la energía eléctrica de la gestión, para corregir el atraso acumulado en los precios mayoristas.",
+    tags: ["Plata", "Vivienda", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Resolución 7/2024 Secretaría de Energía (5-feb-2024). Aumento de hasta ~124% en el mayorista para N1 (~30% de los hogares) con subsidio mantenido a N2 y N3: Ámbito, Mejor Energía, CAMMESA, Argentina.gob.ar.",
+    impact: function(p) {
+      const dims = [];
+      const altoIngreso = ['3m_6m', '6m_15m', 'mas_15m'].includes(p.ingreso);
+      const bajoIngreso = ['hasta_700k', '700k_1.5m'].includes(p.ingreso);
+      if (altoIngreso) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si estás en Nivel 1 (altos ingresos o sin subsidio pedido), esta resolución te aplicó un aumento de hasta <strong>~124%</strong> en el precio mayorista de la luz entre febrero y abril. Fue la primera suba eléctrica grande de la gestión y pegó de lleno en el segmento que no recibe subsidio." });
+        dims.push({ name: "Vivienda", icon: "🏠", level: "mid",
+          body: "La luz es un gasto fijo del hogar. Una suba de esta magnitud en la factura de electricidad de verano (con aire acondicionado) suma presión sobre el presupuesto de la vivienda, sobre todo donde el consumo es alto." });
+      } else if (bajoIngreso) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Por esta resolución en particular, si estás en Nivel 2 (bajos ingresos) o Nivel 3 (ingresos medios) se mantuvo el subsidio: el salto mayorista de hasta 124% recayó sobre el Nivel 1. El impacto directo de <em>esta</em> norma sobre tu boleta fue acotado, aunque después llegarían otras subas que sí alcanzaron a todos los segmentos." });
+      } else {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "El aumento de hasta 124% en el precio mayorista recayó sobre los usuarios de Nivel 1 (sin subsidio); los Niveles 2 y 3 conservaron el subsidio en esta etapa. Según en qué segmento caigas, el golpe en la boleta de verano fue fuerte o acotado." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado empieza a corregir veinte años de precios eléctricos atrasados quitando subsidio primero a quienes más consumen y más ganan. Ganan el Tesoro (menos subsidios) y las generadoras (mejor precio); el costo inicial lo cargan los hogares de Nivel 1, antes de que las subas se extiendan al resto." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Hogar de altos ingresos (Nivel 1)", sub: "Autónomo · CABA · $6-15M", badges: { Plata: "strong", Vivienda: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Hogar de ingresos medios (Nivel 3)", sub: "Empleado priv. · GBA · $1,5-3M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Hogar de bajos ingresos (Nivel 2)", sub: "Empleado priv. · interior · ≤$700k", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira el subsidio energético", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "enacom_intervencion",
+    date: "2024-01-26",
+    title: "Intervención del ENACOM y disolución del Fondo del Servicio Universal",
+    meta: "Decreto 89/2024 (BORA 26-ene-2024, intervención 180 días) · prorrogado por Decreto 675/2024 (29-jul-2024) · Decreto 6/2025 (6-ene-2025) disuelve el Fondo Fiduciario del Servicio Universal, pero ratifica la vigencia de la política y de la obligación de aporte de los licenciatarios (luego el Decreto 312/2025 asigna al ENACOM su recaudación)",
+    desc: "El Decreto 89/2024 intervino el ENACOM por 180 días en la órbita de la Secretaría de Innovación, Ciencia y Tecnología, con un interventor en lugar del directorio; el Decreto 675/2024 prorrogó la intervención. En enero de 2025, el Decreto 6/2025 disolvió el Fondo Fiduciario del Servicio Universal (el 1% de los ingresos de las TIC destinado a llevar conectividad a zonas no rentables). El mismo decreto ratificó que la política del Servicio Universal y la obligación de aporte de las licenciatarias siguen vigentes; el Decreto 312/2025 puso la recaudación y administración de esos fondos en cabeza del propio ENACOM.",
+    tags: ["País", "Trabajo", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decretos 89/2024 (26-ene-2024), 675/2024 (29-jul-2024) y 6/2025 (6-ene-2025); continuidad del aporte vía Res. ENACOM 3/2025 y Decreto 312/2025. Alcance de la disolución del Fondo y la política de Servicio Universal: Ámbito, ENACOM, InfoLeg.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "El ENACOM pasó a estar conducido por un interventor con amplias facultades en lugar de su directorio. Para quien trabaja en el organismo, una intervención prolongada suele venir con reestructuración y revisión de la planta: incertidumbre sobre el puesto mientras dura." });
+      }
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "El Fondo del Servicio Universal (1% de los ingresos de telecomunicaciones) financiaba llevar internet y telefonía a zonas que al mercado no le conviene cubrir: parajes rurales, puna, Patagonia austral. Al disolverse el fondo fiduciario, ese mecanismo de subsidio cruzado queda en duda, aunque el decreto sostiene que la obligación de aporte sigue vigente. Si vivís lejos de las grandes ciudades, tu conectividad depende de que esa promesa se cumpla en los hechos." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
+        body: "El Gobierno tomó control directo del ENACOM (que regula telecomunicaciones y medios) vía interventor y disolvió el fondo fiduciario que garantizaba conectividad en zonas no rentables. Ratificó que la política y el aporte siguen vigentes y le dio al ENACOM su recaudación: el aporte no desaparece, cambia quién lo administra. Ganan el control político del organismo y las grandes operadoras (menos estructura intermedia); el riesgo lo corren la independencia técnica del ente y las zonas que dependían del Fondo." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Habitante rural sin buena conectividad", sub: "Empleado priv. · Patagonia", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "mid" } },
+      { name: "Trabajador/a del ENACOM", sub: "Empleado púb. · CABA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "mid" } },
+      { name: "Cooperativa de internet del interior", sub: "PyME · NEA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "mid" } },
+      { name: "Ciudadano que mira la independencia del ente", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "mid" } }
+    ]
+  },
+
+  {
+    id: "recorte_presupuesto_universitario_2024",
+    date: "2023-12-27",
+    title: "Recorte real al presupuesto universitario 2024",
+    meta: "Decreto 88/2023 · BORA 27-dic-2023 · prorroga el Presupuesto 2023 para todo 2024 sin actualizar por inflación (Decisión Administrativa 5/2024 de distribución); con inflación interanual cercana al 270%, implicó una caída real superior al 70% en los fondos de funcionamiento de las universidades nacionales",
+    desc: "El decreto prorrogó para 2024 el Presupuesto 2023 (calculado con valores de 2022) sin ajustarlo por inflación. Para las universidades nacionales, ejecutar esas partidas congeladas frente a una inflación interanual cercana al 270% significó una caída real superior al 70% en los gastos de funcionamiento y una fuerte pérdida salarial de docentes y no docentes. El conflicto derivó en la Marcha Federal Universitaria del 23 de abril de 2024, una de las movilizaciones más grandes en décadas (entre 430.000 y 800.000 personas solo en Buenos Aires, más cientos de miles en el resto del país).",
+    tags: ["Plata", "Estabilidad", "Trabajo", "Movilidad social"],
+    fuente: "Boletín Oficial — Decreto 88/2023 (27-dic-2023), prórroga del Presupuesto 2023; Decisión Administrativa 5/2024. Caída real >70% en funcionamiento y Marcha Federal Universitaria del 23-abr-2024: nexciencia (UBA), Chequeado, Infobae, Wikipedia (Conflicto universitario 2024).",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
+      if (p.ocupacion === 'estudiante') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Estudiás en una universidad pública que arrancó 2024 con el presupuesto congelado de 2023 frente a una inflación interanual cercana al 270%: una <strong>caída real de más del 70%</strong> en los fondos de funcionamiento. Eso se traduce en menos becas, comedores y servicios subsidiados que abaratan estudiar, y en la amenaza directa a la gratuidad efectiva que sostiene tu carrera." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Con las universidades alertando hasta cuándo podían funcionar, la continuidad misma de tu cursada quedó en duda durante 2024. Edificios sin mantenimiento, paros docentes y recortes de servicios pusieron en riesgo poder terminar la carrera en tiempo y forma: máxima incertidumbre sobre tu proyecto educativo." });
+        if (interior) {
+          dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+            body: "Las universidades del interior dependen casi por entero del presupuesto nacional, sin la base privada de las grandes ciudades. Para muchas familias del NOA, NEA o la Patagonia, esa universidad es la única vía de ascenso social cercana: cuando se le recorta el presupuesto, el ascensor social del interior es el primero que se traba." });
+        }
+      }
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Si sos docente o no docente universitario, el presupuesto congelado licuó tu salario: la pérdida real rondó el <strong>35% a 45%</strong> durante 2024. Con el mismo cargo, tu sueldo compró mucho menos a lo largo del año." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "La caída salarial y la falta de fondos golpean directamente las condiciones de tu trabajo: cargos sin cubrir, sobrecarga, fuga de docentes a otras actividades y un sistema que se sostiene a fuerza de vocación. El conflicto escaló hasta la Marcha Federal Universitaria de abril de 2024." });
+      }
+      if (interior && p.ocupacion !== 'estudiante' && p.ocupacion !== 'empleado_pub') {
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "Si en tu familia hay alguien que estudia en la universidad pública del interior, el recorte golpea la única opción de educación superior cercana. La universidad gratuita es la principal vía de ascenso para las familias de ingresos medios y bajos: recortarla complica ese camino." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Prorrogar el presupuesto sin actualizarlo fue una forma de recortar por la vía de la licuación: el ahorro fiscal fue real (del orden del 0,3% del PBI) y lo pagaron el salario de unos 200.000 docentes y no docentes y la calidad del sistema que estudian más de 2 millones de personas. La Marcha Federal Universitaria del 23-abr-2024 mostró el costo político y social de esa decisión." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Estudiante de universidad pública del interior", sub: "Estudiante · NOA", badges: { Plata: "strong", Estabilidad: "strong", "Movilidad social": "soft" } },
+      { name: "Docente universitario/a", sub: "Empleado púb. · CABA", badges: { Plata: "strong", Trabajo: "strong", "País / Equilibrio institucional": "soft" } },
+      { name: "Familia con un hijo en la universidad", sub: "Empleado priv. · interior", badges: { "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira el déficit", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
   }
 ];
 
