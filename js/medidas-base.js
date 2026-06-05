@@ -1829,7 +1829,7 @@ export const MEASURES_BASE = [
     ]
   },
   {
-    id: "monotributo_reforma_2024",
+    id: "monotributo_actualizacion_27743",
     title: "Reforma del Monotributo: subieron mucho los topes",
     date: "2024-07-08",
     meta: "Ley 27.743 Título IV · BORA 8-jul-2024 · reglam. Decreto 593/2024 · vigente 1-ene-2024",
@@ -1871,7 +1871,7 @@ export const MEASURES_BASE = [
     ]
   },
   {
-    id: "fin_impuesto_pais",
+    id: "impuesto_pais_fin_diciembre_2024",
     title: "Se terminó el Impuesto PAÍS",
     date: "2024-12-23",
     meta: "Ley 27.541 · venció 22-dic-2024 sin prórroga del Congreso · RG ARCA 5602/2024",
@@ -1972,7 +1972,7 @@ export const MEASURES_BASE = [
     ]
   },
   {
-    id: "impsa_privatizacion",
+    id: "impsa_venta_arc_energy",
     title: "Privatización de IMPSA (turbinas, Mendoza)",
     date: "2025-02-11",
     meta: "Ley 27.742 art. 7° inc. b · BORA 8-jul-2024 · adjudicación a ARC Energy, traspaso 11-feb-2025",
