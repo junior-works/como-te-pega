@@ -2512,6 +2512,349 @@ export const MEASURES_BASE = [
       { name: "Productor ganadero / frigorífico", sub: "Empresario PyME · interior", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
       { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
     ]
+  },
+
+  {
+    id: "rta_prorroga_intervencion_2026",
+    date: "2026-02-02",
+    title: "Tercera prórroga de la intervención de los medios públicos",
+    meta: "Decreto 79/2026 · BORA 2-feb-2026 · prorroga hasta el 1-feb-2027 la intervención de Radio y Televisión Argentina SAU y Contenidos Artísticos e Informativos SAU (sustento: art. 48 DNU 70/2023)",
+    desc: "El Ejecutivo prorrogó por tercera vez consecutiva la intervención de Radio y Televisión Argentina SAU (TV Pública, Radio Nacional, Encuentro, Pakapaka) y de Contenidos Artísticos e Informativos SAU, ahora desde el 2 de febrero de 2026 hasta el 1 de febrero de 2027, y ratificó como interventor a Carlos María Curci González. La intervención reemplaza al directorio independiente que preveía la ley: el interventor lo designa y responde al Poder Ejecutivo. En paralelo, la gestión busca unas 600 salidas por retiros en los medios públicos.",
+    tags: ["Trabajo", "País", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decreto 79/2026 (2-feb-2026), prórroga de la intervención dispuesta originalmente por Decisión Administrativa y sostenida en el art. 48 del DNU 70/2023. Retiros y plan de salidas: El Economista, Infobae, Ámbito, BAE Negocios.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si trabajás en los medios públicos (Radio Nacional, TV Pública, Encuentro, Pakapaka), la tercera prórroga de la intervención mantiene la incertidumbre: la gestión busca cerca de <strong>600 salidas por retiros</strong> y la estructura sigue sin un directorio estable que garantice tu continuidad ni la paritaria del convenio. El interventor puede reorganizar áreas y dotación con amplias facultades." });
+      } else if (['monotrib', 'autonomo', 'trab_informal'].includes(p.ocupacion)) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Si producís contenido audiovisual o periodístico que la TV o la radio pública compraba (productoras chicas, técnicos, documentalistas), una emisora intervenida y en achique encarga menos producción externa. El recorte de los medios públicos baja la demanda de trabajo independiente del sector." });
+      }
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
+          body: "En pueblos y zonas rurales, Radio Nacional y la TV Pública suelen ser de las pocas señales que llegan <strong>gratis por aire</strong>, sin abono. Una estructura intervenida y achicada año tras año debilita esa cobertura: menos repetidoras, menos noticias locales y menos alternativa pública donde el privado no llega." });
+      }
+      if (p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas') {
+        dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "soft",
+          body: "Pakapaka y Encuentro son señales públicas de contenido educativo y cultural infantil, gratuitas y sin publicidad. Cada prórroga sin definir su futuro institucional pone en riesgo esa producción: para una familia con chicos es contenido al que hoy se accede sin pagar." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Es la <strong>tercera prórroga consecutiva</strong> sin definir el destino de los medios públicos. Un interventor designado por el Ejecutivo, en lugar de un directorio plural, concentra la línea editorial en el Gobierno de turno. Gana el control político directo y el ahorro de una estructura más chica; pierde la pluralidad informativa y la audiencia que solo llega a la TV pública por aire." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Trabajador/a de los medios públicos", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Familia rural que ve la TV pública por aire", sub: "Trabajo informal · pueblo · con hijos", badges: { "Calidad de servicios": "mid", "Vida familiar": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Productora audiovisual independiente", sub: "Monotrib. · interior", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Audiencia urbana de noticias", sub: "Empleado priv. · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "baja_retenciones_diciembre_2025",
+    date: "2025-12-12",
+    title: "Segunda baja permanente de retenciones a los granos",
+    meta: "Decreto 877/2025 · BORA 12-dic-2025 · segunda reducción permanente de derechos de exportación a granos y subproductos (no incluye carnes)",
+    desc: "Sobre la baja de julio, el decreto recortó otra vez las retenciones de la cadena de granos: soja del 26% al 24% (subproductos del 24,5% al 22,5%), trigo y cebada del 9,5% al 7,5%, maíz y sorgo del 9,5% al 8,5%, y girasol del 5,5% al 4,5%. Es una reducción permanente, vigente desde su publicación, que mejora el precio que recibe el exportador. No tocó las carnes (eso fue un decreto aparte).",
+    tags: ["Plata", "País", "Trabajo"],
+    fuente: "Boletín Oficial — Decreto 877/2025 (12-dic-2025). Detalle de alícuotas: Ámbito, La Nación, Revista Chacra, Economis, Contadores en Red.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      const esAgro = ((p.ocupacion === 'pyme' || p.ocupacion === 'autonomo') && interior) || p.extra === 'renta';
+      const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      if (esAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si vivís de la producción agrícola, este segundo recorte suma al de julio: la soja queda en <strong>24%</strong> (venía del 26%) y el resto de los granos baja 1 a 2 puntos más. Cada punto de retención que se saca es plata que vuelve al precio que cobrás por tu cosecha; el efecto es menor que la primera baja, pero va en la misma dirección." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+          body: "Mejor margen exportador tiende a sostener la actividad de la cadena agroindustrial (acopio, transporte, servicios rurales, plantas aceiteras), de la que dependen muchos puestos en el interior productivo." });
+      }
+      if (ingresoBajoMedio && !esAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Para un hogar de ingresos como el tuyo, donde esos productos pesan en la canasta, es una presión suave pero real hacia arriba en la góndola." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro resigna otra porción de recaudación de derechos de exportación a cambio de más liquidación de divisas y competitividad del agro. Ganan exportadores y productores; el costo fiscal lo absorbe el resto del presupuesto y, por la vía del precio, el consumidor de alimentos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Productor agrícola del interior", sub: "Empresario PyME · NEA", badges: { Plata: "pos", Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Familia que compra harina, aceite y pan", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos", Trabajo: "pos_soft" } },
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "aranceles_bienes_capital",
+    date: "2025-07-29",
+    title: "Baja de aranceles a bienes de capital industriales",
+    meta: "Decreto 513/2025 · BORA 29-jul-2025 · 27 bienes de capital pasan de 20-35% a 12,6% de arancel de importación (modifica el Decreto 557/2023)",
+    desc: "El decreto bajó a 12,6% el arancel de importación de 27 bienes de capital que antes pagaban entre 20% y 35%: máquinas de corte láser, plegadoras, prensas, depuradores de gases para la industria petrolera, ascensores, ventiladores industriales, equipos para heladería y panadería, bombas centrífugas y acumuladores de ion-litio. Abarata renovar maquinaria importada; en contrapartida, los fabricantes locales de esos mismos equipos compiten ahora contra importados más baratos.",
+    tags: ["Plata", "Trabajo", "Estabilidad"],
+    fuente: "Boletín Oficial — Decreto 513/2025 (29-jul-2025), modifica el Decreto 557/2023. Detalle de posiciones y alcance: CDA, CICAE, Ámbito, Cámara de Importadores (CIRA).",
+    impact: function(p) {
+      const dims = [];
+      const interiorIndustrial = ['cba_int', 'santafe_int', 'mendoza', 'rosario', 'cba_cap'].includes(p.zona);
+      if (p.ocupacion === 'pyme') {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Si tu PyME necesita renovar equipo importado (una plegadora, una prensa, un horno industrial, bombas, un ascensor), el arancel cae de 20-35% a <strong>12,6%</strong>: son entre 7 y 22 puntos menos sobre el valor del bien. Para una inversión de capital, ese ahorro es directo y mejora la ecuación de modernizarte." });
+      }
+      if ((p.ocupacion === 'empleado_priv' || p.ocupacion === 'trab_informal') && interiorIndustrial) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Si trabajás en una metalúrgica o fábrica local de bienes de capital (turbinas, máquinas, equipos industriales), el bien importado más barato le compite directo a lo que produce tu empresa. En un sector que ya viene perdiendo empleo, abaratar el importado presiona sobre puestos y horas en los polos industriales de Córdoba, Santa Fe y Mendoza." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Hay una tensión real: abaratar la maquinaria importada ayuda a la PyME que la usa, pero golpea a la que la fabrica acá. Los bienes de capital son cerca del 20% de las importaciones argentinas y más de 14.000 empresas los importaron en 2024. Gana quien moderniza con equipo importado; pierde la cadena metalúrgica nacional y el Tesoro resigna recaudación arancelaria." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "PyME que renueva maquinaria importada", sub: "Empresario PyME · interior", badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Operario metalúrgico de fábrica local", sub: "Empleado priv. · Córdoba interior", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Panadería o heladería que compra equipo", sub: "Monotrib. · CABA", badges: { Plata: "pos_soft" } },
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "baja_retenciones_granos_julio_2025",
+    date: "2025-07-31",
+    title: "Primera baja permanente de retenciones a granos y carnes",
+    meta: "Decreto 526/2025 · BORA 31-jul-2025 · vigencia 1-ago-2025 · baja permanente de derechos de exportación (cadena de granos -20%, cadena cárnica -26%)",
+    desc: "El decreto bajó de forma permanente las retenciones: soja del 33% al 26%, maíz y sorgo del 12% al 9,5%, girasol al 5,5% el grano (4% los derivados), y carnes bovina y aviar del 6,75% al 5%, además de recortes en trigo y cebada. Mejora el precio que recibe el exportador y al productor; en el mercado interno, cuando exportar rinde más, el precio de los alimentos derivados tiende a acompañar el valor internacional.",
+    tags: ["Plata", "País"],
+    fuente: "Boletín Oficial — Decreto 526/2025 (31-jul-2025), vigencia 1-ago-2025. Alícuotas y costo fiscal: Infobae, Ámbito, Agrositio, El Cronista.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      const esAgro = ((p.ocupacion === 'pyme' || p.ocupacion === 'autonomo') && interior) || p.extra === 'renta';
+      const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      if (esAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
+          body: "Es la baja más fuerte para vos: la soja pasó del <strong>33% al 26%</strong> (7 puntos), el maíz y el sorgo del 12% al 9,5%, y de forma permanente. Sobre el grueso de tu facturación, esos puntos que dejás de pagar de retención van directo al precio neto que cobrás por la cosecha. Para un productor es una mejora de margen contante y verificable." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos",
+          body: "Mejor rentabilidad del campo sostiene y reactiva trabajo en toda la cadena: contratistas de cosecha, transporte de granos, acopios, plantas aceiteras y servicios rurales. En el interior productivo, el margen del productor se traduce en horas y puestos." });
+      }
+      if (ingresoBajoMedio && !esAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "La baja también alcanzó la carne (del 6,75% al 5%) y los granos que terminan en harina, aceite y alimento balanceado. Cuando exportar paga más, el precio interno de esos productos tiende a acompañar el valor en dólares. Para un hogar de ingresos como el tuyo es una presión suave hacia arriba en la canasta básica." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro resigna recaudación (las estimaciones del paquete rondaban entre USD 800 y 1.500 millones anuales) a cambio de más liquidación de divisas y competitividad exportadora. Ganan exportadores y productores agropecuarios; el costo lo reparten el resto del presupuesto y el precio interno de los alimentos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Productor sojero del interior", sub: "Empresario PyME · interior", badges: { Plata: "pos_strong", Trabajo: "pos", "País / Equilibrio institucional": "soft" } },
+      { name: "Contratista y transporte de granos", sub: "Autónomo · interior", badges: { Plata: "pos_strong", Trabajo: "pos" } },
+      { name: "Familia que compra carne y harina", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "reforma_mem_normalizacion",
+    date: "2025-10-21",
+    title: "Normalización del Mercado Eléctrico Mayorista",
+    meta: "Resolución SE 400/2025 · BORA 21-oct-2025 · vigencia 1-nov-2025 · reglamenta el Decreto 450/2025 (4-jul-2025): transición de 24 meses de un MEM administrado a un MEM competitivo",
+    desc: "Las nuevas reglas arrancan una transición de 24 meses desde el MEM administrado por CAMMESA hacia un mercado más competitivo, con señales de precio marginal. CAMMESA deja de concentrar la compra de combustible (vuelve a las generadoras térmicas) y se habilita la transferencia gradual de contratos de compra de energía a la demanda. Mantiene su rol de despacho y de proveedor de última instancia, pero pierde peso como intermediario único.",
+    tags: ["Plata", "Calidad de servicios", "País"],
+    fuente: "Boletín Oficial — Resolución SE 400/2025 (21-oct-2025), que reglamenta los arts. 3 y 4 del Decreto 450/2025 (4-jul-2025). En la base de Supabase figuraba la Res 24/2025 SE (lineamientos preliminares de enero 2025), pero la norma efectiva es el Decreto 450/2025 + la Resolución SE 400/2025. Análisis: Abogados.com.ar, TRSyM, FETERA/CTA.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      if (ingresoBajoMedio) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "CAMMESA funcionaba como amortiguador: compraba la energía en bloque y morigeraba los picos de precio del mercado mayorista antes de que llegaran a la tarifa. Con la transición a un mercado competitivo de precio marginal, esa mediación se diluye y los picos mayoristas se trasladan más directo a lo que pagás de luz. Para un hogar de ingresos ajustados, cada salto de tarifa pesa entero." });
+      } else {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Con la salida gradual del esquema administrado por CAMMESA, el precio mayorista de la energía llega más directo a la tarifa. Lo absorbés mejor que un hogar de bajos ingresos, pero la cuenta de luz queda más expuesta a la volatilidad del mercado." });
+      }
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "Las distribuidoras provinciales chicas negocian peor que las grandes en un mercado liberalizado: menos volumen, menos poder de compra. Si tu cooperativa o distribuidora local consigue peores condiciones que una gran eléctrica, eso termina apareciendo en tu factura o en la calidad del suministro." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado se corre de administrar el mercado eléctrico y deja que generadoras y distribuidoras negocien entre sí. Ganan las grandes generadoras (mejor remuneración y libertad de contratos) y los inversores en capacidad nueva; el riesgo lo corren los usuarios cuando se debilitan los subsidios cruzados que la intermediación de CAMMESA permitía sostener." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Hogar de ingresos ajustados", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Usuario de cooperativa eléctrica del interior", sub: "Trabajo informal · pueblo", badges: { Plata: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Hogar de ingresos altos", sub: "Empleado priv. · $6-15M", badges: { Plata: "soft" } },
+      { name: "Ciudadano que mira el modelo energético", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "courier_franquicia_3000",
+    date: "2024-12-02",
+    title: "Régimen courier: franquicia de USD 400 y tope de USD 3.000",
+    meta: "Decreto 1065/2024 + RG ARCA 5608/2024 · BORA 2-dic-2024 · franquicia de USD 400 por envío (hasta 5 al año, sin aranceles) y tope del régimen elevado a USD 3.000",
+    desc: "El régimen de envíos por courier quedó así: cada compra de hasta USD 400 entra sin derecho de importación ni tasa estadística (solo paga IVA), hasta 5 envíos al año por persona; y el tope total del régimen, hasta donde se puede usar el trámite simplificado puerta a puerta, subió de USD 1.000 a USD 3.000 por envío. Abarata y simplifica comprar tecnología, indumentaria y libros en el exterior.",
+    tags: ["Plata", "Trabajo", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decreto 1065/2024 y RG ARCA 5608/2024 (2-dic-2024). Aclaración: los USD 3.000 son el tope del régimen, no la franquicia; la franquicia sin aranceles es de USD 400. Fuentes: Infobae, SICEX, Mallea Abogados, Blog del Contador.",
+    impact: function(p) {
+      const dims = [];
+      const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza', 'tucuman'].includes(p.zona);
+      if (granUrbano) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos",
+          body: "Si comprás tecnología, indumentaria o libros en el exterior, la franquicia de <strong>USD 400 sin aranceles</strong> (solo IVA) y el trámite puerta a puerta simplificado pueden significar un ahorro del 35-50% frente al precio del retail local, donde el mismo producto carga impuestos y márgenes. Para un consumidor urbano que compra online, es plata directa en el bolsillo." });
+      } else {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "La franquicia de USD 400 sin aranceles abarata comprar afuera lo que localmente sale más caro o no se consigue. Lejos de los grandes centros el courier llega con más demora y costo de logística, pero el ahorro frente al retail sigue estando." });
+      }
+      if (['monotrib', 'pyme', 'autonomo'].includes(p.ocupacion)) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Depende de tu rubro: si vendés servicios, esto no te toca o hasta te conviene como comprador. Pero si tenés un comercio minorista de indumentaria, tecnología o juguetes, ahora competís contra envíos de USD 400 que entran sin aranceles. La industria textil nacional, que perdió decenas de miles de empleos, y el comercio de cercanía son los más expuestos." });
+      }
+      dims.push({ name: "Calidad de servicios", icon: "🔌", level: "pos_soft",
+        body: "Como contracara del comercio local, ganás acceso: productos que acá no se venden o llegan tarde, ahora se compran directo. Más opciones reales para el consumidor, sobre todo en tecnología y libros importados." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado resigna recaudación arancelaria y expone al comercio y la industria local a la competencia importada, a cambio de precios más bajos para el consumidor. Ganan los consumidores urbanos y las plataformas (Amazon, AliExpress) y couriers; pierden el comercio minorista, la industria textil y la aduana comercial." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Consumidor urbano que compra online afuera", sub: "Empleado priv. · CABA", badges: { Plata: "pos", "Calidad de servicios": "pos_soft" } },
+      { name: "Comerciante minorista de indumentaria", sub: "Monotrib. · CABA", badges: { Plata: "pos", Trabajo: "soft", "Calidad de servicios": "pos_soft" } },
+      { name: "Comprador del interior", sub: "Empleado priv. · pueblo", badges: { Plata: "pos_soft", "Calidad de servicios": "pos_soft" } },
+      { name: "Trabajador/a textil nacional", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "fna_reestructuracion",
+    date: "2024-11-22",
+    title: "Reestructuración del Fondo Nacional de las Artes",
+    meta: "Decreto 1029/2024 · BORA 22-nov-2024 · vigencia plena 1-abr-2025 · reorienta el FNA de becas y subsidios a créditos en UVA, vuelve ad honorem al directorio y reduce el personal un 25%",
+    desc: "El decreto reformuló el Fondo Nacional de las Artes, el organismo de fomento a artistas. El uso central de los fondos pasa a ser el otorgamiento de créditos en UVA; las becas y subsidios quedan limitados a financiarse con donaciones privadas y las ganancias financieras de esos créditos. El directorio de 14 personas pasa a ser ad honorem (sin sueldo) y la planta de personal se reduce un 25%. El argumento oficial: el FNA gastaba el 72% de su presupuesto 2023 en gastos operativos.",
+    tags: ["Trabajo", "Plata", "Calidad de servicios"],
+    fuente: "Boletín Oficial — Decreto 1029/2024 (22-nov-2024), vigencia plena 1-abr-2025. Contenido y declaraciones de Sturzenegger: La Nación, Ámbito, Perfil, SAIJ.",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
+      const esArtista = ['monotrib', 'autonomo', 'trab_informal'].includes(p.ocupacion);
+      if (esArtista) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si sos artista (música, literatura, plástica, danza, audiovisual), el FNA dejó de fomentar con becas y subsidios a fondo perdido y pasó a un modelo de <strong>créditos en UVA</strong> que hay que devolver. Las becas que sobrevivan dependen ahora de donaciones privadas y de las ganancias de esos créditos, no de recursos propios garantizados. Para quien dependía del fomento directo, es menos plata accesible y con obligación de repago." });
+      }
+      if (interior) {
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
+          body: "El FNA llegaba con becas y premios a zonas donde el mecenazgo privado casi no existe (NOA, NEA, pueblos del interior). Si el fomento depende ahora de donaciones privadas, esas se concentran donde hay plata: el interior cultural, que más necesitaba el apoyo público, es el que más lo pierde." });
+      }
+      if (p.ocupacion === 'estudiante') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Si estudiás una carrera artística y contabas con una beca del FNA para sostenerte, el viraje a créditos en UVA cambia el tablero: en vez de un apoyo que no se devuelve, una deuda indexada. Para quien recién empieza y no tiene ingresos propios, ese cambio puede ser la diferencia entre seguir o dejar." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro ahorra: directorio ad honorem, 25% menos de personal y fin del fomento a fondo perdido financiado con recursos propios. El argumento (72% del presupuesto en gastos operativos) es atendible; la contracara es que el Estado se retira del fomento cultural directo y lo deja atado a donaciones privadas, que no llegan parejo a todo el país." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Músico o escritor/a que vivía de becas", sub: "Monotrib. · CABA", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Artista del interior", sub: "Autónomo · NOA", badges: { Trabajo: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Estudiante de carrera artística", sub: "Estudiante · interior", badges: { Trabajo: "soft", "Calidad de servicios": "soft" } },
+      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "casa_moneda_sociedad_anonima",
+    date: "2024-10-31",
+    title: "Casa de Moneda: intervención y paso a Sociedad Anónima",
+    meta: "Decreto 964/2024 · BORA 31-oct-2024 · interviene la Casa de Moneda 180 días (interventor Pedro Cavagnaro) y delinea su transformación en SAU (Asamblea 20-dic-2024; ratificada por Dec 295/2025 y prorrogada por Dec 615/2025)",
+    desc: "El decreto intervino la Sociedad del Estado Casa de Moneda por 180 días desde el 1-nov-2024, con Pedro Cavagnaro como interventor y facultades para transferir personal, activos, marcas y licencias y revisar el convenio colectivo. En diciembre, una Asamblea Extraordinaria la transformó en Casa de Moneda SAU bajo la Ley General de Sociedades; los Decretos 295/2025 y 615/2025 ratificaron la transformación y prorrogaron la intervención. El cambio habilita asociar o vender la empresa con privados sin pasar por el Congreso.",
+    tags: ["Trabajo", "Estabilidad", "País"],
+    fuente: "Boletín Oficial — Decreto 964/2024 (31-oct-2024), Decreto 295/2025 (30-abr-2025) y Decreto 615/2025 (28-ago-2025). Transformación en SAU y prórrogas de la intervención: Infobae, MDZ, ADNSUR, InfoLeg.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si trabajás en la Casa de Moneda, el interventor quedó facultado para <strong>transferir personal, activos y licencias</strong> y para revisar el convenio colectivo. En una empresa con cerca de 700 a 1.000 trabajadores y con el BCRA usando cada vez menos billete físico, eso se traduce en riesgo concreto de retiros, despidos y cambios en las condiciones de tu CCT." });
+      }
+      dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+        body: "El paso de Sociedad del Estado a Sociedad Anónima Unipersonal cambia el marco legal: la empresa pasa a regirse por la Ley General de Sociedades, lo que habilita asociarla o venderla a privados sin pasar por el Congreso. Para sus trabajadores y para el servicio, es un futuro institucional más incierto." });
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "La Casa de Moneda imprime billetes, pasaportes y documentos de seguridad: capacidades de soberanía estatal. Transformarla en SAU y dejar abierta su venta o asociación con privados ahorra al Tesoro un déficit operativo, pero pone en discusión quién controla la impresión de moneda y documentos nacionales. Gana la narrativa del Estado más chico; pierden los trabajadores y la soberanía sobre esas capacidades." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Trabajador/a de la Casa de Moneda", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Gremio de artes gráficas", sub: "Empleado priv. · GBA", badges: { Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Proveedor nacional de insumos de seguridad", sub: "Empresario PyME · GBA", badges: { Estabilidad: "soft" } },
+      { name: "Ciudadano que mira la soberanía estatal", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "veto_financiamiento_universitario_2024",
+    date: "2024-10-03",
+    title: "Veto a la Ley de Financiamiento Universitario (2024)",
+    meta: "Decreto 879/2024 · BORA 3-oct-2024 · veto total a la Ley 27.757; el 9-oct-2024 Diputados no reunió los 2/3 y el veto quedó firme (la ley cayó)",
+    desc: "El Congreso había sancionado la Ley 27.757, que actualizaba por inflación los gastos de funcionamiento de las universidades nacionales y recomponía los salarios docentes y no docentes. El Ejecutivo la vetó en forma total por el Decreto 879/2024, argumentando que no preveía la fuente de financiamiento. El 9 de octubre de 2024 Diputados intentó insistir pero no reunió los dos tercios: el veto quedó firme y la ley no entró en vigencia. (Distinto del veto de 2025 a la Ley 27.795, que el Congreso sí rechazó.)",
+    tags: ["Plata", "Trabajo", "Estabilidad"],
+    fuente: "Boletín Oficial — Decreto 879/2024 (3-oct-2024), veto total a la Ley 27.757. Insistencia fallida en Diputados (9-oct-2024): Infobae, El Cronista, SAIJ, Wikipedia (Ley de Financiamiento Universitario).",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Si sos docente o no docente de una universidad nacional, la Ley 27.757 te daba una recomposición salarial que el veto dejó sin efecto. Durante 2024 el salario universitario perdió en términos reales en torno al <strong>35%</strong> frente a la inflación. El veto sostenido significó que esa recomposición no llegó por esta vía hasta bien entrado 2025." });
+      }
+      if (p.ocupacion === 'estudiante') {
+        dims.push({ name: "Educación", icon: "📚", level: "mid",
+          body: "El veto frenó la actualización por inflación de los gastos de funcionamiento de las universidades: luz, limpieza, mantenimiento, becas, insumos de laboratorio. Para un estudiante eso se traduce en cursadas más precarias, edificios sin mantenimiento y menos becas en el sistema que sostiene a 2 millones de estudiantes." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "La universidad pública gratuita es la principal vía de ascenso para familias de ingresos medios y bajos. Cuando se le frena el presupuesto, la calidad cae y el acceso real se complica: el ascensor social funciona peor." });
+      }
+      if (interior && p.ocupacion !== 'empleado_pub' && p.ocupacion !== 'estudiante') {
+        dims.push({ name: "Educación", icon: "📚", level: "soft",
+          body: "Las universidades del interior dependen casi por entero del presupuesto nacional, sin la base privada de las grandes ciudades. Frenar la actualización golpea más fuerte a la universidad de tu provincia, que muchas veces es la única opción de educación superior cerca." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El veto se sostuvo porque en Diputados no se reunieron los dos tercios para insistir. El ahorro fiscal fue el argumento central (del orden del 0,14% del PBI); el costo lo pagaron el salario de 200.000 docentes y no docentes y la calidad del sistema que estudian 2 millones de personas, hasta que en 2025 una nueva ley reabrió la discusión." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Docente universitario/a", sub: "Empleado púb. · CABA", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Estudiante de universidad pública", sub: "Estudiante · GBA", badges: { Educación: "mid", "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Familia del interior con un hijo en la universidad", sub: "Empleado priv. · NOA", badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Contribuyente que mira el déficit", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "aumentos_decreto_empleados_publicos",
+    date: "2024-09-19",
+    title: "Paritaria estatal cerrada por decreto",
+    meta: "Decreto 837/2024 · BORA 19-sep-2024 · homologa el acta paritaria del 30-ago-2024 firmada solo con UPCN (2% en septiembre + 1% en octubre); ATE la rechazó",
+    desc: "El Gobierno homologó por decreto la paritaria de la administración pública nacional con un aumento del 2% en septiembre y 1% en octubre, además de componentes como viáticos y adicionales. El acuerdo lo firmó solo UPCN; ATE lo rechazó por considerarlo muy por debajo de la inflación. Cubre a todo el personal permanente y no permanente.",
+    tags: ["Plata", "Trabajo", "Estabilidad"],
+    fuente: "Boletín Oficial — Decreto 837/2024 (19-sep-2024), homologa el Acta Acuerdo del 30-ago-2024 de la Comisión Negociadora del Convenio Colectivo General. Posiciones sindicales y pérdida salarial: La Nación, El Cronista, Página 12, Mundo Gremial.",
+    impact: function(p) {
+      const dims = [];
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Tu paritaria se cerró con <strong>2% en septiembre y 1% en octubre</strong>, muy por debajo de una inflación que en 2024 superó el 100%. El resultado es una pérdida de poder adquisitivo cercana al <strong>30%</strong> en el año: con el mismo cargo, tu sueldo compra bastante menos que antes." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "El acuerdo se homologó por decreto firmando solo con UPCN; ATE lo rechazó. Cerrar la paritaria por decreto con el gremio que acepta fija un techo a la negociación: la paritaria libre, donde se discute de verdad cuánto recompone el salario, queda vaciada como herramienta. Para vos significa menos margen para pelear una mejora." });
+        if (['hasta_700k', '700k_1.5m'].includes(p.ingreso)) {
+          dims.push({ name: "Carga mental", icon: "🧠", level: "soft",
+            body: "Si además sos contratado o estás en los escalafones más bajos, sos el eslabón más expuesto: sin la estructura de los cargos de planta, un aumento por decreto del 1% mensual te deja corriendo de atrás a la inflación todos los meses, con la incertidumbre de la renovación del contrato encima." });
+        }
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Cerrar la paritaria estatal por decreto, con el gremio que acompaña y sobre el rechazo del otro, le permite al Tesoro un acuerdo barato y sin conflicto formal. El ahorro es real; lo paga el salario de unos 400.000 estatales nacionales y el instituto de la paritaria libre como mecanismo de negociación." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Estatal nacional de planta", sub: "Empleado púb. · ≤$1,5M · interior", badges: { Plata: "strong", Estabilidad: "mid", "Carga mental": "soft" } },
+      { name: "Estatal de ingreso medio", sub: "Empleado púb. · $1,5-3M", badges: { Plata: "strong", Estabilidad: "mid" } },
+      { name: "Contratado precario del Estado", sub: "Empleado púb. · ≤$700k", badges: { Plata: "strong", Estabilidad: "mid", "Carga mental": "soft" } },
+      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
   }
 ];
 
