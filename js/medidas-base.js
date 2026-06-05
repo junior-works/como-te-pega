@@ -3361,42 +3361,51 @@ export const MEASURES_BASE = [
 
   {
     id: "sube_eliminacion_red_septiembre_2024",
-    date: "2024-09-01",
-    title: "Se cortó el beneficio Red SUBE (Boleto Integrado) en el AMBA",
-    meta: "Decreto 698/2024 (DECTO-2024-698-APN-PTE) · BORA 6-ago-2024 · fin de la exclusividad de la SUBE como medio de pago (interoperabilidad). El corte del beneficio Red SUBE / Boleto Integrado del AMBA —descuento del 50% en el 2º viaje y 75% en el 3º dentro de 2 hs— rige desde el 1-sep-2024 y NO surge de una norma BORA propia: se instrumentó como decisión de desfinanciamiento del Ministerio de Economía, que dejó de girar ~$7.000 millones/mes a CABA y PBA. El beneficio sigue solo en las líneas de jurisdicción nacional del AMBA",
-    desc: "Son dos cosas distintas, casi simultáneas. (1) El Decreto 698/2024 (BORA 6-ago-2024, firmado por Milei, Francos y Caputo) terminó con la exclusividad de la tarjeta SUBE: deroga el punto del Convenio Marco que la fijaba como único medio de pago electrónico y obliga a aceptar otros pagos sin contacto (tarjetas de crédito/débito, QR, billeteras). (2) Por separado —y esto es lo que pega en el bolsillo—, desde el 1-sep-2024 el Gobierno nacional dejó de financiar el beneficio Red SUBE (Boleto Integrado): el descuento automático del 50% en el segundo viaje y del 75% en el tercero, dentro de las 2 horas. Importante: ese corte no salió como decreto ni resolución en el Boletín Oficial; se hizo dejando de girar los fondos (~$7.000 millones/mes entre PBA y CABA), una decisión del Ministerio de Economía. El beneficio se mantiene solo en las líneas de jurisdicción nacional del AMBA; en las que circulan dentro de una sola jurisdicción (CABA o Provincia, sin cruzar) se perdió.",
-    tags: ["Plata", "Movilidad social", "Trabajo"],
-    fuente: "Boletín Oficial — Decreto 698/2024 (BORA 6-ago-2024): fin de la exclusividad de la SUBE e interoperabilidad de medios de pago (deroga el punto 1 del Anexo I del Convenio Marco SUBE); el texto NO menciona la Red SUBE ni el Boleto Integrado. El corte del Boleto Integrado / Red SUBE desde el 1-sep-2024 no tiene norma BORA propia: fue un desfinanciamiento del Ministerio de Economía (dejó de girar ~$6.500M a PBA y ~$1.500M a CABA por mes), que alcanzó a 388 líneas de colectivo, 7 ferrocarriles, 6 líneas de subte y el Premetro. Aumento de hasta 40-60% para quien combina viajes: Infobae, Ámbito, El Cronista, C5N.",
+    date: "2024-08-06",
+    title: "Fin de la exclusividad de SUBE como medio de pago",
+    meta: "Decreto 698/2024 (DECTO-2024-698-APN-PTE) · BORA 6-ago-2024 · vigente con implementación gradual",
+    desc: "El Decreto 698/2024 termina con el monopolio de SUBE en el pago electrónico del transporte público. Habilita que se pueda viajar pagando con tarjeta de débito, crédito, billetera digital (Mercado Pago, ModoBanco) y QR. SUBE sigue funcionando; deja de ser la única opción. La implementación es gradual y arranca por las localidades del interior antes que por el AMBA. El decreto no toca tarifas ni subsidios: cambia con qué se paga, no cuánto.",
+    tags: ["Calidad de servicios", "Plata", "Movilidad social"],
+    fuente: "BORA — Decreto 698/2024 (6-ago-2024, firmado por Milei, Francos y Caputo), publicado como 'Sistema Único de Boleto Electrónico'. Extiende el sistema de percepción de tarifas del Decreto 84/2009 a otros medios de pago sin contacto e interoperables; deja al Banco Nación como responsable de procesar la totalidad de las transacciones. El texto NO elimina la Red SUBE ni el Boleto Integrado, NO modifica tarifas y NO modifica subsidios.",
     impact: function(p) {
       const dims = [];
-      const inAMBA = ["caba", "gba_norte", "gba_sur", "gba_oeste", "laplata"].includes(p.zona);
-      const combina = p.transporte === "combinacion" || p.transporte === "2colectivos" || p.transporte === "mixto";
-      const bajoIngreso = ["hasta_700k", "700k_1.5m"].includes(p.ingreso);
-      const trabajaViaja = ["empleado_priv", "empleado_pub", "trab_informal", "monotrib"].includes(p.ocupacion);
+      const usaPublico = ["2colectivos", "combinacion", "tren", "mixto"].includes(p.transporte);
+      const amba = ["caba", "gba_norte", "gba_sur", "gba_oeste", "laplata"].includes(p.zona);
+      const interior = !amba;
+      // El formulario no pregunta si tenés tarjeta o billetera, así que la
+      // bancarización se infiere: ocupación formal o ingreso medio para arriba
+      // ≈ con débito/crédito/billetera; informal de bajo ingreso o jubilación
+      // mínima ≈ más probable que siga cargando la SUBE en efectivo.
+      const bancarizada = ["empleado_priv", "empleado_pub", "monotrib", "autonomo", "pyme", "jubilado_med"].includes(p.ocupacion)
+        || ["1.5m_3m", "3m_6m", "6m_15m", "mas_15m"].includes(p.ingreso);
+      const sinBanco = ["trab_informal", "domestica_no_reg", "desempleado", "ama_casa", "jubilado_min", "pensionado"].includes(p.ocupacion)
+        && ["hasta_700k", "700k_1.5m"].includes(p.ingreso);
 
-      if (inAMBA && combina) {
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: "Combinás transporte para moverte en el AMBA (colectivo + tren, o dos colectivos): justo el caso que el beneficio Red SUBE abarataba. Hasta el 1-sep-2024, el segundo viaje pagabas la mitad y el tercero, un cuarto, si los hacías dentro de las 2 horas con la tarjeta registrada. Desde esa fecha, en las líneas que no cruzan jurisdicción ese descuento desapareció: el segundo y el tercer tramo pasan a costar tarifa plena. En la práctica, quien hacía dos viajes pasó de pagar el equivalente a 1,5 boletos a pagar 2 enteros — un salto de hasta <strong>40% a 60%</strong> en el gasto mensual de transporte." });
-        dims.push({ name: "Movilidad social", icon: "🛤️", level: bajoIngreso ? "strong" : "mid",
-          body: "El que combina dos o tres viajes no lo hace por gusto: lo hace porque vive lejos y ningún recorrido directo lo deja en el trabajo. Empleadas domésticas, niñeras, obreros y empleadas de comercio del conurbano profundo —La Matanza, Florencio Varela, Moreno, Merlo— son los que más combinaciones necesitan, y ahora pagan completo cada tramo. El beneficio que se cortó era, en los hechos, un subsidio a la distancia: lo perdió justamente quien tiene el viaje más largo y el sueldo donde el transporte ya pesaba 15-25%." });
-        if (trabajaViaja) {
-          dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-            body: "Para el trabajador formal o informal que cruza el AMBA todos los días, esto es plata que sale directo del sueldo de bolsillo y no se recupera. Sin el descuento por combinación, ir a trabajar cuesta más sin que suba el salario: el transporte se come una porción mayor del ingreso, y pega más fuerte donde los sueldos más bajos ya estaban más apretados." });
-        }
-      } else if (!inAMBA && combina) {
-        dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "El Boleto Integrado de la Red SUBE era un beneficio del AMBA. Si combinás transporte fuera del área metropolitana, este corte puntual no te toca de lleno; aunque el esquema general de quita de subsidios al transporte sí encareció el boleto en tu provincia por otras vías." });
+      if (usaPublico && bancarizada) {
+        dims.push({ name: "Calidad de servicios", icon: "🚌", level: "pos_soft",
+          body: "Si ya tenés tarjeta de débito, de crédito o una billetera como Mercado Pago o ModoBanco, el Decreto 698/2024 te suma comodidad: vas a poder subir al colectivo, al tren o al subte apoyando la tarjeta o el celular, sin depender de tener la SUBE cargada con saldo. La SUBE sigue funcionando como siempre; lo que cambia es que deja de ser la única opción." + (interior ? " La implementación es gradual y arranca por las localidades del interior, así que en tu zona puede estar disponible antes que en el AMBA." : " La implementación es gradual: en el interior arrancó primero y en el AMBA llega después, así que en tu zona puede tardar en estar disponible.") });
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Un detalle a favor del bolsillo, no de la tarifa: al poder pagar directo con débito, crédito o billetera, dejás de tener plata 'dormida' cargada en la SUBE esperando a que la uses. El boleto cuesta exactamente lo mismo —el decreto no toca tarifas—, pero te da algo de oxígeno en la liquidez del día a día." });
+      } else if (usaPublico && sinBanco) {
+        dims.push({ name: "Calidad de servicios", icon: "🚌", level: "none",
+          body: "Esta medida abre el pago del transporte a tarjetas y billeteras, pero no toca a quien paga en efectivo. Si cargás la SUBE en un kiosco con plata en mano —como hace buena parte de los adultos mayores y de los sectores que no tienen cuenta o tarjeta—, seguís viajando exactamente igual que antes: la SUBE no desaparece. Ni perdés ni ganás con el decreto." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
+          body: "Vale marcar una asimetría: la comodidad nueva la aprovecha quien ya tiene débito, crédito o billetera. Quien todavía maneja todo en efectivo no accede a esa opción y queda donde estaba. El decreto no te saca nada, pero el beneficio práctico se reparte de forma despareja: lo capta primero el que ya está dentro del sistema financiero." });
+      } else if (usaPublico) {
+        dims.push({ name: "Calidad de servicios", icon: "🚌", level: "pos_soft",
+          body: "El Decreto 698/2024 habilita pagar el transporte público con tarjeta de débito, crédito, billetera digital o QR, además de la SUBE. Si tenés alguno de esos medios, ganás comodidad: una opción más para viajar sin depender del saldo cargado. La SUBE sigue funcionando igual y la tarifa no cambia; la implementación es gradual y arranca por el interior antes que por el AMBA." });
       }
 
       dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado nacional ahorra alrededor de $7.000 millones por mes con el argumento de que el transporte urbano del AMBA es responsabilidad de las jurisdicciones que lo usan. CABA y la Provincia, que deberían cubrir el beneficio de sus propias líneas, avisaron que no estaban dispuestas a hacerlo. Resultado: el ahorro fiscal de Nación lo terminó pagando el usuario que combina, atrapado en una pelea de competencias entre Nación, Provincia y Ciudad. Conviene además distinguir la norma del recorte: el Decreto 698/2024 abrió los medios de pago, pero el corte del Boleto Integrado se hizo sin decreto, simplemente dejando de girar los fondos." });
+        body: "El Decreto 698/2024 extiende el sistema de cobro de tarifas del Decreto 84/2009 a otros medios de pago sin contacto e interoperables, y deja al Banco Nación como responsable de procesar la totalidad de las transacciones —la liquidación de fondos entre colectivos, trenes, bancos y billeteras—. La implementación es por etapas: primero débito, después crédito, billeteras y QR; y por zonas: el interior antes que el AMBA. Hay además un matiz de privacidad para tener en cuenta: pagar con tarjeta o billetera asocia tu identidad a cada viaje, mientras que la SUBE cargada en efectivo era más anónima. Para quien valora ese anonimato, es un costo no monetario del cambio." });
       return dims;
     },
     compareProfiles: [
-      { name: "Empleada de comercio que combina colectivo + tren", sub: "Empleado priv. · GBA Oeste · ≤$700k", badges: { Plata: "strong", "Movilidad social": "strong", Trabajo: "mid" } },
-      { name: "Trabajadora doméstica del conurbano profundo", sub: "Trab. informal · La Matanza", badges: { Plata: "strong", "Movilidad social": "strong", Trabajo: "mid" } },
-      { name: "Estudiante que combina dos colectivos", sub: "Estudiante · GBA", badges: { Plata: "strong", "Movilidad social": "mid" } },
-      { name: "Vecino/a de CABA con un solo viaje directo", sub: "Empleado priv. · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Trabajadora joven de CABA con billetera digital", sub: "Empleado priv. · CABA · usa Mercado Pago", badges: { "Calidad de servicios": "pos", Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Jubilada de la mínima que carga la SUBE en efectivo", sub: "Jubilado mínima · GBA Sur", badges: { "Calidad de servicios": "none", "Movilidad social": "soft" } },
+      { name: "Estudiante de una localidad del interior", sub: "Estudiante · Córdoba int.", badges: { "Calidad de servicios": "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajador informal sin cuenta bancaria", sub: "Trab. informal · GBA Oeste · ≤$700k", badges: { "Calidad de servicios": "none", "Movilidad social": "soft" } },
+      { name: "PyME del rubro pagos (procesa cobros)", sub: "PyME · fintech / medios de pago", badges: { Trabajo: "pos", "País / Equilibrio institucional": "soft" } }
     ]
   }
 ];
