@@ -3,34 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2c4a52">
+<meta name="theme-color" content="#0a0a0c">
 <link rel="manifest" href="manifest.json">
 <title>Cómo Te Pega</title>
+<!-- Tipografía: Plus Jakarta Sans (rediseño dark v0.9.0) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f7f5f0;
-    --bg-grad: linear-gradient(135deg, #f7f5f0 0%, #f1ecdf 100%);
-    --paper: #ffffff;
-    --paper-soft: #fbfaf6;
-    --ink: #181d27;
-    --ink-soft: #3a4150;
-    --ink-mute: #8a8f9b;
-    --line: #e8e4da;
-    --line-soft: #f1eee5;
-    --accent: #2c4a52;
-    --accent-soft: #d8e3e3;
-    --accent-mute: #eef3f3;
-    --hit-strong: #b91c1c;
-    --hit-mid: #c2410c;
-    --hit-soft: #a16207;
-    --hit-pos-strong: #166534;
-    --hit-pos: #15803d;
+    /* ===== v0.9.0 — Universo del logo, versión nocturna ===== */
+    /* Capas de fondo (tinta de la noche → superficies) */
+    --bg-0: #0a0a0c;
+    --bg-1: #111114;
+    --bg-2: #16161a;
+    --bg-3: #1d1d23;
+    --border-soft: #26262e;
+    --border-mid: #3a3a44;
+    /* Texto (cream invertido del sello) */
+    --text-0: #f5f1e6;
+    --text-1: #cfc8b8;
+    --text-2: #8a8478;
+    --text-3: #56524a;
+    /* Acentos del logo (mostaza / marrón) */
+    --gold-1: #fbd24a;
+    --gold-2: #d4a017;
+    --gold-3: #a87e0c;
+    --brown-1: #c47a2c;
+    --brown-2: #7b3f0e;
+    --grad-gold: linear-gradient(135deg, #fbd24a 0%, #f59e0b 50%, #d4831a 100%);
+    --grad-gold-soft: linear-gradient(135deg, rgba(251,210,74,.18), rgba(212,160,23,.06));
+    /* Estados de impacto (cálidos, no planos) */
+    --contra: #ef4444;
+    --neutra: #4b4b54;
+    --favor: #22c55e;
+
+    /* ===== Mapeo de los tokens semánticos legacy → paleta dark =====
+       Las ~1000 líneas de CSS existentes usan estas variables; al re-mapearlas
+       acá toda la UI se oscurece sin tocar cada regla. El bloque de overrides
+       al final del <style> ajusta lo que quedaba hardcodeado en claro. */
+    --bg: var(--bg-0);
+    --bg-grad: var(--bg-0);
+    --paper: #16161a;       /* superficie principal (cards) */
+    --paper-soft: #1d1d23;  /* superficie secundaria */
+    --ink: #f5f1e6;
+    --ink-soft: #cfc8b8;
+    --ink-mute: #8a8478;
+    --line: #26262e;
+    --line-soft: #1d1d23;
+    --accent: #d4a017;            /* mostaza del logo = acento principal */
+    --accent-soft: rgba(212,160,23,0.28);
+    --accent-mute: rgba(212,160,23,0.12);
+    --hit-strong: #ef4444;
+    --hit-mid: #f97316;
+    --hit-soft: #eab308;
+    --hit-pos-strong: #16a34a;
+    --hit-pos: #22c55e;
     --hit-pos-soft: #4ade80;
-    --hit-none: #8a8f9b;
-    --shadow-sm: 0 1px 2px rgba(24,29,39,0.04);
-    --shadow: 0 2px 12px rgba(24,29,39,0.07);
-    --shadow-lg: 0 8px 30px rgba(24,29,39,0.10);
-    --ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+    --hit-none: #8a8478;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+    --shadow: 0 8px 24px rgba(0,0,0,0.45);
+    --shadow-lg: 0 18px 50px rgba(0,0,0,0.55);
+    --shadow-gold: 0 6px 20px rgba(245,158,11,.32), 0 1px 0 rgba(255,255,255,.18) inset;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -1004,14 +1039,349 @@
   }
   .btn-mini-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .btn-mini-ghost:active { transform: scale(0.96); }
+
+  /* ======================================================================
+     v0.9.0 — DARK REDESIGN · overrides + componentes nuevos
+     Este bloque va último: re-pinta lo que quedaba hardcodeado en claro y
+     suma los componentes del rediseño (tag-band, tabs, bottom-nav, toast,
+     bottom-sheet, skeletons, pull-to-refresh, impact-pills, búsqueda).
+     ====================================================================== */
+
+  /* ---- Tipografía + base ---- */
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background:
+      radial-gradient(900px 600px at 50% -260px, rgba(245,158,11,.10), transparent 70%),
+      radial-gradient(700px 520px at 12% 4%, rgba(123,63,14,.08), transparent 70%),
+      var(--bg-0);
+    background-attachment: fixed;
+    color: var(--text-0);
+  }
+  .app { padding-bottom: 108px; }
+  ::selection { background: rgba(212,160,23,.30); color: #fff; }
+
+  /* ---- Header / app-bar ---- */
+  header.brand {
+    text-align: left;
+    padding: 14px 2px 12px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border-soft);
+    background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-0) 78%, transparent 100%);
+    backdrop-filter: blur(10px);
+  }
+  .brand-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .brand-mark {
+    width: 36px; height: 36px; border-radius: 50%; flex: 0 0 36px;
+    background: var(--grad-gold); display: grid; place-items: center;
+    color: #1a0e02; font-weight: 800; font-size: 15px; box-shadow: var(--shadow-gold);
+  }
+  /* TODO: reemplazar con el logo real del sello cuando suba como SVG. */
+  .brand-mark::after { content: "?"; }
+  .brand-name { font-weight: 800; font-size: 17px; letter-spacing: .2px; color: var(--text-0); }
+  .brand-name span { color: var(--gold-2); }
+  .icon-btn {
+    width: 44px; height: 44px; border-radius: 12px; flex: 0 0 44px;
+    background: var(--bg-2); border: 1px solid var(--border-soft);
+    display: grid; place-items: center; color: var(--text-1);
+    cursor: pointer; transition: all .15s var(--ease); padding: 0;
+  }
+  .icon-btn:hover { border-color: var(--border-mid); color: var(--text-0); }
+  .icon-btn:active { transform: scale(0.92); }
+  .icon-btn svg { width: 20px; height: 20px; }
+  /* la marca legacy (h1 + .tag) ya no se usa en el markup nuevo */
+  header.brand h1, header.brand .tag { display: none; }
+
+  /* Búsqueda desplegable (debajo del app-bar, encima de los tabs) */
+  .header-search { padding: 10px 0 2px; }
+  .header-search[hidden] { display: none; }
+  .header-search input {
+    width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px;
+    background: var(--bg-2); border: 1px solid var(--border-mid); color: var(--text-0);
+    border-radius: 14px; padding: 12px 16px;
+  }
+  .header-search input::placeholder { color: var(--text-3); }
+  .header-search input:focus { outline: none; border-color: var(--gold-2); }
+
+  /* ---- Superficies (las que el v0.8 dejó en glass claro) → dark ---- */
+  .card,
+  .hero .examples, .impact-desc, .cob-card, .const-card,
+  .bal-card, .donut-wrap, .tl-item, .filter-search,
+  .legend-card, .siglas-card, .const-card {
+    background: var(--bg-2);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    border: 1px solid var(--border-soft);
+    box-shadow: var(--shadow-sm);
+    color: var(--text-0);
+  }
+  .dim-card {
+    background: var(--bg-2);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .perfil-box {
+    background: rgba(212,160,23,.08); border: 1px solid rgba(212,160,23,.22);
+    color: var(--gold-1);
+  }
+  .perfil-box strong { color: var(--gold-2); }
+  .clase-chip { background: var(--grad-gold); color: #1a0e02; }
+  .impact-notice, .bal-tip {
+    background: var(--bg-2); border-left: 3px solid var(--gold-2);
+    color: var(--text-1);
+  }
+  .impact-notice strong, .bal-tip strong { color: var(--gold-1); }
+  .src { border-top-color: var(--border-soft); }
+  .src a, .const-link { color: var(--gold-2); }
+  .crumb {
+    background: var(--bg-2); border-color: var(--border-soft); color: var(--text-1);
+  }
+  .crumb:hover { color: var(--text-0); border-color: var(--border-mid); }
+
+  /* ---- Botones ---- */
+  .btn { background: var(--bg-3); color: var(--text-0); }
+  .btn.accent, .btn-balance, .btn.accent:hover, .btn-balance:hover,
+  .last-measure-btn, .btn-mini-primary {
+    background: var(--grad-gold); color: #1a0e02;
+    box-shadow: var(--shadow-gold);
+  }
+  .btn.ghost, .btn-nueva, .btn-mini-ghost {
+    background: var(--bg-2); border: 1.5px solid var(--border-soft); color: var(--text-1);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+  .btn.ghost:hover, .btn-nueva:hover { background: var(--bg-3); border-color: var(--border-mid); color: var(--text-0); }
+  .btn-balance { display: flex; }
+  .btn-balance .bar-mini { background: rgba(0,0,0,0.25); }
+
+  /* ---- Chips de perfil ---- */
+  .chip {
+    background: var(--bg-2); border: 1.5px solid var(--border-soft); color: var(--text-1);
+    min-height: 40px;
+  }
+  .chip:hover { background: var(--bg-3); border-color: var(--border-mid); }
+  .chip.sel { background: var(--grad-gold); color: #1a0e02; border-color: transparent; box-shadow: var(--shadow-gold); }
+  .chip.sel-multi { background: rgba(212,160,23,.14); color: var(--gold-1); border-color: rgba(212,160,23,.40); }
+  .fchip { background: var(--bg-2); border: 1.5px solid var(--border-soft); color: var(--text-1); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .fchip:hover { border-color: var(--border-mid); }
+  .fchip.sel { background: var(--grad-gold); color: #1a0e02; border-color: transparent; box-shadow: var(--shadow-gold); }
+
+  /* ---- Filtros (panel + botón) ---- */
+  .filterbar-head { background: var(--bg-0); top: 58px; border-bottom-color: var(--border-soft); }
+  .filter-toggle { background: var(--bg-2); border: 1.5px solid var(--border-soft); color: var(--text-1); }
+  .filter-toggle:hover { border-color: var(--border-mid); }
+  .filter-toggle.open { background: var(--grad-gold); color: #1a0e02; border-color: transparent; }
+  .filter-count { background: var(--gold-2); color: #1a0e02; }
+  .filter-toggle.open .filter-count { background: #1a0e02; color: var(--gold-1); }
+  .filter-clear, .filter-h, .filter-lbl, .result-count { color: var(--text-2); }
+  .result-count strong { color: var(--text-0); }
+
+  /* ---- Pill (prototipo) + hero ---- */
+  .pill { background: rgba(212,160,23,.12); color: var(--gold-2); }
+  .hero .pitch strong, .hero .examples li em { color: var(--text-0); }
+  .hero .examples h4 { color: var(--text-2); }
+  .hero-resume, .last-measure { background: var(--bg-2); border: 1px solid var(--border-soft); }
+
+  /* ---- Tags / badges / estados (colores hardcodeados en claro) ---- */
+  .measure-tag, .area-chip, .tl-tag { background: rgba(212,160,23,.12); color: var(--gold-2); }
+  .cobertura-badge { background: var(--grad-gold); color: #1a0e02; }
+  .const-art-num { background: rgba(212,160,23,.12); color: var(--gold-2); }
+  .tl-pop { background: var(--bg-3); color: var(--text-1); }
+  .dim-name, .const-resumen, .dim-body, .const-art-resumen, .cob-foot, .const-foot, .const-meta, .const-art-name { color: var(--text-1); }
+  .dim-body strong, .dim-body em, .const-art { color: var(--text-0); }
+
+  /* niveles negativos/positivos → fondos translúcidos sobre dark */
+  .tag-strong, .badge.strong { background: rgba(239,68,68,.16); color: #fda4a4; }
+  .tag-mid,    .badge.mid    { background: rgba(249,115,22,.16); color: #fdba74; }
+  .tag-soft,   .badge.soft   { background: rgba(234,179,8,.16);  color: #fde68a; }
+  .tag-pos_strong, .badge.pos_strong { background: rgba(34,197,94,.18); color: #86efac; }
+  .tag-pos,    .badge.pos    { background: rgba(34,197,94,.14); color: #a7f3c5; }
+  .tag-pos_soft, .badge.pos_soft { background: rgba(34,197,94,.10); color: #bbf7d0; }
+  .tag-none,   .badge.none   { background: var(--bg-3); color: var(--text-2); border-color: var(--border-soft); }
+  .badge { background: var(--bg-3); color: var(--text-2); border: 1px solid var(--border-soft); }
+  .badge.strong, .badge.mid, .badge.soft, .badge.pos_strong, .badge.pos, .badge.pos_soft { border: 0; }
+
+  .estado-pill.e-vigente { background: rgba(34,197,94,.16); color: #86efac; }
+  .estado-pill.e-suspendida { background: rgba(249,115,22,.16); color: #fdba74; }
+  .estado-pill.e-derogada { background: var(--bg-3); color: var(--text-2); }
+  .estado-pill.e-vetada { background: rgba(239,68,68,.16); color: #fda4a4; }
+  .estado-pill.e-convalidada { background: rgba(212,160,23,.14); color: var(--gold-1); }
+
+  .const-estado.c-amber { background: rgba(234,179,8,.16); color: #fde68a; }
+  .const-estado.c-orange { background: rgba(249,115,22,.16); color: #fdba74; }
+  .const-estado.c-red-soft { background: rgba(239,68,68,.14); color: #fca5a5; }
+  .const-estado.c-red { background: var(--contra); color: #fff; }
+  .const-estado.c-green { background: rgba(34,197,94,.18); color: #86efac; }
+
+  .tl-pill.neg { background: rgba(239,68,68,.16); color: #fda4a4; }
+  .tl-pill.midneg { background: rgba(249,115,22,.16); color: #fdba74; }
+  .tl-pill.softneg { background: rgba(234,179,8,.16); color: #fde68a; }
+  .tl-pill.neutral { background: var(--bg-3); color: var(--text-2); }
+  .tl-pill.pos { background: rgba(34,197,94,.16); color: #86efac; }
+  .wl-row.ganan .wl-pill { background: rgba(34,197,94,.14); color: #a7f3c5; }
+  .wl-row.pierden .wl-pill { background: rgba(239,68,68,.14); color: #fca5a5; }
+  .wl-row.neutro .wl-pill { background: var(--bg-3); color: var(--text-1); }
+
+  /* timeline rail + dots sobre dark */
+  .timeline { border-left-color: var(--border-soft); }
+  .tl-item::before { border-color: var(--bg-0); }
+  .donut-legend-row { background: var(--bg-3); }
+  .donut-legend-dot.neutral { background: var(--neutra); }
+  .donut-center-num { fill: var(--gold-1); }
+  .donut-center-lbl { fill: var(--text-2); }
+  .donut-legend-label { color: var(--text-1); }
+  .donut-legend-count { color: var(--text-0); }
+
+  /* ---- Cards de medida: tappeables (feedback de tap) ---- */
+  .measure { cursor: pointer; overflow: hidden; }
+  .measure:hover { border-color: var(--border-mid); }
+  .measure:active, .tl-item:active, .trending-card:active { transform: scale(0.98); }
+  .measure h3, .tl-title, .measure-head h3 { color: var(--text-0); }
+  .measure .meta { color: var(--text-2); }
+  .measure .desc { color: var(--text-1); }
+
+  /* Tag-band (verdict) arriba a la derecha de cada card */
+  .tag-band {
+    position: absolute; top: 0; right: 0; z-index: 2;
+    padding: 5px 12px; border-bottom-left-radius: 12px;
+    font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  }
+  .tag-band.contra { background: rgba(239,68,68,.20); color: #fecaca; }
+  .tag-band.midneg { background: rgba(249,115,22,.20); color: #fed7aa; }
+  .tag-band.softneg { background: rgba(234,179,8,.18); color: #fef08a; }
+  .tag-band.favor { background: rgba(34,197,94,.20); color: #bbf7d0; }
+  .tag-band.neutra { background: var(--bg-3); color: var(--text-2); }
+  .measure:has(.tag-band) .measure-head { padding-right: 104px; }
+
+  /* Impact-pills (resumen por dimensión dentro de la card) */
+  .impact-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .impact-pill {
+    display: inline-flex; gap: 5px; align-items: center;
+    padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  }
+  .impact-pill.strong { background: rgba(239,68,68,.13); color: #fda4a4; border: 1px solid rgba(239,68,68,.28); }
+  .impact-pill.mid { background: rgba(249,115,22,.12); color: #fdba74; border: 1px solid rgba(249,115,22,.24); }
+  .impact-pill.soft { background: rgba(234,179,8,.10); color: #fde68a; border: 1px solid rgba(234,179,8,.20); }
+  .impact-pill.pos_strong, .impact-pill.pos, .impact-pill.pos_soft { background: rgba(34,197,94,.12); color: #a7f3c5; border: 1px solid rgba(34,197,94,.26); }
+  .impact-pill.none { background: var(--bg-3); color: var(--text-2); border: 1px solid var(--border-soft); }
+
+  /* ---- Tabs scrollables (filtro rápido por área) ---- */
+  .area-tabs {
+    display: flex; gap: 8px; margin: 4px 0 16px; padding-bottom: 4px;
+    overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .area-tabs::-webkit-scrollbar { display: none; }
+  .area-tab {
+    flex: 0 0 auto; scroll-snap-align: start; white-space: nowrap; font-family: inherit;
+    padding: 9px 15px; min-height: 40px; border-radius: 999px; cursor: pointer;
+    background: var(--bg-2); border: 1px solid var(--border-soft); color: var(--text-1);
+    font-size: 12.5px; font-weight: 600; transition: all .15s var(--ease);
+  }
+  .area-tab:active { transform: scale(0.96); }
+  .area-tab.active { background: var(--grad-gold); color: #1a0e02; border-color: transparent; box-shadow: var(--shadow-gold); }
+
+  /* ---- Bottom nav fijo ---- */
+  .app-bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 580px; z-index: 40;
+    display: flex; justify-content: space-around; gap: 6px;
+    padding: 10px 16px calc(14px + env(safe-area-inset-bottom));
+    background: rgba(10,10,12,.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-soft);
+  }
+  body.no-nav .app-bottom-nav { display: none; }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    min-height: 44px; justify-content: center; cursor: pointer; font-family: inherit;
+    background: none; border: 0; color: var(--text-2);
+    font-size: 10.5px; font-weight: 600; padding: 6px 10px; border-radius: 14px;
+    transition: all .15s var(--ease);
+  }
+  .nav-item:active { transform: scale(0.94); }
+  .nav-item svg { width: 22px; height: 22px; }
+  .app-bottom-nav .nav-item.active { color: #1a0e02; background: var(--grad-gold); box-shadow: var(--shadow-gold); }
+
+  /* ---- Toast ---- */
+  #toast {
+    position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--bg-3); border: 1px solid var(--border-mid); color: var(--text-0);
+    padding: 12px 20px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow); z-index: 60; opacity: 0; pointer-events: none;
+    transition: opacity .25s var(--ease), transform .25s var(--ease); max-width: 86vw; text-align: center;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---- Bottom-sheet (long-press) ---- */
+  #sheetBackdrop {
+    position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.55);
+    opacity: 0; pointer-events: none; transition: opacity .2s var(--ease);
+    display: flex; align-items: flex-end;
+  }
+  #sheetBackdrop.show { opacity: 1; pointer-events: auto; }
+  .sheet {
+    width: 100%; max-width: 580px; margin: 0 auto;
+    background: var(--bg-2); border-top: 1px solid var(--border-soft);
+    border-radius: 22px 22px 0 0; padding: 10px 16px calc(20px + env(safe-area-inset-bottom));
+    transform: translateY(100%); transition: transform .28s var(--ease);
+  }
+  #sheetBackdrop.show .sheet { transform: translateY(0); }
+  .sheet-grabber { width: 38px; height: 4px; border-radius: 999px; background: var(--border-mid); margin: 6px auto 10px; }
+  .sheet-title { font-size: 13px; font-weight: 700; color: var(--text-0); padding: 4px 8px 10px; line-height: 1.35; }
+  .sheet-item {
+    width: 100%; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left;
+    background: none; border: 0; color: var(--text-0); cursor: pointer;
+    padding: 14px 8px; min-height: 44px; font-size: 14.5px; font-weight: 600; border-radius: 12px;
+  }
+  .sheet-item:hover { background: var(--bg-3); }
+  .sheet-item svg { width: 20px; height: 20px; color: var(--gold-2); flex: 0 0 20px; }
+
+  /* ---- Skeletons (shimmer) ---- */
+  .skeleton-card { border: 1px solid var(--border-soft); border-radius: 16px; padding: 18px 20px; margin-bottom: 14px; background: var(--bg-2); }
+  .sk-line { height: 12px; border-radius: 7px; margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--bg-2) 0%, var(--bg-3) 50%, var(--bg-2) 100%);
+    background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+  .sk-line.title { height: 16px; width: 72%; }
+  .sk-line.short { width: 40%; }
+  .sk-line.tag { height: 22px; width: 88px; border-radius: 999px; display: inline-block; margin-right: 6px; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  /* ---- Pull-to-refresh ---- */
+  #ptr {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    z-index: 30; display: grid; place-items: center;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-3); border: 1px solid var(--border-soft);
+    margin-top: -44px; opacity: 0; transition: opacity .15s ease; pointer-events: none;
+  }
+  #ptr.show { opacity: 1; }
+  #ptr .spin { width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(212,160,23,.25); border-top-color: var(--gold-1); }
+  #ptr.loading .spin { animation: ptrspin .7s linear infinite; }
+  @keyframes ptrspin { to { transform: rotate(360deg); } }
+
+  /* ---- Transición de entrada a ficha (fallback transform) ---- */
+  .screen.active { animation: in 0.28s var(--ease); }
+  .screen.slide-fwd { animation: slideFwd 0.30s var(--ease); }
+  .screen.slide-back { animation: slideBack 0.28s var(--ease); }
+  @keyframes slideFwd { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+  @keyframes slideBack { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+
+  /* Touch targets cómodos en controles chicos */
+  .const-art, .siglas-head, .nav-item, .icon-btn, .area-tab { touch-action: manipulation; }
 </style>
 </head>
 <body>
 <div class="app">
   <header class="brand">
-    <h1>¿<span class="q">Cómo</span> Te Pega?</h1>
-    <div class="tag">Cómo cada medida del Boletín Oficial te toca a vos</div>
+    <div class="brand-left" onclick="show('measures')" style="cursor:pointer;">
+      <!-- TODO: reemplazar .brand-mark con el logo real del sello (SVG) cuando suba. -->
+      <div class="brand-mark"></div>
+      <div class="brand-name">¿Cómo te <span>pega</span>?</div>
+    </div>
+    <button class="icon-btn" id="btnSearch" onclick="toggleSearch()" aria-label="Buscar medidas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+    </button>
   </header>
+  <div class="header-search" id="headerSearch" hidden>
+    <input id="globalSearch" type="text" inputmode="search" placeholder="Buscar por título o descripción…" autocomplete="off">
+  </div>
 
   <!-- ============== HERO ============== -->
   <section id="screen-hero" class="screen active">
@@ -1246,6 +1616,9 @@
     <h2 class="step">Todas las medidas</h2>
     <p class="step-sub">Todas publicadas en el Boletín Oficial desde dic-2023. Tocá una para ver cómo te toca a <em>vos</em>. Filtrá por área, fecha, estado, cobertura mediática o texto libre.</p>
 
+    <!-- Tabs scrollables: filtro rápido por área (sincroniza con el panel de filtros). -->
+    <div id="areaTabs" class="area-tabs"></div>
+
     <div class="filterbar">
       <div class="filterbar-head">
         <button class="filter-toggle" id="filterToggle" onclick="toggleFilters()">
@@ -1264,8 +1637,13 @@
 
   <!-- ============== IMPACT ============== -->
   <section id="screen-impact" class="screen">
-    <div class="crumb" onclick="show('measures')">← Otras medidas</div>
-    <div class="perfil-box" id="perfilSummary2"><strong>TU PERFIL</strong>—</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+      <div class="crumb" onclick="show('measures')" style="margin-bottom:0;">← Otras medidas</div>
+      <button class="icon-btn" id="btnShare" onclick="shareCurrentMeasure()" aria-label="Compartir esta medida">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
+      </button>
+    </div>
+    <div class="perfil-box" id="perfilSummary2" style="margin-top:14px;"><strong>TU PERFIL</strong>—</div>
     <h2 class="step" id="measureTitle"></h2>
     <p class="step-sub" id="measureMeta" style="margin-bottom:10px;"></p>
     <div class="measure-areachips" id="measureAreaChips"></div>
@@ -1351,6 +1729,37 @@
   </footer>
 </div>
 
+<!-- Indicador de pull-to-refresh (lo controla render.js) -->
+<div id="ptr" aria-hidden="true"><div class="spin"></div></div>
+
+<!-- Toast discreto para confirmaciones -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Bottom-sheet contextual (long-press en una card) -->
+<div id="sheetBackdrop" onclick="closeSheet(event)">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-title" id="sheetTitle"></div>
+    <div id="sheetItems"></div>
+  </div>
+</div>
+
+<!-- Bottom nav fijo (Medidas / Balance / Perfil). SVG inline. -->
+<nav class="app-bottom-nav" id="bottomNav" aria-label="Navegación principal">
+  <button class="nav-item" data-screen="measures" onclick="navTo('measures')">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Medidas
+  </button>
+  <button class="nav-item" data-screen="balance" onclick="navTo('balance')">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+    Balance
+  </button>
+  <button class="nav-item" data-screen="profile" onclick="navTo('profile')">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    Perfil
+  </button>
+</nav>
+
 <!-- UI (script clásico: expone funciones globales para los onclick) -->
 <script src="js/render.js"></script>
 
@@ -1366,6 +1775,17 @@
   window.PERFILES_ARQUETIPICOS = PERFILES_ARQUETIPICOS;
   window.queryMeasures = queryMeasures;
   window.DIM_ICONS = DIM_ICONS;
+
+  // Recarga del catálogo (pull-to-refresh). `force` saltea el cache fresco para
+  // pegarle de verdad a Supabase. Avisa a la UI vía window.onCatalogReloaded.
+  window.reloadCatalog = async () => {
+    const res = await loadData(true);
+    window.MEASURES = res.measures || [];
+    window.MEDIOS = res.medios || [];
+    window.CTP_SOURCE = res.source;
+    if (typeof window.onCatalogReloaded === 'function') window.onCatalogReloaded(res);
+    return res;
+  };
 
   (async () => {
     let res;

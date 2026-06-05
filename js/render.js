@@ -302,8 +302,13 @@ function restoreSession() {
   return false;
 }
 
-function show(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+// v0.9: rango de cada pantalla para decidir la dirección del slide (fwd/back).
+const SCREEN_RANK = { hero: 0, profile: 1, measures: 2, balance: 3, historial: 3, impact: 4, compare: 5, sectores: 5 };
+let _curScreen = 'hero';
+
+// Swap real de pantalla + renders por pantalla + estado del bottom nav.
+function applyScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active', 'slide-fwd', 'slide-back'));
   const el = document.getElementById('screen-' + screenId);
   if (el) el.classList.add('active');
   if (screenId === 'hero') renderHeroResume();
@@ -314,9 +319,258 @@ function show(screenId) {
   if (screenId === 'sectores') renderSectores();
   if (screenId === 'historial') renderHistorial();
   if (screenId === 'balance') { updateProfileSummary(); renderBalance(); }
+  updateBottomNav(screenId);
   window.scrollTo(0, 0);
 }
+
+function show(screenId) {
+  const dir = (SCREEN_RANK[screenId] ?? 0) >= (SCREEN_RANK[_curScreen] ?? 0) ? 'fwd' : 'back';
+  _curScreen = screenId;
+  // Transición de entrada: view-transitions nativo si existe; si no, slide CSS.
+  if (typeof document.startViewTransition === 'function') {
+    document.startViewTransition(() => applyScreen(screenId));
+  } else {
+    applyScreen(screenId);
+    const el = document.getElementById('screen-' + screenId);
+    if (el) { void el.offsetWidth; el.classList.add(dir === 'fwd' ? 'slide-fwd' : 'slide-back'); }
+  }
+}
 window.show = show;
+
+// ============== v0.9 — BOTTOM NAV ==============
+// Las sub-pantallas (impact/compare/…) cuelgan visualmente de "Medidas".
+const NAV_TAB_FOR = {
+  measures: 'measures', impact: 'measures', historial: 'measures',
+  compare: 'measures', sectores: 'measures', balance: 'balance', profile: 'profile'
+};
+function updateBottomNav(screenId) {
+  document.body.classList.toggle('no-nav', screenId === 'hero');
+  const active = NAV_TAB_FOR[screenId] || '';
+  document.querySelectorAll('.app-bottom-nav .nav-item').forEach(b =>
+    b.classList.toggle('active', b.dataset.screen === active));
+}
+function navTo(screen) {
+  // Balance necesita perfil para calcularse: si no hay, mandamos a cargarlo.
+  if (screen === 'balance' && !state.perfil.ocupacion) {
+    showToast('Cargá tu perfil para ver el balance');
+    show('profile');
+    return;
+  }
+  show(screen);
+}
+window.navTo = navTo;
+
+// ============== v0.9 — TOAST ==============
+let _toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+window.showToast = showToast;
+
+// ============== v0.9 — WEB SHARE ==============
+function shareMeasure(m) {
+  if (!m) return;
+  const url = location.origin + location.pathname + '#m=' + encodeURIComponent(m.id);
+  const payload = { title: m.title, text: 'Te paso esta medida en Cómo Te Pega', url };
+  if (navigator.share) {
+    navigator.share(payload).catch(() => {});
+  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => showToast('Link copiado'), () => showToast('No se pudo copiar el link'));
+  } else {
+    showToast('Compartir no está disponible en este navegador');
+  }
+}
+function shareCurrentMeasure() { shareMeasure(state.measure); }
+window.shareMeasure = shareMeasure;
+window.shareCurrentMeasure = shareCurrentMeasure;
+
+// ============== v0.9 — GUARDADAS (marcar para después) ==============
+const LS_SAVED = 'ctp.saved';
+function getSaved() { const v = lsGet(LS_SAVED); return Array.isArray(v) ? v : []; }
+function isSaved(id) { return getSaved().includes(id); }
+function toggleSaved(id) {
+  let s = getSaved();
+  if (s.includes(id)) { s = s.filter(x => x !== id); lsSet(LS_SAVED, s); showToast('Quitada de guardadas'); }
+  else { s.push(id); lsSet(LS_SAVED, s); showToast('Guardada para después'); }
+}
+
+// ============== v0.9 — BOTTOM-SHEET (long-press) ==============
+const ICON_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>';
+const ICON_BOOKMARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>';
+const ICON_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>';
+
+function openSheet(m) {
+  const bd = document.getElementById('sheetBackdrop');
+  const titleEl = document.getElementById('sheetTitle');
+  const itemsEl = document.getElementById('sheetItems');
+  if (!bd || !itemsEl) return;
+  if (titleEl) titleEl.textContent = m.title;
+  const saved = isSaved(m.id);
+  itemsEl.innerHTML = `
+    <button class="sheet-item" data-act="share">${ICON_SHARE} Compartir</button>
+    <button class="sheet-item" data-act="save">${ICON_BOOKMARK} ${saved ? 'Quitar de guardadas' : 'Marcar para después'}</button>
+    <button class="sheet-item" data-act="open">${ICON_OPEN} Ver cómo te pega</button>`;
+  itemsEl.querySelectorAll('.sheet-item').forEach(b => {
+    b.onclick = () => {
+      const act = b.dataset.act;
+      closeSheet();
+      if (act === 'share') shareMeasure(m);
+      else if (act === 'save') toggleSaved(m.id);
+      else if (act === 'open') openMeasure(m.id);
+    };
+  });
+  bd.classList.add('show');
+}
+// Cierra si el click vino del backdrop (no de adentro del sheet) o sin evento (item).
+function closeSheet(e) {
+  if (e && e.target && e.target.id !== 'sheetBackdrop') return;
+  document.getElementById('sheetBackdrop')?.classList.remove('show');
+}
+window.closeSheet = closeSheet;
+
+// Long-press (touch 500ms) sobre una card → bottom-sheet. Suprime el click de
+// navegación si el long-press disparó. Cancela si el dedo se mueve >10px.
+function attachLongPress(card, m) {
+  let timer = null, longFired = false, sx = 0, sy = 0;
+  const start = (e) => {
+    longFired = false;
+    const t = e.touches ? e.touches[0] : e;
+    sx = t.clientX; sy = t.clientY;
+    timer = setTimeout(() => {
+      longFired = true;
+      if (navigator.vibrate) navigator.vibrate(15);
+      openSheet(m);
+    }, 500);
+  };
+  const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+  const move = (e) => {
+    const t = e.touches ? e.touches[0] : e;
+    if (Math.abs(t.clientX - sx) > 10 || Math.abs(t.clientY - sy) > 10) cancel();
+  };
+  card.addEventListener('touchstart', start, { passive: true });
+  card.addEventListener('touchmove', move, { passive: true });
+  card.addEventListener('touchend', cancel);
+  card.addEventListener('touchcancel', cancel);
+  card.addEventListener('click', (e) => {
+    if (longFired) { e.preventDefault(); e.stopPropagation(); longFired = false; }
+  }, true);
+}
+
+// ============== v0.9 — BÚSQUEDA EN HEADER ==============
+function toggleSearch() {
+  const box = document.getElementById('headerSearch');
+  if (!box) return;
+  const willShow = box.hidden;
+  box.hidden = !willShow;
+  if (willShow) {
+    if (_curScreen !== 'measures') show('measures');
+    const inp = document.getElementById('globalSearch');
+    if (inp) { inp.value = state.filters.busqueda || ''; setTimeout(() => inp.focus(), 40); }
+  }
+}
+window.toggleSearch = toggleSearch;
+
+function wireGlobalSearch() {
+  const inp = document.getElementById('globalSearch');
+  if (!inp) return;
+  inp.oninput = () => {
+    state.filters.busqueda = inp.value;
+    if (state.searchTimer) clearTimeout(state.searchTimer);
+    state.searchTimer = setTimeout(() => {
+      persistFilters();
+      if (_curScreen !== 'measures') show('measures');
+      else loadFirstPage();
+      const panelSearch = document.getElementById('filterSearch');
+      if (panelSearch) panelSearch.value = inp.value;
+    }, 300);
+  };
+  inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } };
+}
+
+// ============== v0.9 — TABS SCROLLABLES (filtro rápido por área) ==============
+function renderAreaTabs() {
+  const el = document.getElementById('areaTabs');
+  if (!el) return;
+  const sel = state.filters.areas;
+  const isAll = !sel.length;
+  const single = sel.length === 1 ? sel[0] : null;
+  const tabs = [`<button class="area-tab ${isAll ? 'active' : ''}" data-area="">Todas</button>`]
+    .concat(AREA_KEYS.map(k =>
+      `<button class="area-tab ${single === k ? 'active' : ''}" data-area="${k}">${AREA_LABELS[k]}</button>`));
+  el.innerHTML = tabs.join('');
+  el.querySelectorAll('.area-tab').forEach(b => {
+    b.onclick = () => {
+      const a = b.dataset.area;
+      state.filters.areas = a ? [a] : []; // tabs = single-select; vacío = todas
+      persistFilters();
+      renderAreaTabs();
+      renderFilters(); // mantener sincronizado el panel avanzado
+      loadFirstPage();
+    };
+  });
+}
+
+// ============== v0.9 — SKELETONS ==============
+function renderSkeletons(n) {
+  const list = document.getElementById('measureList');
+  if (!list) return;
+  let html = '';
+  for (let i = 0; i < (n || 5); i++) {
+    html += `<div class="skeleton-card">
+      <div class="sk-line title"></div>
+      <div class="sk-line short"></div>
+      <div class="sk-line"></div>
+      <div class="sk-line" style="width:80%"></div>
+      <div><span class="sk-line tag"></span><span class="sk-line tag"></span></div>
+    </div>`;
+  }
+  list.innerHTML = html;
+}
+
+// ============== v0.9 — PULL-TO-REFRESH ==============
+function initPullToRefresh() {
+  const ptr = document.getElementById('ptr');
+  if (!ptr) return;
+  let startY = 0, pulling = false, dist = 0;
+  const THRESH = 60;
+  document.addEventListener('touchstart', (e) => {
+    if (_curScreen !== 'measures' || window.scrollY > 0) { pulling = false; return; }
+    startY = e.touches[0].clientY; pulling = true; dist = 0;
+  }, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    if (!pulling) return;
+    dist = e.touches[0].clientY - startY;
+    if (dist <= 0 || window.scrollY > 0) { pulling = window.scrollY > 0 ? false : pulling; ptr.classList.remove('show'); return; }
+    const pull = Math.min(dist, 80);
+    ptr.classList.add('show');
+    ptr.style.transform = `translateX(-50%) translateY(${pull}px)`;
+  }, { passive: true });
+  document.addEventListener('touchend', async () => {
+    if (!pulling) return;
+    pulling = false;
+    if (dist >= THRESH && typeof window.reloadCatalog === 'function') {
+      ptr.classList.add('loading');
+      ptr.style.transform = 'translateX(-50%) translateY(56px)';
+      try { await window.reloadCatalog(); } catch (_) {}
+    }
+    ptr.classList.remove('loading', 'show');
+    ptr.style.transform = '';
+    dist = 0;
+  });
+}
+
+// Avisado por el bootstrap cuando el catálogo se recargó (pull-to-refresh).
+window.onCatalogReloaded = function () {
+  state.listLoaded = false;
+  if (_curScreen === 'balance') renderBalance();
+  else renderHome();
+  showToast('Catálogo actualizado');
+};
 
 // ============== CHIPS ==============
 function wireChips() {
@@ -438,6 +692,7 @@ function renderHome() {
     }
   }
 
+  renderAreaTabs(); // v0.9 — tabs scrollables por área
   renderFilters();
   // Si ya cargamos una página antes (p. ej. el usuario volvió de una medida),
   // re-renderizamos lo que había para preservar cuántas tarjetas se veían.
@@ -647,32 +902,72 @@ function updateLoadMore() {
   btn.disabled = !!state.list.loading;
 }
 
+// v0.9 — verdict del tag-band (derivado del bucket de scoreMeasure) y etiquetas
+// cortas de nivel para las impact-pills dentro de cada card.
+const TAGBAND = {
+  neg:     { cls: 'contra',  label: 'Te pega fuerte' },
+  midneg:  { cls: 'midneg',  label: 'Te pega' },
+  softneg: { cls: 'softneg', label: 'Te toca leve' },
+  neutral: { cls: 'neutra',  label: 'No te toca' },
+  pos:     { cls: 'favor',   label: 'Te beneficia' }
+};
+const LEVEL_SHORT = {
+  strong: 'Fuerte', mid: 'Medio', soft: 'Leve',
+  pos_strong: 'A favor', pos: 'A favor', pos_soft: 'Leve a favor', none: 'No aplica'
+};
+
 function renderMeasureCards() {
   const list = document.getElementById('measureList');
   if (!list) return;
   if (state.list.loading && !state.list.items.length) {
-    list.innerHTML = '<div class="list-loading">Cargando medidas…</div>';
+    renderSkeletons(5); // v0.9 — skeletons con shimmer en vez de "Cargando…"
     return;
   }
   if (!state.list.items.length) {
     list.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:14px 0;">No hay medidas con esos filtros.</div>';
     return;
   }
+  const hasPerfil = !!state.perfil.ocupacion;
   list.innerHTML = '';
   state.list.items.forEach(m => {
     const card = document.createElement('div');
     card.className = 'card measure';
-    const tagsHtml = (m.tags || []).slice(0, 4).map(t => `<span class="measure-tag">${t}</span>`).join('');
     const pop = (m.popularidad || 0);
     const cobBadge = pop >= 2 ? `<span class="cobertura-badge sm" title="Cobertura mediática">${pop}/${m.coberturaTotal || 6}</span>` : '';
     const obsIcon = (m.observaciones?.length) ? '<span class="const-icon" title="Tiene observaciones constitucionales">⚖️</span>' : '';
-    card.innerHTML = `
+
+    // Tag-band del verdict: solo si hay perfil para calcularlo.
+    let band = '';
+    if (hasPerfil) {
+      const tb = TAGBAND[scoreMeasure(m).bucket];
+      if (tb) band = `<div class="tag-band ${tb.cls}">${tb.label}</div>`;
+    }
+
+    // Fila inferior: impact-pills por dimensión (con perfil) o tags (sin perfil).
+    let bottomRow;
+    if (hasPerfil && m.hasRules) {
+      let dims = [];
+      try { dims = m.impact(state.perfil) || []; } catch (e) { dims = []; }
+      const shown = dims.filter(d => d.level && d.level !== 'none').slice(0, 3);
+      if (shown.length) {
+        bottomRow = '<div class="impact-row">' + shown.map(d =>
+          `<span class="impact-pill ${d.level}">${dimIcon(d)} ${d.name} · ${LEVEL_SHORT[d.level] || ''}</span>`).join('') + '</div>';
+      } else {
+        bottomRow = '<div class="impact-row"><span class="impact-pill none">Sin impacto directo en tu perfil</span></div>';
+      }
+    } else {
+      const tagsHtml = (m.tags || []).slice(0, 4).map(t => `<span class="measure-tag">${t}</span>`).join('');
+      bottomRow = `<div class="measure-tags">${tagsHtml}</div>`;
+    }
+
+    card.innerHTML = `${band}
       <div class="measure-head"><h3>${m.title}</h3><div class="measure-flags">${cobBadge}${obsIcon}</div></div>
       <div class="meta">${m.meta}</div>
       <div class="desc">${m.desc}</div>
-      <div class="measure-tags">${tagsHtml}</div>
+      ${bottomRow}
     `;
     card.onclick = () => openMeasure(m.id);
+    attachLongPress(card, m); // v0.9 — long-press → bottom-sheet
     list.appendChild(card);
   });
 }
@@ -1069,9 +1364,9 @@ function buildDonut(contra, neutral, favor) {
   }
   let offset = 0;
   const segs = [
-    { value: contra, color: '#b91c1c', label: 'En contra', cls: 'contra' },
-    { value: neutral, color: '#c4bfb0', label: 'Neutras', cls: 'neutral' },
-    { value: favor, color: '#15803d', label: 'A favor', cls: 'favor' }
+    { value: contra, color: '#ef4444', label: 'En contra', cls: 'contra' },
+    { value: neutral, color: '#4b4b54', label: 'Neutras', cls: 'neutral' },
+    { value: favor, color: '#22c55e', label: 'A favor', cls: 'favor' }
   ];
   let paths = '';
   segs.forEach(s => {
@@ -1289,16 +1584,27 @@ window.nuevaPrueba = nuevaPrueba;
 function initApp() {
   injectBalanceScreen();
   wireChips();
+  wireGlobalSearch();    // v0.9 — búsqueda del header
+  initPullToRefresh();   // v0.9 — pull-to-refresh en el listado
   // v0.8: restaurar sesión (perfil + filtros) ANTES de decidir qué pantalla mostrar.
   const tienePerfil = restoreSession();
   checkProfileComplete();
   updateProfileSummary();
+
+  // v0.9 — deep-link a una medida (#m=<id>) desde un link compartido.
+  const hm = (location.hash.match(/[#&]m=([^&]+)/) || [])[1];
+  const deepId = hm ? decodeURIComponent(hm) : null;
+  if (deepId && getMeasures().find(x => x.id === deepId)) {
+    openMeasure(deepId); // setea pantalla impact + bottom nav
+    return;
+  }
+
   if (tienePerfil) {
     // Perfil completo guardado → saltar el hero y entrar directo al listado.
     show('measures');
-  } else if (document.getElementById('screen-measures')?.classList.contains('active')) {
-    // Si ya estamos parados en la home (raro al inicio), refrescamos.
-    renderHome();
+  } else {
+    updateBottomNav('hero'); // oculta el bottom nav en el onboarding
+    renderHeroResume();
   }
 }
 window.initApp = initApp;
