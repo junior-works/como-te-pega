@@ -3315,6 +3315,89 @@ export const MEASURES_BASE = [
       { name: "Cuentapropista con cadena importada", sub: "Monotrib. · GBA", badges: { Plata: "strong", Trabajo: "soft" } },
       { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { Plata: "strong", "País / Equilibrio institucional": "soft" } }
     ]
+  },
+
+  {
+    id: "peajes_accesos_amba_aumento_2024",
+    date: "2024-05-18",
+    title: "Aumentaron fuerte los peajes de los Accesos Norte y Oeste al AMBA",
+    meta: "Resolución 197/2024 DNV (RESOL-2024-197-APN-DNV#MEC) · BORA, vigencia 18-may-2024 · primer aumento de +100% en todas las categorías de los Accesos Norte (Panamericana, concesión de Autopistas del Sol – AUSOL) y Oeste (Grupo Concesionario del Oeste – GCO), y apertura de un esquema de revisión tarifaria mensual desde el 2º semestre de 2024. Con los ajustes sucesivos, ambos accesos acumularon cerca de +170% en el año. El esquema penaliza cada vez más al pago manual/efectivo frente al TelePASE",
+    desc: "La Resolución 197/2024 de la Dirección Nacional de Vialidad aplicó en mayo de 2024 un aumento del 100% en todas las categorías de los peajes de los Accesos Norte (la Panamericana, concesionada a Autopistas del Sol – AUSOL) y Oeste (Grupo Concesionario del Oeste – GCO), las dos autopistas que conectan el conurbano con la Ciudad. Además abrió un mecanismo de revisión mensual desde el segundo semestre: con los ajustes que siguieron (julio, agosto, septiembre, noviembre), la tarifa acumuló alrededor del 170% en el año. El esquema penaliza cada vez más al que paga en efectivo o en cabina manual frente al TelePASE —la tarifa manual llegó a costar más del doble que la electrónica—. Para quien cruza a diario en auto para trabajar, el peaje pasó a ser un gasto fijo de varios cientos de miles de pesos al año.",
+    tags: ["Plata", "Movilidad social", "Trabajo"],
+    fuente: "Boletín Oficial — Resolución 197/2024 DNV (RESOL-2024-197-APN-DNV#MEC), vigencia 18-may-2024: +100% en todas las categorías de los Accesos Norte (AUSOL) y Oeste (GCO) y apertura de revisión tarifaria mensual desde el 2º semestre. Acumulado de ~170% en 2024 y brecha creciente entre TelePASE y pago manual (el efectivo llegó a costar más del doble): Argentina.gob.ar, DEUCO, La Nación, Ámbito, Infobae.",
+    impact: function(p) {
+      const dims = [];
+      const usaVehiculo = p.transporte === "auto" || p.transporte === "moto" || p.transporte === "mixto";
+      const corredorAccesos = p.zona === "gba_norte" || p.zona === "gba_oeste";
+      const caba = p.zona === "caba";
+      const logistica = ["pyme", "monotrib", "autonomo"].includes(p.ocupacion);
+
+      if (usaVehiculo && corredorAccesos) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Vivís en el corredor Norte u Oeste del conurbano y te movés en vehículo: para entrar a la Ciudad cruzás los peajes de los Accesos, operados por AUSOL (Panamericana) y GCO (Acceso Oeste). La Resolución 197/2024 de Vialidad aplicó en mayo un <strong>+100%</strong> de golpe en todas las categorías y abrió una revisión mensual que llevó el acumulado a cerca de <strong>+170%</strong> en el año. Si cruzás dos veces por día para trabajar, el peaje se volvió un gasto fijo del orden de <strong>$240.000 a $480.000 al año</strong> según la categoría y la franja horaria. Y si pagás en efectivo en vez de TelePASE, la penalización es enorme: la tarifa manual llegó a costar <strong>más del doble</strong> que la electrónica." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
+          body: "El peaje no es opcional: es el precio de llegar al trabajo desde Pilar, Tigre o Escobar (Acceso Norte) y desde Moreno, Merlo o Ituzaingó (Acceso Oeste). Para el que eligió vivir lejos del centro porque el alquiler o la casa eran más accesibles, el salto de la tarifa encarece esa decisión y recorta el margen para moverse. Cuando cruzar la General Paz cuesta cada vez más, la distancia entre dónde se puede vivir y dónde está el trabajo se vuelve, otra vez, una barrera de plata." });
+      } else if (usaVehiculo && caba) {
+        dims.push({ name: "Plata", icon: "💰", level: "mid",
+          body: "Si vivís en la Ciudad y salís al norte o al oeste en auto —a una quinta, a un trabajo en zona norte, a la ruta— también pagás el peaje más caro: +100% en mayo y cerca de +170% acumulado en el año por la Resolución 197/2024. El golpe es real, pero menos cotidiano que para el que cruza todos los días desde el conurbano: lo sentís en cada salida, no como un gasto fijo mensual ineludible." });
+      }
+
+      if (usaVehiculo && logistica && (corredorAccesos || caba)) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si tu actividad mueve mercadería por estos accesos —flete, reparto, una PyME logística— el golpe se multiplica: las categorías de carga (vehículos pesados, Cat. 5 a 7) pagan varias veces la tarifa de un auto y subieron en la misma proporción. Cada viaje de distribución por la Panamericana o el Acceso Oeste carga ahora ese costo, que terminás trasladando al precio del flete o absorbiendo contra tu propio margen." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Detrás del aumento hay una recomposición tarifaria a favor de las concesionarias AUSOL y GCO, que recuperan ingresos en pesos tras años de tarifas planchadas, y un Estado que reduce el subsidio implícito al transporte por autopista. Ganan los concesionarios y, de modo indirecto, el Tesoro; pierde el usuario que cruza el AMBA todos los días y no tiene una alternativa de transporte público rápida para el mismo recorrido. La revisión mensual, además, le mete al peaje la lógica de la inflación: ajusta seguido y casi sin discusión pública." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empleado del conurbano norte que cruza en auto", sub: "Empleado priv. · GBA Norte · ≤$1,5M", badges: { Plata: "strong", "Movilidad social": "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Transportista / PyME logística por los Accesos", sub: "PyME · GBA Oeste", badges: { Plata: "strong", Trabajo: "mid", "Movilidad social": "mid" } },
+      { name: "Vecino/a de CABA que sale al norte en auto", sub: "Empleado priv. · CABA", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Usuario/a de transporte público del mismo corredor", sub: "Empleado priv. · GBA Norte", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+
+  {
+    id: "sube_eliminacion_red_septiembre_2024",
+    date: "2024-09-01",
+    title: "Se cortó el beneficio Red SUBE (Boleto Integrado) en el AMBA",
+    meta: "Decreto 698/2024 (DECTO-2024-698-APN-PTE) · BORA 6-ago-2024 · fin de la exclusividad de la SUBE como medio de pago (interoperabilidad). El corte del beneficio Red SUBE / Boleto Integrado del AMBA —descuento del 50% en el 2º viaje y 75% en el 3º dentro de 2 hs— rige desde el 1-sep-2024 y NO surge de una norma BORA propia: se instrumentó como decisión de desfinanciamiento del Ministerio de Economía, que dejó de girar ~$7.000 millones/mes a CABA y PBA. El beneficio sigue solo en las líneas de jurisdicción nacional del AMBA",
+    desc: "Son dos cosas distintas, casi simultáneas. (1) El Decreto 698/2024 (BORA 6-ago-2024, firmado por Milei, Francos y Caputo) terminó con la exclusividad de la tarjeta SUBE: deroga el punto del Convenio Marco que la fijaba como único medio de pago electrónico y obliga a aceptar otros pagos sin contacto (tarjetas de crédito/débito, QR, billeteras). (2) Por separado —y esto es lo que pega en el bolsillo—, desde el 1-sep-2024 el Gobierno nacional dejó de financiar el beneficio Red SUBE (Boleto Integrado): el descuento automático del 50% en el segundo viaje y del 75% en el tercero, dentro de las 2 horas. Importante: ese corte no salió como decreto ni resolución en el Boletín Oficial; se hizo dejando de girar los fondos (~$7.000 millones/mes entre PBA y CABA), una decisión del Ministerio de Economía. El beneficio se mantiene solo en las líneas de jurisdicción nacional del AMBA; en las que circulan dentro de una sola jurisdicción (CABA o Provincia, sin cruzar) se perdió.",
+    tags: ["Plata", "Movilidad social", "Trabajo"],
+    fuente: "Boletín Oficial — Decreto 698/2024 (BORA 6-ago-2024): fin de la exclusividad de la SUBE e interoperabilidad de medios de pago (deroga el punto 1 del Anexo I del Convenio Marco SUBE); el texto NO menciona la Red SUBE ni el Boleto Integrado. El corte del Boleto Integrado / Red SUBE desde el 1-sep-2024 no tiene norma BORA propia: fue un desfinanciamiento del Ministerio de Economía (dejó de girar ~$6.500M a PBA y ~$1.500M a CABA por mes), que alcanzó a 388 líneas de colectivo, 7 ferrocarriles, 6 líneas de subte y el Premetro. Aumento de hasta 40-60% para quien combina viajes: Infobae, Ámbito, El Cronista, C5N.",
+    impact: function(p) {
+      const dims = [];
+      const inAMBA = ["caba", "gba_norte", "gba_sur", "gba_oeste", "laplata"].includes(p.zona);
+      const combina = p.transporte === "combinacion" || p.transporte === "2colectivos" || p.transporte === "mixto";
+      const bajoIngreso = ["hasta_700k", "700k_1.5m"].includes(p.ingreso);
+      const trabajaViaja = ["empleado_priv", "empleado_pub", "trab_informal", "monotrib"].includes(p.ocupacion);
+
+      if (inAMBA && combina) {
+        dims.push({ name: "Plata", icon: "💰", level: "strong",
+          body: "Combinás transporte para moverte en el AMBA (colectivo + tren, o dos colectivos): justo el caso que el beneficio Red SUBE abarataba. Hasta el 1-sep-2024, el segundo viaje pagabas la mitad y el tercero, un cuarto, si los hacías dentro de las 2 horas con la tarjeta registrada. Desde esa fecha, en las líneas que no cruzan jurisdicción ese descuento desapareció: el segundo y el tercer tramo pasan a costar tarifa plena. En la práctica, quien hacía dos viajes pasó de pagar el equivalente a 1,5 boletos a pagar 2 enteros — un salto de hasta <strong>40% a 60%</strong> en el gasto mensual de transporte." });
+        dims.push({ name: "Movilidad social", icon: "🛤️", level: bajoIngreso ? "strong" : "mid",
+          body: "El que combina dos o tres viajes no lo hace por gusto: lo hace porque vive lejos y ningún recorrido directo lo deja en el trabajo. Empleadas domésticas, niñeras, obreros y empleadas de comercio del conurbano profundo —La Matanza, Florencio Varela, Moreno, Merlo— son los que más combinaciones necesitan, y ahora pagan completo cada tramo. El beneficio que se cortó era, en los hechos, un subsidio a la distancia: lo perdió justamente quien tiene el viaje más largo y el sueldo donde el transporte ya pesaba 15-25%." });
+        if (trabajaViaja) {
+          dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+            body: "Para el trabajador formal o informal que cruza el AMBA todos los días, esto es plata que sale directo del sueldo de bolsillo y no se recupera. Sin el descuento por combinación, ir a trabajar cuesta más sin que suba el salario: el transporte se come una porción mayor del ingreso, y pega más fuerte donde los sueldos más bajos ya estaban más apretados." });
+        }
+      } else if (!inAMBA && combina) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "El Boleto Integrado de la Red SUBE era un beneficio del AMBA. Si combinás transporte fuera del área metropolitana, este corte puntual no te toca de lleno; aunque el esquema general de quita de subsidios al transporte sí encareció el boleto en tu provincia por otras vías." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Estado nacional ahorra alrededor de $7.000 millones por mes con el argumento de que el transporte urbano del AMBA es responsabilidad de las jurisdicciones que lo usan. CABA y la Provincia, que deberían cubrir el beneficio de sus propias líneas, avisaron que no estaban dispuestas a hacerlo. Resultado: el ahorro fiscal de Nación lo terminó pagando el usuario que combina, atrapado en una pelea de competencias entre Nación, Provincia y Ciudad. Conviene además distinguir la norma del recorte: el Decreto 698/2024 abrió los medios de pago, pero el corte del Boleto Integrado se hizo sin decreto, simplemente dejando de girar los fondos." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Empleada de comercio que combina colectivo + tren", sub: "Empleado priv. · GBA Oeste · ≤$700k", badges: { Plata: "strong", "Movilidad social": "strong", Trabajo: "mid" } },
+      { name: "Trabajadora doméstica del conurbano profundo", sub: "Trab. informal · La Matanza", badges: { Plata: "strong", "Movilidad social": "strong", Trabajo: "mid" } },
+      { name: "Estudiante que combina dos colectivos", sub: "Estudiante · GBA", badges: { Plata: "strong", "Movilidad social": "mid" } },
+      { name: "Vecino/a de CABA con un solo viaje directo", sub: "Empleado priv. · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
   }
 ];
 
