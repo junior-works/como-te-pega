@@ -1365,6 +1365,67 @@
 
   /* Touch targets cómodos en controles chicos */
   .const-art, .siglas-head, .nav-item, .icon-btn, .area-tab { touch-action: manipulation; }
+
+  /* ===== Banner "instalar como app" (A1) ===== */
+  /* Sticky abajo, por encima del bottom nav. Slide-up al aparecer. */
+  #install-banner {
+    position: fixed;
+    left: 12px; right: 12px;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    z-index: 60;
+    display: none;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+    transform: translateY(140%);
+    transition: transform .32s var(--ease);
+  }
+  #install-banner.open { display: grid; transform: translateY(0); }
+  .install-banner-icon { font-size: 26px; line-height: 1; }
+  .install-banner-text { min-width: 0; }
+  .install-banner-title { font-weight: 700; color: var(--text-0); font-size: 14px; }
+  .install-banner-sub { color: var(--text-2); font-size: 12px; margin-top: 2px; line-height: 1.35; }
+  .install-banner-actions { display: flex; align-items: center; gap: 6px; }
+  .install-banner-cta {
+    background: var(--grad-gold); color: #1a0e02;
+    border: none; border-radius: 999px;
+    padding: 8px 16px; font-weight: 700; font-size: 13px;
+    cursor: pointer; box-shadow: var(--shadow-gold);
+    touch-action: manipulation;
+  }
+  #installClose {
+    background: transparent; border: none; color: var(--text-2);
+    font-size: 20px; line-height: 1; width: 30px; height: 30px;
+    border-radius: 50%; cursor: pointer; touch-action: manipulation;
+  }
+  #installClose:hover { background: var(--bg-3); color: var(--text-0); }
+
+  /* ===== Sección "Apoyá el proyecto" (A3) ===== */
+  .support-section {
+    margin: 22px 0 8px;
+    padding: 18px;
+    background: var(--bg-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+  }
+  .support-title { margin: 0 0 6px; font-size: 16px; color: var(--text-0); }
+  .support-desc { margin: 0 0 14px; font-size: 13px; color: var(--text-2); line-height: 1.45; }
+  .support-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .support-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px; border-radius: 12px;
+    background: var(--bg-3); border: 1px solid var(--border-soft);
+    color: var(--text-0); text-decoration: none; font-weight: 600; font-size: 14px;
+    transition: background .18s var(--ease), border-color .18s var(--ease);
+    touch-action: manipulation;
+  }
+  .support-btn:hover { background: var(--brown-1); border-color: var(--brown-1); color: #1a0e02; }
+  .support-icon { font-size: 18px; line-height: 1; }
 </style>
 </head>
 <body>
@@ -1596,6 +1657,23 @@
 
     <button class="btn accent" id="btnGoMeasures" onclick="show('measures')" disabled>Ver cómo te pegan las medidas →</button>
     <button class="btn ghost" id="btnSkip" onclick="show('measures')" style="display: none;">Saltar — quiero ver igual</button>
+
+    <!-- Apoyá el proyecto (A3). URLs provisorias; Charly confirma las definitivas. -->
+    <section class="support-section">
+      <h3 class="support-title">Apoyá el proyecto</h3>
+      <p class="support-desc">Cómo Te Pega es gratis y sin publicidad. Si te resulta útil, podés apoyar para que siga así.</p>
+      <div class="support-buttons">
+        <a class="support-btn cafecito" href="https://cafecito.app/comotepega" target="_blank" rel="noopener">
+          <span class="support-icon" aria-hidden="true">☕</span>
+          <span class="support-label">Cafecito</span>
+        </a>
+        <a class="support-btn mp" href="https://link.mercadopago.com.ar/comotepega" target="_blank" rel="noopener">
+          <span class="support-icon" aria-hidden="true">💳</span>
+          <span class="support-label">Mercado Pago</span>
+        </a>
+      </div>
+      <p class="support-foot" style="font-size:11px;color:var(--text-3);margin-top:8px">URLs provisorias. Charly va a confirmar las definitivas.</p>
+    </section>
   </section>
 
   <!-- ============== MEASURES / HOME ============== -->
@@ -1744,6 +1822,19 @@
   </div>
 </div>
 
+<!-- Banner "instalar como app" (A1). Aparece desde la 2ª visita; ver script abajo. -->
+<div id="install-banner" role="dialog" aria-label="Instalar Cómo Te Pega">
+  <span class="install-banner-icon" aria-hidden="true">📲</span>
+  <div class="install-banner-text">
+    <div class="install-banner-title">Instalá Cómo Te Pega</div>
+    <div class="install-banner-sub">Acceso directo desde tu pantalla, sin abrir el navegador.</div>
+  </div>
+  <div class="install-banner-actions">
+    <button class="install-banner-cta" id="installBtn" type="button">Instalar</button>
+    <button id="installClose" type="button" aria-label="Cerrar">&times;</button>
+  </div>
+</div>
+
 <!-- Bottom nav fijo (Medidas / Balance / Perfil). SVG inline. -->
 <nav class="app-bottom-nav" id="bottomNav" aria-label="Navegación principal">
   <button class="nav-item" data-screen="measures" onclick="navTo('measures')">
@@ -1801,6 +1892,82 @@
     console.info('[ctp] datos:', res.source, (res.measures || []).length, 'medidas');
     if (typeof window.initApp === 'function') window.initApp();
   })();
+</script>
+
+<!-- Install prompt (A1): banner "instalar como app" -->
+<script>
+(function () {
+  const VISIT_KEY = 'ctp_visit_count';
+  const DISMISS_KEY = 'ctp_install_dismissed';
+  const banner = document.getElementById('install-banner');
+  if (!banner) return;
+
+  // Contador de visitas: +1 por carga. Banner desde la 2ª en adelante.
+  let visits = parseInt(localStorage.getItem(VISIT_KEY) || '0', 10) + 1;
+  try { localStorage.setItem(VISIT_KEY, String(visits)); } catch (_) {}
+
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  const dismissed = () => localStorage.getItem(DISMISS_KEY) === '1';
+  const eligible = () => visits >= 2 && !dismissed() && !isStandalone;
+
+  let deferredInstallEvent = null;
+  let hideTimer = null;
+
+  function showInstallBanner() {
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+    banner.style.display = 'grid';
+    // Forzar reflow para que la transición de transform corra.
+    void banner.offsetWidth;
+    banner.classList.add('open');
+  }
+  function hideInstallBanner() {
+    banner.classList.remove('open');
+    hideTimer = setTimeout(() => { banner.style.display = 'none'; }, 340);
+  }
+
+  // Android / Chrome: capturamos el evento nativo y lo disparamos al tocar.
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallEvent = e;
+    if (eligible()) showInstallBanner();
+  });
+
+  // Si la PWA se instala, ocultamos y no insistimos.
+  window.addEventListener('appinstalled', () => {
+    deferredInstallEvent = null;
+    hideInstallBanner();
+  });
+
+  document.addEventListener('click', async (e) => {
+    if (e.target.closest('#installBtn') && deferredInstallEvent) {
+      deferredInstallEvent.prompt();
+      try {
+        const r = await deferredInstallEvent.userChoice;
+        if (r && r.outcome === 'accepted') hideInstallBanner();
+      } catch (_) {}
+      deferredInstallEvent = null;
+    } else if (e.target.closest('#installClose')) {
+      hideInstallBanner();
+      try { localStorage.setItem(DISMISS_KEY, '1'); } catch (_) {}
+    }
+  });
+
+  // iOS Safari: no hay beforeinstallprompt. Mostramos el banner con
+  // instrucciones de "Compartir → Agregar a inicio" y el CTA cierra.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if (isIOS && isSafari && eligible()) {
+    const sub = banner.querySelector('.install-banner-sub');
+    if (sub) sub.textContent = 'Tocá el ícono Compartir y luego "Agregar a inicio".';
+    const cta = banner.querySelector('.install-banner-cta');
+    if (cta) {
+      cta.textContent = 'Listo';
+      cta.id = 'installClose';
+    }
+    showInstallBanner();
+  }
+})();
 </script>
 
 <!-- Service worker (PWA) -->
