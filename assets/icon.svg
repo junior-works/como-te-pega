@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cómo Te Pega">
+    <!-- Cómo Te Pega — ícono base 512x512.
+         Idea: dos ondas que se propagan hacia arriba desde un punto central.
+         "Cómo te llega" / la onda expansiva de cada medida. -->
+    <rect width="512" height="512" fill="#0a0a0c"/>
+    <path d="M 76 320 A 180 180 0 0 1 436 320"
+          fill="none" stroke="#fbd24a" stroke-width="46" stroke-linecap="round"/>
+    <path d="M 130 320 A 126 126 0 0 1 382 320"
+          fill="none" stroke="#c47a2c" stroke-width="46" stroke-linecap="round"/>
+    <circle cx="256" cy="320" r="54" fill="#fbd24a"/>
+</svg>

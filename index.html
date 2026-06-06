@@ -1072,11 +1072,9 @@
   .brand-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
   .brand-mark {
     width: 36px; height: 36px; border-radius: 50%; flex: 0 0 36px;
-    background: var(--grad-gold); display: grid; place-items: center;
-    color: #1a0e02; font-weight: 800; font-size: 15px; box-shadow: var(--shadow-gold);
+    overflow: hidden; box-shadow: var(--shadow-gold);
   }
-  /* TODO: reemplazar con el logo real del sello cuando suba como SVG. */
-  .brand-mark::after { content: "?"; }
+  .brand-mark-svg { width: 100%; height: 100%; border-radius: 50%; display: block; }
   .brand-name { font-weight: 800; font-size: 17px; letter-spacing: .2px; color: var(--text-0); }
   .brand-name span { color: var(--gold-2); }
   .icon-btn {
@@ -1432,8 +1430,16 @@
 <div class="app">
   <header class="brand">
     <div class="brand-left" onclick="show('measures')" style="cursor:pointer;">
-      <!-- TODO: reemplazar .brand-mark con el logo real del sello (SVG) cuando suba. -->
-      <div class="brand-mark"></div>
+      <div class="brand-mark">
+        <svg viewBox="0 0 512 512" class="brand-mark-svg" aria-hidden="true">
+          <rect width="512" height="512" fill="#0a0a0c"/>
+          <path d="M 76 320 A 180 180 0 0 1 436 320"
+                fill="none" stroke="#fbd24a" stroke-width="46" stroke-linecap="round"/>
+          <path d="M 130 320 A 126 126 0 0 1 382 320"
+                fill="none" stroke="#c47a2c" stroke-width="46" stroke-linecap="round"/>
+          <circle cx="256" cy="320" r="54" fill="#fbd24a"/>
+        </svg>
+      </div>
       <div class="brand-name">¿Cómo te <span>pega</span>?</div>
     </div>
     <button class="icon-btn" id="btnSearch" onclick="toggleSearch()" aria-label="Buscar medidas">
@@ -1835,8 +1841,12 @@
   </div>
 </div>
 
-<!-- Bottom nav fijo (Medidas / Balance / Perfil). SVG inline. -->
+<!-- Bottom nav fijo (Perfil / Medidas / Balance). SVG inline. -->
 <nav class="app-bottom-nav" id="bottomNav" aria-label="Navegación principal">
+  <button class="nav-item" data-screen="profile" onclick="navTo('profile')">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    Perfil
+  </button>
   <button class="nav-item" data-screen="measures" onclick="navTo('measures')">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     Medidas
@@ -1844,10 +1854,6 @@
   <button class="nav-item" data-screen="balance" onclick="navTo('balance')">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
     Balance
-  </button>
-  <button class="nav-item" data-screen="profile" onclick="navTo('profile')">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    Perfil
   </button>
 </nav>
 

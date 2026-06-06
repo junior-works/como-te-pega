@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cómo Te Pega">
+    <!-- Cómo Te Pega — versión maskable.
+         Mismo símbolo que icon.svg, escalado al ~65% para caer dentro de la
+         safe zone central (radio 0.4 × 512 = 205 px). El fondo negro llega
+         hasta los bordes para que el launcher pueda recortar a cualquier
+         forma sin dejar transparencias. -->
+    <rect width="512" height="512" fill="#0a0a0c"/>
+    <path d="M 138 297 A 118 118 0 0 1 374 297"
+          fill="none" stroke="#fbd24a" stroke-width="30" stroke-linecap="round"/>
+    <path d="M 173 297 A 83 83 0 0 1 339 297"
+          fill="none" stroke="#c47a2c" stroke-width="30" stroke-linecap="round"/>
+    <circle cx="256" cy="297" r="35" fill="#fbd24a"/>
+</svg>
