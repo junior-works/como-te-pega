@@ -433,6 +433,29 @@ function closeSheet(e) {
 }
 window.closeSheet = closeSheet;
 
+// ============== v0.9.4 — MODAL MERCADO PAGO (datos copiables) ==============
+function openMpModal() {
+  document.getElementById('mpBackdrop')?.classList.add('show');
+}
+// Cierra si el click vino del backdrop (no de adentro del modal) o sin evento (botón Cerrar).
+function closeMpModal(e) {
+  if (e && e.target && e.target.id !== 'mpBackdrop') return;
+  document.getElementById('mpBackdrop')?.classList.remove('show');
+}
+function copyMpData(text, okMsg) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(
+      () => showToast(okMsg),
+      () => showToast('No se pudo copiar')
+    );
+  } else {
+    showToast('Copiar no está disponible en este navegador');
+  }
+}
+window.openMpModal = openMpModal;
+window.closeMpModal = closeMpModal;
+window.copyMpData = copyMpData;
+
 // Long-press (touch 500ms) sobre una card → bottom-sheet. Suprime el click de
 // navegación si el long-press disparó. Cancela si el dedo se mueve >10px.
 function attachLongPress(card, m) {
@@ -911,9 +934,12 @@ const TAGBAND = {
   neutral: { cls: 'neutra',  label: 'No te toca' },
   pos:     { cls: 'favor',   label: 'Te beneficia' }
 };
+// v0.9.4 — unificadas al esquema simétrico de la ficha (Contra X / Favor X).
+// Forma corta porque la pill ya lleva ícono + nombre de dimensión + "·".
 const LEVEL_SHORT = {
-  strong: 'Fuerte', mid: 'Medio', soft: 'Leve',
-  pos_strong: 'A favor', pos: 'A favor', pos_soft: 'Leve a favor', none: 'No aplica'
+  strong: 'Contra fuerte', mid: 'Contra medio', soft: 'Contra leve',
+  none: 'Neutra',
+  pos_soft: 'Favor leve', pos: 'Favor medio', pos_strong: 'Favor fuerte'
 };
 
 function renderMeasureCards() {

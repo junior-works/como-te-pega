@@ -1431,14 +1431,62 @@
   .support-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .support-btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 12px; border-radius: 12px;
+    padding: 12px; border-radius: 12px; min-height: 44px;
     background: var(--bg-3); border: 1px solid var(--border-soft);
     color: var(--text-0); text-decoration: none; font-weight: 600; font-size: 14px;
+    font-family: inherit; cursor: pointer;
     transition: background .18s var(--ease), border-color .18s var(--ease);
     touch-action: manipulation;
   }
   .support-btn:hover { background: var(--brown-1); border-color: var(--brown-1); color: #1a0e02; }
   .support-icon { font-size: 18px; line-height: 1; }
+
+  /* ---- Modal Mercado Pago (datos copiables) ---- */
+  #mpBackdrop {
+    position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.6);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none; transition: opacity .2s var(--ease);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  #mpBackdrop.show { opacity: 1; pointer-events: auto; }
+  .mp-modal {
+    width: 100%; max-width: 420px;
+    background: var(--bg-2); border: 1px solid var(--border-soft);
+    border-radius: 18px; padding: 22px 20px calc(20px + env(safe-area-inset-bottom));
+    transform: scale(.94); transition: transform .22s var(--ease);
+    max-height: calc(100vh - 40px); overflow-y: auto;
+  }
+  #mpBackdrop.show .mp-modal { transform: scale(1); }
+  .mp-title { margin: 0 0 6px; font-size: 17px; font-weight: 800; color: var(--text-0); }
+  .mp-sub { margin: 0 0 16px; font-size: 13px; color: var(--text-1); line-height: 1.45; }
+  .mp-field {
+    background: var(--bg-3); border: 1px solid var(--border-soft); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 10px;
+  }
+  .mp-field.alias { border-color: var(--gold-2); background: var(--grad-gold-soft); }
+  .mp-field-label { font-size: 10.5px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px; }
+  .mp-field-row { display: flex; align-items: center; gap: 10px; }
+  .mp-field-val { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--text-0); word-break: break-all; }
+  .mp-field.alias .mp-field-val { font-size: 18px; }
+  .mp-field.sec .mp-field-val { font-size: 13px; font-weight: 600; }
+  .mp-copy {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+    min-height: 44px; min-width: 44px; justify-content: center;
+    padding: 8px 12px; border: 0; border-radius: 10px; cursor: pointer;
+    background: var(--grad-gold); color: #1a0e02; font-family: inherit;
+    font-weight: 700; font-size: 12.5px; touch-action: manipulation;
+  }
+  .mp-copy:active { transform: scale(.96); }
+  .mp-static { font-size: 13px; font-weight: 600; color: var(--text-0); padding: 2px 0; }
+  .mp-static .mp-field-label { margin-bottom: 2px; }
+  .mp-foot { font-size: 11.5px; color: var(--ink-mute); line-height: 1.5; margin: 14px 0 16px; }
+  .mp-close {
+    width: 100%; min-height: 44px; padding: 12px; border-radius: 12px;
+    background: var(--bg-3); border: 1px solid var(--border-soft); cursor: pointer;
+    color: var(--text-0); font-family: inherit; font-weight: 700; font-size: 14px;
+    touch-action: manipulation;
+  }
+  .mp-close:hover { background: var(--border-soft); }
 </style>
 </head>
 <body>
@@ -1679,7 +1727,7 @@
     <button class="btn accent" id="btnGoMeasures" onclick="show('measures')" disabled>Ver cómo te pegan las medidas →</button>
     <button class="btn ghost" id="btnSkip" onclick="show('measures')" style="display: none;">Saltar — quiero ver igual</button>
 
-    <!-- Apoyá el proyecto (A3). URLs provisorias; Charly confirma las definitivas. -->
+    <!-- Apoyá el proyecto (A3). Cafecito = link directo; MP = modal con datos copiables. -->
     <section class="support-section">
       <h3 class="support-title">Apoyá el proyecto</h3>
       <p class="support-desc">Cómo Te Pega es gratis y sin publicidad. Si te resulta útil, podés apoyar para que siga así.</p>
@@ -1688,12 +1736,11 @@
           <span class="support-icon" aria-hidden="true">☕</span>
           <span class="support-label">Cafecito</span>
         </a>
-        <a class="support-btn mp" href="https://link.mercadopago.com.ar/comotepega" target="_blank" rel="noopener">
+        <button type="button" class="support-btn mp" onclick="openMpModal()">
           <span class="support-icon" aria-hidden="true">💳</span>
           <span class="support-label">Mercado Pago</span>
-        </a>
+        </button>
       </div>
-      <p class="support-foot" style="font-size:11px;color:var(--text-3);margin-top:8px">URLs provisorias. Charly va a confirmar las definitivas.</p>
     </section>
   </section>
 
@@ -1833,6 +1880,39 @@
 
 <!-- Toast discreto para confirmaciones -->
 <div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Modal Mercado Pago (datos copiables) -->
+<div id="mpBackdrop" onclick="closeMpModal(event)">
+  <div class="mp-modal" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
+    <h3 class="mp-title" id="mpTitle">Donar con Mercado Pago</h3>
+    <p class="mp-sub">Mandá tu aporte desde tu app de Mercado Pago a este alias:</p>
+
+    <div class="mp-field alias">
+      <div class="mp-field-label">Alias</div>
+      <div class="mp-field-row">
+        <span class="mp-field-val" id="mpAlias">Mallorca83.mp</span>
+        <button type="button" class="mp-copy" onclick="copyMpData('Mallorca83.mp', 'Alias copiado')">📋 Copiar</button>
+      </div>
+    </div>
+
+    <div class="mp-field sec">
+      <div class="mp-field-label">CBU</div>
+      <div class="mp-field-row">
+        <span class="mp-field-val">0000003100065127446351</span>
+        <button type="button" class="mp-copy" onclick="copyMpData('0000003100065127446351', 'CBU copiado')">📋 Copiar</button>
+      </div>
+    </div>
+
+    <div class="mp-field sec">
+      <div class="mp-field-label">Titular</div>
+      <div class="mp-static">Carlos Amancio Acevedo</div>
+    </div>
+
+    <p class="mp-foot">El dinero entra a la cuenta familiar del proyecto.<br>¡Gracias por apoyar!</p>
+
+    <button type="button" class="mp-close" onclick="closeMpModal()">Cerrar</button>
+  </div>
+</div>
 
 <!-- Bottom-sheet contextual (long-press en una card) -->
 <div id="sheetBackdrop" onclick="closeSheet(event)">

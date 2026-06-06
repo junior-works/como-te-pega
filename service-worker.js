@@ -1,4 +1,4 @@
-/* Cómo Te Pega — Service Worker (v0.9.3)
+/* Cómo Te Pega — Service Worker (v0.9.4)
  *
  * Estrategia (estilo Pensándote):
  *   - App shell (HTML, JS, JSON):   NETWORK-FIRST con `cache:'no-store'`
@@ -16,7 +16,7 @@
  * con path relativo (`./service-worker.js`), el scope se deriva solo.
  */
 
-const CACHE_NAME = "ctp-shell-v0.9.3";
+const CACHE_NAME = "ctp-shell-v0.9.4";
 
 const SHELL_FILES = [
     "./",
