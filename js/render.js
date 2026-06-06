@@ -219,9 +219,9 @@ function dimSigla(name) {
 // Nivel crudo → etiqueta legible. Se usa en los tooltips de los badges para no
 // exponer el enum crudo (pos_strong, mid…) al usuario.
 const LEVEL_LABEL = {
-  strong: "Negativo fuerte", mid: "Negativo medio", soft: "Negativo leve",
-  pos_strong: "Positivo fuerte", pos: "Positivo medio", pos_soft: "Positivo leve",
-  none: "No aplica"
+  strong: "En contra fuerte", mid: "En contra medio", soft: "En contra leve",
+  pos_strong: "A favor fuerte", pos: "A favor medio", pos_soft: "A favor leve",
+  none: "Neutra"
 };
 
 // Glosario para el panel colapsable "Qué significa cada sigla". Orden pensado
@@ -1024,7 +1024,7 @@ function renderImpact() {
       dims.forEach(d => {
         const card = document.createElement('div');
         card.className = 'dim-card hit-' + d.level;
-        const tagText = { strong: "Fuerte", mid: "Medio", soft: "Leve", pos_strong: "Positivo Fuerte", pos: "Positivo Medio", pos_soft: "Positivo Leve", none: "No aplica" }[d.level];
+        const tagText = { strong: "EN CONTRA FUERTE", mid: "EN CONTRA MEDIO", soft: "EN CONTRA LEVE", none: "NEUTRA", pos_soft: "A FAVOR LEVE", pos: "A FAVOR MEDIO", pos_strong: "A FAVOR FUERTE" }[d.level];
         card.innerHTML = `
           <div class="dim-head">
             <div class="dim-name"><span class="dim-icon">${dimIcon(d)}</span>${d.name}</div>
@@ -1238,6 +1238,42 @@ function aggregateDims(scored) {
   return tally;
 }
 
+// v0.9.3 — filtro pills del listado de balance. Las claves de localStorage van
+// en inglés (all/against/neutral/for) para no acoplarlas al label visible.
+const BAL_FILTERS = [
+  { key: 'all',     label: 'Todas' },
+  { key: 'against', label: 'Te pega' },
+  { key: 'neutral', label: 'Neutras' },
+  { key: 'for',     label: 'Te beneficia' }
+];
+function getBalanceFilter() {
+  try {
+    const v = localStorage.getItem('ctp_balance_filter');
+    return BAL_FILTERS.some(f => f.key === v) ? v : 'all';
+  } catch (e) { return 'all'; }
+}
+function setBalanceFilter(v) {
+  try { localStorage.setItem('ctp_balance_filter', v); } catch (e) {}
+}
+
+// Intensidad descendente para el filtro "Te pega": neg > midneg > softneg.
+const BUCKET_INTENSITY = { neg: 0, midneg: 1, softneg: 2 };
+function filterBalanceList(scored, filter) {
+  const byDateDesc = (a, b) => String(b.m.date).localeCompare(String(a.m.date));
+  if (filter === 'against') {
+    return scored.filter(s => s.bucket === 'neg' || s.bucket === 'midneg' || s.bucket === 'softneg')
+      .sort((a, b) => (BUCKET_INTENSITY[a.bucket] - BUCKET_INTENSITY[b.bucket]) || byDateDesc(a, b));
+  }
+  if (filter === 'neutral') {
+    return scored.filter(s => s.bucket === 'neutral').sort(byDateDesc);
+  }
+  if (filter === 'for') {
+    return scored.filter(s => s.bucket === 'pos')
+      .sort((a, b) => (b.score - a.score) || byDateDesc(a, b));
+  }
+  return scored.slice().sort(byDateDesc);
+}
+
 function renderBalance() {
   if (!state.perfil.ocupacion) return;
   const scored = getMeasures().map(m => ({ m, ...scoreMeasure(m) }));
@@ -1299,23 +1335,40 @@ function renderBalance() {
     });
   }
 
-  const sorted = scored.slice().sort((a, b) => String(b.m.date).localeCompare(String(a.m.date)));
+  // Pills de filtro: conteos reusan contra/neutral/favor ya calculados arriba.
+  const filter = getBalanceFilter();
+  const counts = { all: total, against: contra, neutral: neutral, for: favor };
+  const filterEl = document.getElementById('balanceFilter');
+  if (filterEl) {
+    filterEl.innerHTML = BAL_FILTERS.map(f =>
+      `<button type="button" class="bal-filter-pill${f.key === filter ? ' active' : ''}" data-bf="${f.key}">${f.label} (${counts[f.key]})</button>`
+    ).join('');
+    filterEl.querySelectorAll('[data-bf]').forEach(btn => {
+      btn.onclick = () => { setBalanceFilter(btn.dataset.bf); renderBalance(); };
+    });
+  }
+
+  const sorted = filterBalanceList(scored, filter);
   const timeline = document.getElementById('timeline');
   timeline.innerHTML = '';
-  sorted.forEach(s => {
-    const item = document.createElement('div');
-    item.className = 'tl-item ' + s.bucket;
-    const label = bucketLabel(s.bucket);
-    const negDims = s.dims.filter(d => d.level !== 'none' && !isPos(d.level)).map(d => d.name).slice(0, 3);
-    const posDims = s.dims.filter(d => isPos(d.level)).map(d => d.name);
-    let summary = '';
-    if (negDims.length) summary += `Pega en: ${negDims.join(', ')}`;
-    if (posDims.length) summary += (summary ? ' · ' : '') + `Beneficia: ${posDims.join(', ')}`;
-    if (!summary) summary = 'Sin impacto directo en tu perfil.';
-    item.innerHTML = `<div class="tl-date">${formatDate(s.m.date)}</div><div class="tl-title">${s.m.title}</div><span class="tl-pill ${s.bucket}">${label}</span><div class="tl-summary">${summary}</div>`;
-    item.onclick = () => openMeasure(s.m.id);
-    timeline.appendChild(item);
-  });
+  if (!sorted.length) {
+    timeline.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:10px 0;">No hay medidas en esta categoría.</div>';
+  } else {
+    sorted.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'tl-item ' + s.bucket;
+      const label = bucketLabel(s.bucket);
+      const negDims = s.dims.filter(d => d.level !== 'none' && !isPos(d.level)).map(d => d.name).slice(0, 3);
+      const posDims = s.dims.filter(d => isPos(d.level)).map(d => d.name);
+      let summary = '';
+      if (negDims.length) summary += `Pega en: ${negDims.join(', ')}`;
+      if (posDims.length) summary += (summary ? ' · ' : '') + `Beneficia: ${posDims.join(', ')}`;
+      if (!summary) summary = 'Sin impacto directo en tu perfil.';
+      item.innerHTML = `<div class="tl-date">${formatDate(s.m.date)}</div><div class="tl-title">${s.m.title}</div><span class="tl-pill ${s.bucket}">${label}</span><div class="tl-summary">${summary}</div>`;
+      item.onclick = () => openMeasure(s.m.id);
+      timeline.appendChild(item);
+    });
+  }
 
   buildDonut(contra, neutral, favor);
 }
@@ -1425,6 +1478,7 @@ function injectBalanceScreen() {
     <div class="bal-section-title">Dónde te pegaron más</div>
     <div class="dim-tally" id="dimTally"></div>
     <div class="bal-section-title">Línea de tiempo</div>
+    <div class="bal-filter" id="balanceFilter"></div>
     <div class="timeline" id="timeline"></div>
   `;
   measuresScreen.parentNode.insertBefore(sec, measuresScreen.nextSibling);
