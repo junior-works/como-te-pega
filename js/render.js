@@ -1066,48 +1066,55 @@ function renderImpact() {
   renderWinnersLosers(m);
 }
 
-// ============== v0.8.3 — GANADORES Y PERDEDORES ==============
-// Deriva quién gana / pierde / queda neutro de la medida a partir de los
-// `compareProfiles` (los mismos arquetipos del comparador). Para cada perfil
-// suma los pesos de sus badges con LEVEL_WEIGHT: score>0 gana, <0 pierde, =0
-// neutro. Solo se muestra en medidas con análisis personalizado completo
-// (hasRules) y con perfiles cargados — si no, no hay base para afirmarlo.
-function profileScore(p) {
+// ============== v0.8.3 — GANADORES Y PERDEDORES (simetría v0.9.5) ==============
+// Deriva quién gana y quién pierde con la medida. Dos fuentes complementarias:
+//   • Arquetipos personales (`compareProfiles`): un perfil entra en GANAN si
+//     tiene ALGÚN badge positivo (pos/pos_soft/pos_strong) y en PIERDEN si tiene
+//     ALGÚN badge negativo (strong/mid/soft). Un perfil con badges mixtos puede
+//     aparecer en los dos lados (gana en una dimensión, pierde en otra).
+//   • Ganadores externos (`compareWinners`): strings sueltos —empresas, sectores,
+//     instituciones— que no son perfiles de usuario pero sí ganan con la medida.
+//     Refuerzan el bloque GANAN para sostener la promesa de simetría del producto:
+//     siempre alguien gana, aunque no sea un arquetipo común.
+// El bloque GANAN se muestra SIEMPRE arriba de PIERDEN; si quedara vacío (ni
+// arquetipos pos_* ni compareWinners) cae un placeholder discreto en gris.
+const WL_WIN_LEVELS = ['pos', 'pos_soft', 'pos_strong'];
+const WL_LOSE_LEVELS = ['strong', 'mid', 'soft'];
+function profileHasLevel(p, levels) {
   const badges = p && p.badges ? p.badges : {};
-  let score = 0;
-  Object.keys(badges).forEach(k => { score += (LEVEL_WEIGHT[badges[k]] || 0); });
-  return score;
+  return Object.keys(badges).some(k => levels.includes(badges[k]));
 }
 
 function renderWinnersLosers(m) {
   const el = document.getElementById('winnersLosers');
   if (!el) return;
   const profiles = (m && Array.isArray(m.compareProfiles)) ? m.compareProfiles : [];
-  if (!m || !m.hasRules || !profiles.length) { el.innerHTML = ''; return; }
+  const extraWinners = (m && Array.isArray(m.compareWinners)) ? m.compareWinners : [];
+  // Sin base alguna (ni arquetipos ni ganadores externos) → no hay nada que afirmar.
+  if (!m || (!profiles.length && !extraWinners.length)) { el.innerHTML = ''; return; }
 
-  const ganan = [], pierden = [], neutros = [];
-  profiles.forEach(p => {
-    if (!p || !p.badges || !Object.keys(p.badges).length) return; // no analizable → saltear
-    const score = profileScore(p);
-    if (score > 0) ganan.push(p.name);
-    else if (score < 0) pierden.push(p.name);
-    else neutros.push(p.name);
-  });
+  // GANAN = arquetipos con algún badge positivo + ganadores externos (entidades/sectores).
+  const ganan = profiles.filter(p => profileHasLevel(p, WL_WIN_LEVELS)).map(p => p.name)
+    .concat(extraWinners);
+  // PIERDEN = arquetipos con algún badge negativo.
+  const pierden = profiles.filter(p => profileHasLevel(p, WL_LOSE_LEVELS)).map(p => p.name);
 
-  const row = (cls, ico, label, items, emptyMsg) => {
-    const text = items.length ? items.join(' · ') : emptyMsg;
-    if (!text) return ''; // sin items y sin mensaje de fallback → se omite el sub-bloque
+  const row = (cls, ico, label, items, placeholder) => {
+    let pill;
+    if (items.length) pill = `<div class="wl-pill">${items.join(' · ')}</div>`;
+    else if (placeholder) pill = `<div class="wl-pill wl-empty">${placeholder}</div>`;
+    else return ''; // sin items y sin placeholder → se omite el sub-bloque
     return `<div class="wl-row ${cls}">
       <div class="wl-label"><span class="wl-ico ${ico}" aria-hidden="true"></span>${label}</div>
-      <div class="wl-pill">${text}</div>
+      ${pill}
     </div>`;
   };
 
   const rows = [
-    row('ganan', 'up', 'Ganan', ganan, ''),
+    // GANAN siempre arriba; si queda vacío, placeholder discreto (raro, por las dudas).
+    row('ganan', 'up', 'Ganan', ganan, 'Sin ganadores identificados aún'),
     row('pierden', 'down', 'Pierden', pierden,
-        'En esta medida no se identifican perdedores económicos directos en los perfiles analizados.'),
-    row('neutro', 'flat', 'No aplica directo', neutros, '')
+        'En esta medida no se identifican perdedores económicos directos en los perfiles analizados.')
   ].join('');
 
   el.innerHTML = `<div class="card wl-card">

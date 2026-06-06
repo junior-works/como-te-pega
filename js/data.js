@@ -15,7 +15,7 @@
 import { SUPABASE_REST, SUPABASE_HEADERS } from "../config.js";
 import { MEASURES_BASE, MEASURES_BASE_BY_ID } from "./medidas-base.js";
 
-const CACHE_KEY = "ctp-data-v0.9.4";
+const CACHE_KEY = "ctp-data-v0.9.5";
 const TTL_MS = 6 * 60 * 60 * 1000; // 6 horas
 
 // Endpoints de solo-lectura. select explícito = payload chico y estable.
@@ -138,6 +138,7 @@ function buildMeasures(db) {
       impact: hasRules ? base.impact : NOIMPACT,
       hasRules,
       compareProfiles: base ? base.compareProfiles : [],
+      compareWinners: base ? (base.compareWinners || []) : [],
       popularidad: row.popularidad_medios ?? cobertura.length,
       nivelPopularidad: row.nivel_popularidad ?? null,
       cobertura,

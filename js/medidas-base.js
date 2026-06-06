@@ -923,6 +923,12 @@ export const MEASURES_BASE = [
       }
       return dims;
     },
+    compareWinners: [
+      "Empleadores PyME y grandes (menor costo de despido)",
+      "Empresas que tenían pasivos por trabajo no registrado",
+      "Estudios jurídicos del lado empresario",
+      "Plataformas (Uber, Rappi, Pedidos Ya) en su modelo de trabajador autónomo"
+    ],
     compareProfiles: [
       { name: "Empleado privado relación nueva", sub: "Empleado · Primer trabajo", badges: { Trabajo: "strong", Estabilidad: "strong", Plata: "strong", "Carga mental": "mid" } },
       { name: "Empleado público sector esencial", sub: "Empleado público · Salud/Educación", badges: { Trabajo: "strong", Estabilidad: "strong", "País / Equilibrio institucional": "strong" } },
@@ -1820,6 +1826,12 @@ export const MEASURES_BASE = [
         body: "El esquema descansa en los USD 20.000M del FMI y en que el dólar se quede dentro de la banda. Da previsibilidad para importar y para invertir, pero deja al Banco Central más expuesto: si hay una corrida hacia el techo, tiene que vender reservas para defender los $1.400." });
       return dims;
     },
+    compareWinners: [
+      "Ahorristas medianos y altos con USD",
+      "Importadores y empresas con cadena importada",
+      "Empresas con accionistas no residentes (giran dividendos)",
+      "Turismo emisivo y compras en el exterior"
+    ],
     compareProfiles: [
       { name: "Ahorrista que compraba dólar blue", sub: "Empleado priv. · $3-6M · CABA", badges: { Plata: "pos_strong", Ahorro: "pos" } },
       { name: "Inversor con acciones / empresa", sub: "Autónomo · +$15M", badges: { Plata: "pos_strong", Ahorro: "pos" } },
@@ -1862,6 +1874,12 @@ export const MEASURES_BASE = [
       }
       return dims;
     },
+    compareWinners: [
+      "Monotributistas chicos (no quedan expulsados por inflación)",
+      "Servicios profesionales (ahora pueden llegar a Categoría K)",
+      "Freelancers y trabajadores de plataformas",
+      "Pequeños comerciantes formalizados"
+    ],
     compareProfiles: [
       { name: "Freelance de servicios que crecía", sub: "Monotributista · $1,5-3M", badges: { Plata: "pos", Trabajo: "pos" } },
       { name: "Profesional independiente", sub: "Monotributista · $3-6M · CABA", badges: { Plata: "pos", Trabajo: "pos" } },
@@ -2145,6 +2163,11 @@ export const MEASURES_BASE = [
         body: "El objetivo fiscal es real: los subsidios energéticos bajaron de ~2,3% a cerca de 0,5% del PBI. Eso ordena las cuentas del Estado, pero traslada el costo a las boletas de los hogares, sobre todo a la clase media urbana." });
       return dims;
     },
+    compareWinners: [
+      "Generadoras eléctricas (mejor precio realizable)",
+      "Distribuidoras eléctricas (cubren costo más cercano al real)",
+      "Tesoro Nacional (subsidios caen de 2,3% a ~0,5% del PBI)"
+    ],
     compareProfiles: [
       { name: "Hogar de ingresos altos (N1)", sub: "Empleado priv. · $6-15M · CABA", badges: { Plata: "strong" } },
       { name: "Familia de clase media (N3)", sub: "Empleado priv. · $1,5-3M · CABA", badges: { Plata: "mid", Vivienda: "soft" } },
@@ -2215,6 +2238,11 @@ export const MEASURES_BASE = [
         body: "El debate de fondo es el debido proceso: deportar antes de una condena firme, y por delitos con pena menor a 5 años, reduce garantías que la Constitución reconoce a toda persona, no solo a los ciudadanos. Es una medida con respaldo de parte de la sociedad y con objeciones serias de organismos de derechos humanos." });
       return dims;
     },
+    compareWinners: [
+      "Tesoro Nacional (potencial cobro a no residentes en salud y educación)",
+      "Discurso oficial de control de fronteras",
+      "Argentinos que valoran expulsión rápida de extranjeros con antecedentes"
+    ],
     compareProfiles: [
       { name: "Ciudadano que pide más orden", sub: "Empleado priv. · CABA", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
       { name: "Trabajador de provincia de frontera", sub: "Empleado priv. · NEA", badges: { Trabajo: "mid", Estabilidad: "pos_soft" } },
@@ -2313,6 +2341,11 @@ export const MEASURES_BASE = [
         body: "El Estado deja de poner subsidios y cobra el precio de venta; el 10% de las acciones queda para los trabajadores (Programa de Propiedad Participada). El punto en discusión es quién regula, y con qué fuerza, la tarifa y la calidad de un servicio esencial y monopólico como el agua." });
       return dims;
     },
+    compareWinners: [
+      "Operadoras de agua internacionales (Suez, Veolia, Aqualia)",
+      "Inversores institucionales argentinos",
+      "Tesoro Nacional (deja de subsidiar el déficit operativo)"
+    ],
     compareProfiles: [
       { name: "Familia del GBA usuaria de AySA", sub: "Empleado priv. · GBA Sur", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
       { name: "Hogar de barrio popular sin cloacas", sub: "Trabajo informal · ≤$700k · GBA", badges: { Salud: "mid", Plata: "mid" } },
@@ -2680,6 +2713,12 @@ export const MEASURES_BASE = [
         body: "El Estado se corre de administrar el mercado eléctrico y deja que generadoras y distribuidoras negocien entre sí. Ganan las grandes generadoras (mejor remuneración y libertad de contratos) y los inversores en capacidad nueva; el riesgo lo corren los usuarios cuando se debilitan los subsidios cruzados que la intermediación de CAMMESA permitía sostener." });
       return dims;
     },
+    compareWinners: [
+      "Generadoras eléctricas grandes (Pampa Energía, AES, YPF Luz)",
+      "Distribuidoras grandes (Edenor, Edesur)",
+      "Inversores en capacidad nueva de generación",
+      "Tesoro Nacional (menos subsidios)"
+    ],
     compareProfiles: [
       { name: "Hogar de ingresos ajustados", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
       { name: "Usuario de cooperativa eléctrica del interior", sub: "Trabajo informal · pueblo", badges: { Plata: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
@@ -3007,6 +3046,11 @@ export const MEASURES_BASE = [
         body: "El Tesoro deja de subsidiar estas empresas y suma ingresos por su venta; a cambio resigna control sobre energía, agua y logística ferroviaria, sectores con peso estratégico. Ganan el fisco y los operadores privados; el costo lo cargan los trabajadores de las empresas y los usuarios de servicios cuya tarifa y cobertura pasan a depender del mercado." });
       return dims;
     },
+    compareWinners: [
+      "Grupos económicos compradores nacionales e internacionales",
+      "Tesoro Nacional (precio de venta + deja de subsidiar)",
+      "Sindicatos disidentes que entran al Programa de Propiedad Participada (10%)"
+    ],
     compareProfiles: [
       { name: "Trabajador/a de una empresa del listado", sub: "Empleado púb. · CABA", badges: { Trabajo: "strong", Estabilidad: "mid", "País / Equilibrio institucional": "soft" } },
       { name: "Usuario de AySA (agua y cloacas)", sub: "Empleado priv. · GBA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
@@ -3040,6 +3084,11 @@ export const MEASURES_BASE = [
         body: "La promesa fue que abaratar el despido y bajar las multas formalizaría empleo. Los datos de 2024 son ambiguos: el empleo registrado privado cayó durante buena parte del año y recién repuntó en agosto-septiembre, mejora que el Gobierno atribuye a la reforma. Ganan los empleadores en previsibilidad de costos; el trabajador resigna protecciones a cambio de una formalización que todavía no está demostrada de manera contundente." });
       return dims;
     },
+    compareWinners: [
+      "Empleadores PyME y grandes (continuación de DNU 70)",
+      "Empresas que dudaban en formalizar empleo",
+      "Sectores con alta rotación (gastronomía, comercio, construcción)"
+    ],
     compareProfiles: [
       { name: "Trabajador/a que busca empleo formal", sub: "Empleado priv. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
       { name: "Empleado/a en empresa que reestructura", sub: "Empleado priv. · GBA", badges: { Trabajo: "mid", Estabilidad: "soft" } },
@@ -3072,6 +3121,11 @@ export const MEASURES_BASE = [
         body: "El Estado reduce subsidios a la energía y traslada el precio real del gas a las boletas. Ganan los productores (mejor precio realizable) y el Tesoro (menos subsidios); el costo lo absorben los hogares —en especial los de menores ingresos— y las industrias gas-intensivas." });
       return dims;
     },
+    compareWinners: [
+      "Productores de gas (YPF, PAE, Tecpetrol, Total, Pampa Energía)",
+      "Distribuidoras de gas (Metrogas, Camuzzi, Gasnea)",
+      "Tesoro Nacional (menos subsidios al gas)"
+    ],
     compareProfiles: [
       { name: "Familia tipo que paga la boleta de gas", sub: "Empleado priv. · CABA · ≤$1,5M", badges: { Plata: "strong", Vivienda: "strong" } },
       { name: "Hogar de ingresos medios-altos", sub: "Autónomo · CABA · $3-6M", badges: { Plata: "strong", Vivienda: "mid" } },
