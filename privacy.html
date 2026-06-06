@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0c">
+<title>Política de Privacidad — Cómo Te Pega</title>
+<meta name="description" content="Política de privacidad de Cómo Te Pega: qué datos colectamos, dónde se guardan y tus derechos.">
+<!-- Tipografía: Plus Jakarta Sans (mismo set que la app) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #0a0a0c;
+    --text-0: #f5f1e6;
+    --text-1: #cfc8b8;
+    --text-2: #8a8478;
+    --gold-1: #fbd24a;
+    --gold-2: #d4a017;
+    --brown-1: #c47a2c;
+    --border-soft: #26262e;
+    --grad-gold: linear-gradient(135deg, #fbd24a 0%, #f59e0b 50%, #d4831a 100%);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background:
+      radial-gradient(900px 600px at 50% -260px, rgba(245,158,11,.10), transparent 70%),
+      radial-gradient(700px 520px at 12% 4%, rgba(123,63,14,.08), transparent 70%),
+      var(--bg-0);
+    background-attachment: fixed;
+    color: var(--text-0);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 22px 80px;
+  }
+  /* Pill "Volver" arriba a la derecha */
+  .topbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 28px;
+  }
+  .back-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--grad-gold);
+    color: #1a0e02;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 999px;
+    box-shadow: 0 6px 20px rgba(245,158,11,.32), 0 1px 0 rgba(255,255,255,.18) inset;
+    transition: transform .15s cubic-bezier(0.2,0.8,0.2,1), box-shadow .15s;
+  }
+  .back-pill:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(245,158,11,.42); }
+  .back-pill:active { transform: translateY(0); }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.15;
+    background: var(--grad-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gold-1); /* fallback */
+  }
+  .subtitle {
+    margin: 0 0 8px;
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .divider {
+    border: 0;
+    border-top: 1px solid var(--border-soft);
+    margin: 24px 0 8px;
+  }
+  h2 {
+    color: var(--gold-1);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin: 34px 0 10px;
+  }
+  p, li {
+    color: var(--text-1);
+    line-height: 1.6;
+  }
+  p { margin: 0 0 14px; }
+  ul {
+    margin: 0 0 14px;
+    padding-left: 20px;
+  }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--brown-1); }
+  strong { color: #fffdf7; font-weight: 700; }
+  a {
+    color: var(--gold-1);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(251,210,74,.35);
+  }
+  a:hover { border-bottom-color: var(--gold-1); }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: rgba(196,122,44,.14);
+    color: var(--brown-1);
+    padding: 1px 6px;
+    border-radius: 5px;
+    border: 1px solid rgba(196,122,44,.20);
+  }
+  .foot-note {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-2);
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.65;
+  }
+  .foot-back {
+    margin-top: 28px;
+    text-align: center;
+  }
+  .foot-back a {
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  @media (max-width: 520px) {
+    h1 { font-size: 26px; }
+    h2 { font-size: 17px; }
+    .wrap { padding: 20px 16px 70px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="back-pill" href="./">← Volver a Cómo Te Pega</a>
+  </div>
+
+  <h1>Política de Privacidad — Cómo Te Pega</h1>
+  <p class="subtitle">Última actualización: 6 de junio de 2026</p>
+  <hr class="divider">
+
+  <h2>1. Quiénes somos</h2>
+  <p>Cómo Te Pega es un proyecto independiente, sin fines de lucro, mantenido por Junior Works. Es una aplicación web (PWA) gratuita y sin publicidad que ayuda a entender el impacto personal de las normas publicadas en el Boletín Oficial de la República Argentina (BORA).</p>
+  <p><strong>Contacto:</strong> <a href="mailto:lookatthismcfly@gmail.com">lookatthismcfly@gmail.com</a></p>
+
+  <h2>2. Qué datos colectamos</h2>
+  <p><strong>Datos que vos cargás voluntariamente al usar la app (tu "perfil"):</strong></p>
+  <ul>
+    <li>Ocupación, zona, ingreso, situación de vivienda, edad, situación familiar, asistencias sociales, situación de discapacidad y otros datos contextuales que elijas marcar en el formulario de perfil.</li>
+    <li>Estos datos son los que usa la app para calcular cómo te pega cada medida.</li>
+  </ul>
+  <p><strong>Datos técnicos básicos:</strong></p>
+  <ul>
+    <li>Información del navegador (tipo, versión, idioma) que el navegador envía automáticamente cuando visitás la app.</li>
+    <li>Tu IP, que es necesaria para que el servidor pueda devolverte el contenido.</li>
+  </ul>
+  <p><strong>No colectamos:</strong></p>
+  <ul>
+    <li>Tu nombre, email, teléfono ni ningún dato que te identifique personalmente.</li>
+    <li>Tu ubicación GPS precisa.</li>
+    <li>Tus contactos, fotos, archivos o cualquier dato del dispositivo.</li>
+    <li>Datos biométricos.</li>
+    <li>Información financiera (salvo el rango de ingreso que vos elijas en tu perfil).</li>
+  </ul>
+
+  <h2>3. Dónde se guardan los datos</h2>
+  <p><strong>Tu perfil se guarda exclusivamente en tu dispositivo</strong>, dentro del navegador (<code>localStorage</code>). No se envía a ningún servidor nuestro. Si borrás el cache del navegador o desinstalás la app, tu perfil se pierde.</p>
+  <p><strong>Los datos del catálogo de medidas</strong> (la información sobre cada norma del BORA, sus reglas de impacto, las observaciones constitucionales y la cobertura mediática estimada) se almacenan en Supabase (<code>nqwnanfdpaesojuyaztm.supabase.co</code>), proveedor de bases de datos en la nube. La app consulta esa base para mostrarte el catálogo actualizado, pero no envía tu perfil ni datos identificables a esa base.</p>
+
+  <h2>4. Cookies y tecnologías similares</h2>
+  <p>La app usa exclusivamente almacenamiento local del navegador (<code>localStorage</code> y <code>IndexedDB</code>) para guardar tu perfil, las preferencias de visualización y la caché de la PWA. No usamos cookies de seguimiento, ni Google Analytics, ni Facebook Pixel, ni ninguna otra herramienta de tracking de terceros.</p>
+
+  <h2>5. Con quién compartimos</h2>
+  <p><strong>No compartimos tus datos con nadie.</strong> No vendemos, no alquilamos y no transferimos datos a anunciantes, redes publicitarias, brokers de datos ni terceros.</p>
+  <p>Las únicas excepciones son:</p>
+  <ul>
+    <li><strong>Hosting</strong>: la app está alojada en GitHub Pages (GitHub, Inc.). El alojamiento implica que GitHub recibe los logs estándar de tu visita (IP, user-agent, tiempo). GitHub no tiene acceso a tu perfil porque tu perfil nunca sale de tu navegador.</li>
+    <li><strong>Base de datos del catálogo</strong>: Supabase (Supabase Inc.) almacena las medidas del catálogo. Si la app consulta el catálogo, tu IP llega a Supabase como cualquier petición web; tu perfil no.</li>
+  </ul>
+
+  <h2>6. Tus derechos</h2>
+  <p><strong>Borrar tus datos:</strong> podés borrar tu perfil en cualquier momento desde la pantalla de Perfil de la app, o limpiando el <code>localStorage</code> del navegador.</p>
+  <p><strong>Acceso y portabilidad:</strong> como tu perfil está en tu dispositivo, lo tenés disponible de inmediato. Si querés exportarlo, abrí la pantalla de Perfil y miralo.</p>
+  <p><strong>Derechos legales:</strong> según la Ley 25.326 de Protección de Datos Personales (Argentina) y otras normas aplicables, tenés derecho de acceso, rectificación y supresión de tus datos. Como no guardamos datos identificables en nuestros servidores, estos derechos se ejercen directamente desde tu dispositivo.</p>
+
+  <h2>7. Menores de edad</h2>
+  <p>Cómo Te Pega no está dirigida a menores de 14 años. No colectamos a sabiendas datos de menores de 14. Si te enterás de que un menor de 14 cargó datos, contactanos para que se borren.</p>
+
+  <h2>8. Seguridad</h2>
+  <p>Tu perfil se guarda en tu dispositivo. La comunicación con el catálogo se hace por HTTPS. No tenemos control sobre la seguridad de tu dispositivo — recomendamos mantenerlo actualizado.</p>
+
+  <h2>9. Cambios a esta política</h2>
+  <p>Si cambiamos esta política, vamos a actualizar la fecha al inicio del documento. Para cambios importantes (por ejemplo, si en algún momento agregamos registro con email), te lo vamos a avisar dentro de la app antes del cambio.</p>
+
+  <h2>10. Donaciones</h2>
+  <p>Si elegís apoyar el proyecto a través de Cafecito o Mercado Pago, esos pagos se procesan exclusivamente por esos servicios. No recibimos ni guardamos los datos de tu tarjeta. Cafecito y Mercado Pago tienen sus propias políticas de privacidad.</p>
+
+  <h2>11. Jurisdicción</h2>
+  <p>Esta política se rige por las leyes de la República Argentina. Cualquier disputa se resolverá ante los tribunales ordinarios de la Ciudad Autónoma de Buenos Aires.</p>
+
+  <h2>12. Contacto</h2>
+  <p>Para cualquier consulta sobre esta política o sobre tus datos, escribinos a: <strong><a href="mailto:lookatthismcfly@gmail.com">lookatthismcfly@gmail.com</a></strong></p>
+
+  <p class="foot-note">Cómo Te Pega es un proyecto sin fines de lucro mantenido por Junior Works. Su único objetivo es ayudar a la ciudadanía a entender el impacto personal de las normas del BORA.</p>
+
+  <div class="foot-back">
+    <a href="./">← Volver a Cómo Te Pega</a>
+  </div>
+
+</div>
+</body>
+</html>
