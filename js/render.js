@@ -1025,10 +1025,18 @@ function renderImpact() {
   renderCobertura(m);
   renderConstitucion(m);
 
-  // Fuente.
+  // Fuente. Si no hay fuenteUrl directa, fallback al buscador de argentina.gob.ar
+  // usando `m.meta` (combina tipo+número, ej "Decreto 70/2023") como query.
   let fuenteHtml = '';
   if (m.fuente) fuenteHtml = '<strong>FUENTE:</strong> ' + m.fuente;
-  if (m.fuenteUrl) fuenteHtml += `${fuenteHtml ? '<br>' : ''}<a href="${m.fuenteUrl}" target="_blank" rel="noopener">Ver en el Boletín Oficial ↗</a>`;
+  const buscadorUrl = m.meta
+    ? `https://www.argentina.gob.ar/normativa?search=${encodeURIComponent(m.meta)}`
+    : 'https://www.argentina.gob.ar/normativa';
+  const fuenteUrl = m.fuenteUrl || buscadorUrl;
+  const fuenteTexto = m.fuenteUrl
+    ? (m.fuenteDescripcion || 'Ver en el Boletín Oficial')
+    : (m.meta ? `Buscar "${m.meta}" en argentina.gob.ar` : 'Ver normativa nacional');
+  fuenteHtml += `${fuenteHtml ? '<br>' : ''}<a href="${fuenteUrl}" target="_blank" rel="noopener">${fuenteTexto} ↗</a>`;
   document.getElementById('sourceBox').innerHTML = fuenteHtml || '';
 
   // Análisis personalizado: solo si hay reglas cargadas. Si no, cartel honesto.
