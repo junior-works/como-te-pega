@@ -81,6 +81,44 @@ columna de fecha calendario todavía).
 El seed inicial de las 6 medidas del v0.5 está en
 `migrations/seed_initial_medidas.sql` (idempotente, no destructivo).
 
+## Actualización semanal (`pendientes/`)
+
+Loop asistido para detectar medidas nuevas del BORA y preparar fichas, **sin
+publicar nada automáticamente**. La aprobación editorial final es siempre manual.
+
+**Qué es** — la carpeta [`pendientes/`](pendientes/) es el estado del loop:
+
+| Archivo | Rol |
+|---|---|
+| `log_bora.md` | hasta qué fecha se barrió el BORA (estado del loop) |
+| `candidatas.md` | medidas detectadas, esperando decisión editorial |
+| `patron-medida.md` | molde exacto de una ficha (objeto JS + SQL + vocabularios) |
+| `ctp-semanal.md` | runbook del ciclo (7 pasos + el *límite duro*) |
+| `borradores/` | una ficha por candidata, lista para revisar |
+
+**Cómo se dispara** — manual, una vez por semana (p. ej. lunes), desde la raíz del repo:
+
+```bash
+/ctp-semanal            # dentro de Claude Code
+# o headless:
+claude -p "/ctp-semanal"
+```
+
+El ciclo lee `log_bora.md`, barre `boletinoficial.gob.ar` / `argentina.gob.ar` desde
+esa fecha (excluye designaciones y trámites internos), redacta borradores con tono
+neutro siguiendo `patron-medida.md`, **se autoaudita** (`node --check`, `id` JS==SQL,
+`fuente_url` viva, vocabularios válidos) y avisa por [ntfy.sh](https://ntfy.sh). El
+topic se configura en `.env` (`NTFY_TOPIC`, copiar de `.env.example`; `.env` está en
+`.gitignore`).
+
+**Límite duro:** el loop **no** edita `js/medidas-base.js`, **no** ejecuta SQL, **no**
+commitea/pushea ni bumpea versión. Termina en borradores + notificación.
+
+> ⚠️ **Los borradores requieren aprobación manual antes de cargarse.** El editor
+> revisa cada ficha en `pendientes/borradores/`; recién ahí aplica a mano el objeto
+> a `js/medidas-base.js` y corre el SQL de la migración. El loop nunca toca los datos
+> en producción.
+
 ## Estado
 
 Prototipo **v0.6** — fetch desde Supabase + trending mediático
