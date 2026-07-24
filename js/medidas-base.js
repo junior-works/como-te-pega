@@ -3461,6 +3461,350 @@ export const MEASURES_BASE = [
       { name: "Trabajador informal sin cuenta bancaria", sub: "Trab. informal · GBA Oeste · ≤$700k", badges: { "Calidad de servicios": "none", "Movilidad social": "soft" } },
       { name: "PyME del rubro pagos (procesa cobros)", sub: "PyME · fintech / medios de pago", badges: { Trabajo: "pos", "País / Equilibrio institucional": "soft" } }
     ]
+  },
+  {
+    id: "ley_modernizacion_laboral_27802",
+    date: "2026-03-06",
+    title: "Ley 27.802 de Modernización Laboral",
+    meta: "Ley 27.802 · BORA 6-mar-2026 · vigente (judicialmente cuestionada) · reglamentada por Decreto 407/2026",
+    desc: "Reforma la LCT, el régimen de convenios colectivos y el de asociaciones sindicales. Cambia el cálculo de la indemnización por despido, crea el Fondo de Asistencia Laboral (financiado por el empleador), encuadra a los trabajadores de plataformas como independientes, simplifica la registración en ARCA y digitaliza recibos y certificados.",
+    tags: ["Trabajo","Estabilidad","Plata"],
+    fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/339128/20260306",
+    impact: function(p) {
+      const dims = [];
+      const dependiente = ['empleado_priv','domestica_reg'].includes(p.ocupacion);
+      const empleador = p.ocupacion === 'pyme';
+      const informal = p.ocupacion === 'trab_informal' || p.ocupacion === 'domestica_no_reg' || p.extra === 'changas';
+
+      if (dependiente) {
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
+          body: "Si te despiden sin causa: sigue siendo <strong>1 sueldo por año</strong>, pero la base ahora <strong>excluye aguinaldo, vacaciones y premios no mensuales</strong>, y el tope lo fijan las partes del convenio (piso 67%). El pago cierra otros reclamos por el despido." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Preaviso: <strong>1 mes</strong> si tenés hasta 5 años de antigüedad, <strong>2 meses</strong> si tenés más. En período de prueba no hay preaviso." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
+          body: "Un nuevo <strong>Fondo de Asistencia Laboral</strong> financia tu indemnización, aportado <strong>solo por el empleador</strong> (no se te descuenta nada). Cubre a registrados con 12+ meses de antigüedad." });
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Tu recibo de sueldo ahora discrimina el costo laboral total y puede firmarse digitalmente. Registración centralizada en ARCA." });
+      }
+
+      if (p.extra === 'plataforma') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
+          body: "Como repartidor/conductor de app quedás como <strong>prestador independiente</strong>, no en relación de dependencia: elegís horarios y qué viajes/pedidos tomás. Sin indemnización ni antigüedad LCT; facturás como monotributista o autónomo." });
+        dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
+          body: "La plataforma te debe seguro de accidentes, capacitación en seguridad vial, elementos de seguridad y un canal digital de reclamos. Autoridad de aplicación: Secretaría de Transporte." });
+      }
+
+      if (empleador) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+          body: "Si contratás personal: el costo de despedir se vuelve más previsible y aportás al Fondo de Asistencia Laboral (1% grandes / 2,5% PyMEs de la base), con una reducción compensatoria en las contribuciones patronales." });
+      }
+
+      if (informal) {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
+          body: "Si trabajás sin registrar: la falta de registración ahora opera como <strong>presunción a tu favor</strong> (antes era prueba plena). El alta laboral se centraliza en ARCA." });
+      }
+
+      if (p.ocupacion === 'empleado_pub') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "La reforma modifica la <strong>LCT (sector privado)</strong>; tu relación de empleo público no cambia por esta ley." });
+      }
+
+      if (p.ocupacion === 'desempleado') {
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
+          body: "Sin efecto directo hoy; cambian las condiciones de una futura contratación (fondo de cese, cálculo de indemnización y preaviso)." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "Vigente y aplicándose, pero judicialmente cuestionada: la CGT obtuvo una cautelar que luego quedó sin efecto y el art. 55 fue declarado inconstitucional en casos puntuales. Reglamentada por el Decreto 407/2026." });
+
+      return dims;
+    },
+    compareWinners: [
+      "Empleadores PyME y grandes (indemnización más previsible, FAL con reducción compensatoria)",
+      "Plataformas de reparto y movilidad (sus prestadores quedan fuera de la LCT)",
+      "Empresas con litigios laborales en trámite (nueva fórmula de actualización y pago en cuotas)"
+    ],
+    compareProfiles: [
+      { name: "Trabajador/a en relación de dependencia",
+        sub: "Empleado priv. · CABA",
+        badges: { Estabilidad: "strong", Trabajo: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Repartidor/a o conductor/a de app",
+        sub: "Empleado priv. + extra plataforma · GBA",
+        badges: { Trabajo: "strong", Estabilidad: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "PyME que emplea personal",
+        sub: "PyME · interior",
+        badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajador/a no registrado/a",
+        sub: "Trabajo informal · GBA",
+        badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "bcra_a8417_cambiario",
+    date: "2026-04-13",
+    title: "Flexibilización del cepo cambiario para personas",
+    meta: "Com. BCRA \"A\" 8417 · BORA 13-abr-2026 · vigente",
+    desc: "Amplía el acceso de las personas humanas al mercado de cambios: elimina los límites a los adelantos en efectivo (retiros) en el exterior con tarjetas de crédito emitidas en el país, y extiende las excepciones para exportadores personas humanas de bienes y servicios (plazos y obligación de liquidar divisas).",
+    tags: ["Plata"],
+    fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/340665/20260413",
+    impact: function(p) {
+      const dims = [];
+
+      if (p.ocupacion === 'monotrib' || p.ocupacion === 'autonomo') {
+        dims.push({ name: "Plata", level: "pos_soft",
+          body: "Si exportás servicios (freelance, software, profesionales) o bienes, se amplían las <strong>excepciones para cobrar y disponer de esas divisas</strong> y se flexibilizan los plazos de liquidación." });
+      }
+
+      // Aplica a cualquiera que viaje al exterior y use tarjeta local.
+      dims.push({ name: "Plata", level: "soft",
+        body: "Si viajás al exterior, se <strong>eliminan los límites</strong> para extraer efectivo (adelantos) con tarjetas de crédito emitidas en el país." });
+
+      dims.push({ name: "País / Equilibrio institucional", level: "soft",
+        body: "Continúa el desarme gradual de restricciones cambiarias. Son normas del BCRA que pueden modificarse por comunicaciones posteriores." });
+
+      return dims;
+    },
+    compareWinners: [
+      "Exportadores personas humanas de bienes y servicios (freelancers, profesionales)",
+      "Personas que viajan al exterior (sin tope de retiro de efectivo con tarjeta local)"
+    ],
+    compareProfiles: [
+      { name: "Freelance que exporta servicios",
+        sub: "Monotributista · CABA",
+        badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Persona que viaja al exterior",
+        sub: "Empleado priv. · CABA",
+        badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "decreto_formalizacion_laboral_315",
+    date: "2026-05-04",
+    title: "Incentivo para contratar personas desempleadas (RIFL)",
+    meta: "Decreto 315/2026 · BORA 4-may-2026 · vigente · reglamenta la Ley 27.802 · altas del 1-may-2026 al 30-abr-2027",
+    desc: "Reglamenta el Régimen de Incentivo a la Formalización Laboral (RIFL) de la Ley 27.802. Las empresas que registren nuevas altas de personas desempleadas, ex monotributistas o ex empleados públicos pagan contribuciones patronales reducidas al 2% durante hasta 48 meses. Régimen transitorio: las altas se toman entre el 1-may-2026 y el 30-abr-2027.",
+    tags: ["Trabajo", "Plata"],
+    fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/341443/20260504",
+    impact: function(p) {
+      const dims = [];
+      const empleador = p.ocupacion === 'pyme';
+
+      if (empleador) {
+        dims.push({ name: "Trabajo", level: "pos_soft",
+          body: "Si tomás personal nuevo entre el 1-may-2026 y el 30-abr-2027, las contribuciones patronales bajan al <strong>2%</strong> por hasta 48 meses, siempre que la persona estuviera desempleada, fuera ex monotributista o ex empleada pública." });
+      }
+
+      if (p.ocupacion === 'desempleado') {
+        dims.push({ name: "Trabajo", level: "pos_soft",
+          body: "Entrás en el grupo que una empresa puede contratar con <strong>contribuciones reducidas</strong>: baja el costo de tomarte y puede mejorar tus chances de un alta registrada. No cambia tu sueldo de bolsillo ni tus aportes personales." });
+      }
+
+      if (p.ocupacion === 'monotrib') {
+        dims.push({ name: "Trabajo", level: "soft",
+          body: "Si pasás de monotributo a relación de dependencia, tu empleador puede tomarte dentro del régimen. Mientras sigas facturando como monotributista, tu situación no cambia." });
+      }
+
+      if (['empleado_priv','empleado_pub','autonomo','trab_informal','domestica_reg','domestica_no_reg','jubilado_min','jubilado_med','pensionado','estudiante','ama_casa'].includes(p.ocupacion)) {
+        dims.push({ name: "Trabajo", level: "soft",
+          body: "Sin efecto directo sobre tu situación actual: el beneficio aplica a nuevas altas registradas de personas desempleadas o que dejan el monotributo/el empleo público." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", level: "soft",
+        body: "Reglamenta la <strong>Ley 27.802</strong>. Es un régimen <strong>transitorio</strong>: las altas se computan hasta el 30-abr-2027 y la reducción rige por trabajador durante hasta 48 meses desde el alta." });
+
+      return dims;
+    },
+    compareWinners: [
+      "Empresas y PyMEs que amplían plantel (contribución patronal al 2% por hasta 48 meses)",
+      "Personas desempleadas y ex monotributistas (mayor probabilidad de un alta registrada)"
+    ],
+    compareProfiles: [
+      { name: "PyME que suma personal",
+        sub: "PyME · interior",
+        badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Persona buscando empleo",
+        sub: "Desempleado · GBA",
+        badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Monotributista que busca relación de dependencia",
+        sub: "Monotributista · CABA",
+        badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "res_704_privatizacion_aysa",
+    date: "2026-05-15",
+    title: "Venta del 90% de AySA (agua y cloacas)",
+    meta: "Res. 704/2026 Economía · BORA 15-may-2026 · vigente · ofertas hasta 27-ago-2026",
+    desc: "Autoriza el llamado a Licitación Pública Nacional e Internacional para vender el 90% del capital de Agua y Saneamientos Argentinos (AySA). Un operador estratégico adquiriría al menos el 51%; el resto se ofrecería en bolsas y mercados. El 10% restante queda en el Programa de Propiedad Participada de los empleados. Presentación de ofertas hasta el 27-ago-2026.",
+    tags: ["Servicios", "Plata"],
+    fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/341989/20260515",
+    impact: function(p) {
+      const dims = [];
+      const areaAySA = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste'].includes(p.zona);
+
+      if (areaAySA) {
+        dims.push({ name: "Servicios", level: "mid",
+          body: "Si vivís en el área de AySA (CABA y GBA), cambia <strong>quién presta</strong> el agua potable y las cloacas: pasa a un operador privado (al menos 51% del capital). La gestión y las tarifas quedarán en manos privadas dentro del marco regulatorio vigente." });
+        dims.push({ name: "Plata", level: "soft",
+          body: "El régimen tarifario seguirá regulado por el ente correspondiente; el impacto concreto en la factura dependerá del contrato que surja de la licitación." });
+      } else {
+        dims.push({ name: "Servicios", level: "none",
+          body: "AySA presta servicio en CABA y GBA. Si vivís fuera de esa área, esta venta no te afecta directamente." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", level: "soft",
+        body: "Es una <strong>licitación de venta, todavía no adjudicada</strong> (ofertas hasta 27-ago-2026). La prestación seguirá bajo regulación del ente de control del servicio." });
+
+      return dims;
+    },
+    compareWinners: [
+      "El operador estratégico que adquiera el control (mín. 51% del capital)",
+      "Empleados de AySA (10% en Programa de Propiedad Participada)"
+    ],
+    compareProfiles: [
+      { name: "Usuario/a de AySA",
+        sub: "CABA / GBA",
+        badges: { Servicios: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Fuera del área AySA",
+        sub: "Interior",
+        badges: { Servicios: "none", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "res_enrege_40_tarifas_gas",
+    date: "2026-05-29",
+    title: "Nuevos cuadros tarifarios de gas (Revisión Quinquenal 2025-2030)",
+    meta: "Res. 40/2026 ENReGE · BORA 29-may-2026 · vigente · aplica desde 1-jun-2026",
+    desc: "Aprueba nuevos cuadros tarifarios de gas por red que incorporan un escalón de la Revisión Quinquenal de Tarifas (RQT) 2025-2030 —implementada en 31 aumentos mensuales escalonados— más el Precio Anual Uniforme (PAU) del gas. Los usuarios residenciales de menores ingresos mantienen las bonificaciones del régimen de Subsidios Energéticos Focalizados (SEF) sobre el consumo base. Esta resolución aprueba el cuadro de Distribuidora de Gas del Centro; las demás distribuidoras se aprueban por resoluciones espejo dentro del mismo esquema.",
+    tags: ["Servicios", "Plata"],
+    fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/342571/20260529",
+    impact: function(p) {
+      const dims = [];
+      // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
+      const conSEF = (p.asistencia || []).includes('sef') || p.ingreso === 'hasta_700k';
+
+      if (conSEF) {
+        dims.push({ name: "Servicios", level: "soft",
+          body: "Tu factura de gas sube por el nuevo cuadro tarifario (escalón de la Revisión Quinquenal 2025-2030 + PAU), pero mantenés la <strong>bonificación SEF</strong> sobre el consumo base, que amortigua el aumento." });
+      } else {
+        dims.push({ name: "Servicios", level: "mid",
+          body: "El nuevo cuadro tarifario aplica el <strong>precio pleno del gas (PAU)</strong> más el escalón mensual de la Revisión Quinquenal 2025-2030. Sin bonificación SEF, la factura refleja el valor completo." });
+        dims.push({ name: "Plata", level: "soft",
+          body: "El aumento es <strong>escalonado</strong>: se distribuye en subas mensuales previsibles a lo largo del quinquenio, no en un salto único." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", level: "soft",
+        body: "Es un acto regulatorio del ENReGE dentro de la RQT 2025-2030. El sendero de aumentos y las bonificaciones SEF pueden ajustarse por resoluciones posteriores de la Secretaría de Energía." });
+
+      return dims;
+    },
+    compareWinners: [
+      "Usuarios con tarifa social / SEF (conservan la bonificación sobre el consumo base)",
+      "La distribuidora (recompone ingresos vía RQT para operación e inversión)"
+    ],
+    compareProfiles: [
+      { name: "Hogar con tarifa social",
+        sub: "Ingreso ≤$700k · con SEF",
+        badges: { Servicios: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Hogar sin subsidio",
+        sub: "Ingreso medio · sin SEF",
+        badges: { Servicios: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "decreto_bono_previsional_399",
+    date: "2026-05-29",
+    title: "Bono extraordinario para jubilados y pensionados",
+    meta: "Decreto 399/2026 · BORA 29-may-2026 · vigente · pago de junio 2026 (por única vez)",
+    desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de junio de 2026. El monto es completo para quienes cobran hasta el haber mínimo y decrece para haberes superiores. Es no remunerativo (no se le hacen descuentos) y no modifica la fórmula de movilidad de la Ley 27.609.",
+    tags: ["Plata", "Estabilidad"],
+    fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/342525/20260529",
+    impact: function(p) {
+      const dims = [];
+
+      if (p.ocupacion === 'jubilado_min') {
+        dims.push({ name: "Plata", level: "pos",
+          body: "Cobrás el <strong>bono completo (hasta $70.000)</strong> junto con el haber de junio 2026. Es no remunerativo: no se te descuenta nada. Se suma al haber mínimo." });
+      }
+
+      if (p.ocupacion === 'jubilado_med') {
+        dims.push({ name: "Plata", level: "pos_soft",
+          body: "El bono <strong>decrece</strong> a medida que tu haber supera el mínimo: cobrás una parte, o nada si tu haber está por encima del tope que fije ANSES." });
+      }
+
+      if (p.ocupacion === 'pensionado') {
+        dims.push({ name: "Plata", level: "pos",
+          body: "Alcanza a pensiones no contributivas (vejez, invalidez, madre de 7+ hijos) y a la PUAM: <strong>bono completo</strong> para quienes están en el mínimo, decreciente por encima." });
+      }
+
+      // Refuerzo por asistencia previsional aunque la ocupación no sea 'jubilado/pensionado'.
+      // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
+      const pnc = ['pnc_vejez','pnc_discap','pnc_madre'].some(a => (p.asistencia || []).includes(a));
+      if (pnc && !['jubilado_min','jubilado_med','pensionado'].includes(p.ocupacion)) {
+        dims.push({ name: "Plata", level: "pos_soft",
+          body: "Si cobrás una pensión no contributiva, el bono de junio 2026 también te alcanza según el monto de tu prestación." });
+      }
+
+      if (['empleado_priv','empleado_pub','monotrib','autonomo','pyme','trab_informal','desempleado','estudiante','ama_casa'].includes(p.ocupacion)
+          && !pnc) {
+        dims.push({ name: "Plata", level: "soft",
+          body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones." });
+      }
+
+      dims.push({ name: "País / Equilibrio institucional", level: "soft",
+        body: "Pago por <strong>única vez</strong> para compensar los efectos de la Ley 27.609 de movilidad; no cambia la fórmula de actualización de los haberes. Lo instrumenta ANSES." });
+
+      return dims;
+    },
+    compareWinners: [
+      "Jubilados y pensionados en el haber mínimo (bono completo)",
+      "Beneficiarios de PUAM y pensiones no contributivas en el mínimo"
+    ],
+    compareProfiles: [
+      { name: "Jubilado/a de la mínima",
+        sub: "Jubilado mínima · CABA",
+        badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } },
+      { name: "Jubilado/a de haber medio-alto",
+        sub: "Jubilado media-alta · interior",
+        badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Pensión no contributiva",
+        sub: "Pensionado · GBA",
+        badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } }
+    ]
+  },
+  {
+    id: "decreto_retenciones_agro_423",
+    date: "2026-06-03",
+    title: "Tercer cronograma de baja de retenciones al agro",
+    meta: "Decreto 423/2026 · BORA 3-jun-2026 · vigencia 5-jun-2026 · baja gradual de derechos de exportación de la cadena de granos y biocombustibles hasta dic-2028",
+    desc: "Tras las bajas de julio y diciembre de 2025, el decreto fija un cronograma de reducción gradual de las retenciones de la cadena de granos y biocombustibles hasta diciembre de 2028. Trigo y cebada bajan de inmediato del 7,5% al 5,5%; la soja se mantiene en 24% durante 2026 y desciende desde enero de 2027 (0,25 pts/mes) hacia 21% en dic-2027 y 15% en dic-2028 (0,5 pts/mes). Incluye maíz, sorgo, girasol y biocombustibles en el mismo sendero gradual. Mejora el precio que recibe el exportador de forma escalonada.",
+    tags: ["Plata", "País", "Trabajo"],
+    fuente: "https://www.argentina.gob.ar/normativa/nacional/decreto-423-2026",
+    impact: function(p) {
+      const dims = [];
+      const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
+      const esAgro = ((p.ocupacion === 'pyme' || p.ocupacion === 'autonomo') && interior) || p.extra === 'renta';
+      const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
+      if (esAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
+          body: "Si vivís de la producción agrícola, este tercer recorte llega en cuotas: <strong>trigo y cebada bajan ya del 7,5% al 5,5%</strong>, pero la soja se mantiene en 24% durante 2026 y recién empieza a ceder desde enero de 2027 (hacia 21% en dic-2027 y 15% en dic-2028). El alivio de margen es real, aunque para el grueso de tu facturación (la soja) llega diferido y escalonado." });
+        dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
+          body: "Un sendero de menores retenciones tiende a sostener la actividad de la cadena agroindustrial (acopio, transporte de granos, servicios rurales, plantas aceiteras), de la que dependen muchos puestos en el interior productivo." });
+      }
+      if (ingresoBajoMedio && !esAgro) {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Como la baja es gradual, la presión sobre la góndola es suave y se reparte en el tiempo." });
+      }
+      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
+        body: "El Tesoro resigna recaudación de derechos de exportación de forma escalonada a cambio de más liquidación de divisas y competitividad del agro. Ganan exportadores y productores; el costo fiscal y la eventual presión sobre el precio de los alimentos los reparten el resto del presupuesto y el consumidor." });
+      return dims;
+    },
+    compareProfiles: [
+      { name: "Productor agrícola del interior", sub: "Empresario PyME · NEA", badges: { Plata: "pos_soft", Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Familia que compra harina, aceite y pan", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos_soft", Trabajo: "pos_soft" } },
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+    ]
   }
 ];
 
