@@ -1,0 +1,27 @@
+# Bubblewrap / TWA build artifacts — NEVER commit secrets or binaries
+*.keystore
+KEYSTORE_INFO.txt
+*.aab
+*.apk
+*.idsig
+
+# Gradle / Android build output
+.gradle/
+build/
+app/build/
+app/release/
+app/.cxx/
+local.properties
+
+# Bubblewrap generated project tree (regenerable from twa-manifest.json)
+# Keep twa-manifest.json + this .gitignore tracked; ignore the rest of the scaffold.
+app/
+gradle/
+gradlew
+gradlew.bat
+build.gradle
+settings.gradle
+gradle.properties
+store_icon.png
+manifest-checksum.txt
+.well-known/

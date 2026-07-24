@@ -33,6 +33,17 @@ para que el próximo barrido arranque desde ahí y no reprocese lo mismo.
 
 - 2026-07-24 (integración) | 6 aprobadas | fix bug asistencia-array en C-0001/C-0003 (re-auditado por comportamiento); C-0003 desc +nota distribuidoras espejo; 6 objetos integrados a js/medidas-base.js (75→81, node --check + import runtime OK, sin ids duplicados); migración única migrations/add_tanda_reactivacion.sql (6 INSERT medidas + 6 parametros + 2 SELECT COUNT, total_medidas esperado=81). SIN commit / SIN carga en Supabase todavía.
 
+## Notas de infraestructura (android / TWA)
+
+- **assetlinks verificado (2026-07-24):** el Digital Asset Links publicado y activo vive en el repo
+  `junior-works.github.io` en la **raíz del dominio** (`https://junior-works.github.io/.well-known/assetlinks.json`),
+  firmado con el **certificado de Google Play App Signing** (SHA-256 `77:4F:44:DC:…:2E:6E`) e incluye
+  también `com.juniorworks.pensandote`. El `android/assetlinks.json` local era un artefacto viejo con
+  la clave de **subida** (`F5:EF:7B:…:56:81`) → **eliminado** para no confundir.
+- **Tarea futura:** `android/setup-twa.js` quedó SIN commitear porque hardcodea rutas absolutas
+  (`C:\Users\perro\AppData\Roaming\npm\…`) e identidad de firma personal. Des-hardcodear las rutas
+  (hacerlo portable) antes de versionarlo. No contiene secretos (las passwords se generan en runtime).
+
 ## Pendiente para el próximo ciclo
 
 - **Cargar la tanda en Supabase:** pegar `migrations/add_tanda_reactivacion.sql` en el SQL Editor;
