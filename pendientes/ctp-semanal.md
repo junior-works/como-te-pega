@@ -138,7 +138,12 @@ borrador, y describí qué falta.
      referencia clara, la última medida vista.
    - Agregá una línea al historial: `- DESDE → HASTA | N candidatas | ids, notas`.
 
-## Paso 6 — Notificar por ntfy.sh
+## Paso 6 — Notificar por ntfy.sh (OBLIGATORIO, SIEMPRE)
+
+**Regla dura:** el ciclo termina SÍ o SÍ con una notificación ntfy — con novedades o sin
+ellas, sea cual sea el resultado. El silencio es una señal reservada: significa que la tarea
+**no corrió**. Nunca termines el ciclo sin notificar. (Un heartbeat de FALLO adicional lo
+cubre el wrapper `run-ctp-semanal.ps1` si el ciclo se cae antes de este paso.)
 
 Leé el topic desde `.env` (`NTFY_TOPIC=...`; copiá `.env.example` la primera vez).
 

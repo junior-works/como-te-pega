@@ -11,7 +11,7 @@ para que el próximo barrido arranque desde ahí y no reprocese lo mismo.
 
 ## Estado actual
 
-**procesado hasta 2026-07-24**
+**procesado hasta 2026-07-27**
 **última medida cargada:** `ley_modernizacion_laboral_27802`
 **último aviso relevante visto:** Decreto 612/2026 (BORA 20/07/2026, actualización de la Ley 27.802)
 **borradores pendientes de tu aprobación (6):** `decreto_bono_previsional_399`, `decreto_formalizacion_laboral_315`, `res_enrege_40_tarifas_gas`, `bcra_a8417_cambiario`, `decreto_retenciones_agro_423`, `res_704_privatizacion_aysa`
@@ -32,6 +32,7 @@ para que el próximo barrido arranque desde ahí y no reprocese lo mismo.
 - 2026-07-24 (corrección final C-0005) | area revertida 'agro'→'agroindustria': las 3 fichas hermanas de retenciones usan 'agroindustria'; 'agro' lo usa solo dnu70_alquileres_tierras_rurales (otro tema). patron-medida.md §2 documenta la coexistencia agro/agroindustria
 
 - 2026-07-24 (integración) | 6 aprobadas | fix bug asistencia-array en C-0001/C-0003 (re-auditado por comportamiento); C-0003 desc +nota distribuidoras espejo; 6 objetos integrados a js/medidas-base.js (75→81, node --check + import runtime OK, sin ids duplicados); migración única migrations/add_tanda_reactivacion.sql (6 INSERT medidas + 6 parametros + 2 SELECT COUNT, total_medidas esperado=81). SIN commit / SIN carga en Supabase todavía.
+- 2026-07-25 → 2026-07-27 | 0 candidatas | ventana chica (sáb+dom sin BORA; lun 27/07 solo Decreto 615/2026 designación juez CNAT → excluido); sin borradores nuevos; notificado por ntfy
 
 ## Notas de infraestructura (android / TWA)
 
