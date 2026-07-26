@@ -40,3 +40,6 @@ $RECYCLE.BIN/
 *.tmp
 *.bak
 .cache/
+
+# Loop ctp-semanal: log de ejecución del wrapper (runtime, no versionar)
+pendientes/last-run.log
