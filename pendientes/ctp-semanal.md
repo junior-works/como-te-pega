@@ -15,8 +15,10 @@ ficha y te notifica. **Nunca publica.** La aprobación editorial es tuya.
 - **No** ejecutar SQL / no tocar Supabase.
 - **No** `git commit`, `git push`, ni cambiar de branch.
 - **No** bumpear versión (`config.js`, `service-worker.js`, `manifest.json`).
-- El ciclo **termina** en: borradores escritos + `candidatas.md`/`log_bora.md`
-  actualizados + notificación ntfy. Nada más.
+- El ciclo **termina** en: borradores de ficha + **borrador de newsletter** +
+  `candidatas.md`/`log_bora.md` actualizados + notificación ntfy. Nada más.
+- El **newsletter es un BORRADOR editorial**: nunca se envía ni se publica solo
+  (no mailing, no redes). La revisión y el envío los hace la persona editora.
 
 Si en algún paso parece necesario cruzar el límite, **frená y reportá** en vez de hacerlo.
 
@@ -138,6 +140,36 @@ borrador, y describí qué falta.
      referencia clara, la última medida vista.
    - Agregá una línea al historial: `- DESDE → HASTA | N candidatas | ids, notas`.
 
+## Paso 5b — Borrador del newsletter semanal
+
+Después de los borradores de ficha, redactá **también** el borrador del newsletter en
+`pendientes/newsletter/edicion-YYYY-MM-DD.md` (fecha = `HASTA`). Es **contenido editorial**:
+queda como **BORRADOR para revisión**, **nunca se envía solo**. Tono idéntico a las fichas —
+neutral, rioplatense, verificable, sin juicios de valor. Seguí el molde de
+`pendientes/newsletter/edicion-referencia.md`.
+
+Estructura obligatoria:
+
+1. **Asunto propuesto** — una línea, llamativo **sin alarmismo**.
+2. **Encabezado fijo:** `CÓMO TE PEGA SEMANAL` + 1-2 líneas de apertura.
+3. **Un bloque por medida nueva de la semana**, cada uno con:
+   - emoji temático + **título en claro**
+   - `(norma y número)` — ej. `(Decreto 399/2026)`
+   - 2-4 líneas neutras de **qué dice** (el mecanismo, no si es bueno o malo)
+   - línea final **`Le pega a: …`** (a quién afecta, en criollo)
+4. **Si la semana no trajo medidas:** un bloque único **"Semana tranquila en el Boletín"** +
+   **una** medida del catálogo existente (`js/medidas-base.js`) como **"repaso"**, elegida por
+   relevancia **estacional** (ej. en marzo: cuotas de colegio / útiles; en invierno: tarifas de
+   gas; etc.). Mismo formato de bloque (emoji + título + norma + qué dice + `Le pega a:`).
+5. **Cierre fijo** (literal, siempre):
+   - CTA a la app: `👉 Mirá cómo te pega a vos: junior-works.github.io/como-te-pega`
+   - Suscripción: `¿Te lo reenviaron? Suscribite acá: [LINK DE SUSCRIPCIÓN]`
+   - `Este resumen no opina: informa.`
+   - Firma: `El equipo de Cómo Te Pega`
+
+Regla de sincronía: los bloques de "medida nueva" deben salir de los borradores de ficha de
+esta semana (mismos hechos, mismo tono). No introduzcas datos que no estén verificados en una ficha.
+
 ## Paso 6 — Notificar por ntfy.sh (OBLIGATORIO, SIEMPRE)
 
 **Regla dura:** el ciclo termina SÍ o SÍ con una notificación ntfy — con novedades o sin
@@ -147,22 +179,25 @@ cubre el wrapper `run-ctp-semanal.ps1` si el ciclo se cae antes de este paso.)
 
 Leé el topic desde `.env` (`NTFY_TOPIC=...`; copiá `.env.example` la primera vez).
 
+Siempre mencioná que el **borrador de newsletter** quedó listo (Paso 5b lo genera sí o sí).
+
 Con novedades:
 ```bash
 curl -s -H "Title: CTP semanal" \
-     -d "N candidatas nuevas (DESDE→HASTA). Borradores listos: <ids>. Revisá pendientes/borradores/." \
+     -d "N candidatas nuevas (DESDE→HASTA). Borradores listos: <ids>. Borrador de newsletter listo. Revisá pendientes/borradores/ y pendientes/newsletter/." \
      "https://ntfy.sh/$NTFY_TOPIC"
 ```
 
 Sin novedades:
 ```bash
 curl -s -H "Title: CTP semanal" \
-     -d "Sin novedades esta semana (DESDE→HASTA). No hay borradores nuevos." \
+     -d "Sin novedades esta semana (DESDE→HASTA). No hay borradores nuevos. Borrador de newsletter listo (edición de repaso) en pendientes/newsletter/." \
      "https://ntfy.sh/$NTFY_TOPIC"
 ```
 
 ## Paso 7 — Cerrar
 
 Terminá con un resumen en el chat: cuántas candidatas, cuáles pasaron auditoría,
-cuáles quedaron `dudosa`, y el recordatorio de que **la publicación la hacés vos**.
+cuáles quedaron `dudosa`, la ruta del **borrador de newsletter** generado, y el
+recordatorio de que **la publicación (fichas y newsletter) la hacés vos**.
 No cruces el LÍMITE DURO.
