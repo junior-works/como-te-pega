@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cómo Te Pega">
+  <!-- Favicon v1.2.0: fondo azul noche + círculo sol liso. NO es el Sol de Mayo (sin cara ni rayos). -->
+  <rect width="512" height="512" rx="112" fill="#0E1B2C"/>
+  <circle cx="256" cy="256" r="150" fill="#F6B40E"/>
+</svg>

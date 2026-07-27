@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0a0c">
+<meta name="theme-color" content="#0E1B2C">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Cómo Te Pega</title>
 <!-- Tipografía: Plus Jakarta Sans (rediseño dark v0.9.0) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,59 +13,67 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* ===== v0.9.0 — Universo del logo, versión nocturna ===== */
-    /* Capas de fondo (tinta de la noche → superficies) */
-    --bg-0: #0a0a0c;
-    --bg-1: #111114;
-    --bg-2: #16161a;
-    --bg-3: #1d1d23;
-    --border-soft: #26262e;
-    --border-mid: #3a3a44;
-    /* Texto (cream invertido del sello) */
-    --text-0: #f5f1e6;
-    --text-1: #cfc8b8;
-    --text-2: #8a8478;
-    --text-3: #56524a;
-    /* Acentos del logo (mostaza / marrón) */
-    --gold-1: #fbd24a;
-    --gold-2: #d4a017;
-    --gold-3: #a87e0c;
-    --brown-1: #c47a2c;
-    --brown-2: #7b3f0e;
-    --grad-gold: linear-gradient(135deg, #fbd24a 0%, #f59e0b 50%, #d4831a 100%);
-    --grad-gold-soft: linear-gradient(135deg, rgba(251,210,74,.18), rgba(212,160,23,.06));
-    /* Estados de impacto (cálidos, no planos) */
+    /* ===== v1.2.0 — Identidad argentina (azul noche · sol · celeste) ===== */
+    /* Capas de fondo (azul muy oscuro → superficies) */
+    --bg-0: #0E1B2C;   /* fondo principal */
+    --bg-1: #12233A;
+    --bg-2: #16293F;   /* superficie de cards */
+    --bg-3: #1E344E;   /* superficie secundaria */
+    --border-soft: #26405C;
+    --border-mid: #3A5578;
+    /* Texto (blanco → celestes desaturados) */
+    --text-0: #FFFFFF;
+    --text-1: #D5E2F0;
+    --text-2: #93A7BD;
+    --text-3: #5F7590;
+    /* Acento primario — sol (botones importantes, highlights) */
+    --gold-1: #FFC53D;
+    --gold-2: #F6B40E;   /* sol = acento principal */
+    --gold-3: #C88E06;
+    --brown-1: #C88E06;  /* alias legacy → sol oscuro */
+    --brown-2: #8A6104;
+    --grad-gold: linear-gradient(135deg, #FFC53D 0%, #F6B40E 50%, #D69A08 100%);
+    --grad-gold-soft: linear-gradient(135deg, rgba(246,180,14,.18), rgba(200,142,6,.06));
+    /* Acento secundario — celeste bandera (links, tags, secundarios) */
+    --sky-1: #A9CBEC;    /* celeste claro: texto sobre fondos translúcidos (AA) */
+    --sky-2: #74ACDF;    /* celeste bandera: links, bordes */
+    --sky-3: #4E86BE;
+    /* Texto oscuro para poner ENCIMA del sol/gold (contraste AA) */
+    --on-accent: #0E1B2C;
+    /* Estados de impacto (semántica roja→verde: SE PRESERVA) */
     --contra: #ef4444;
     --neutra: #4b4b54;
     --favor: #22c55e;
 
-    /* ===== Mapeo de los tokens semánticos legacy → paleta dark =====
+    /* ===== Mapeo de los tokens semánticos legacy → paleta argentina =====
        Las ~1000 líneas de CSS existentes usan estas variables; al re-mapearlas
-       acá toda la UI se oscurece sin tocar cada regla. El bloque de overrides
-       al final del <style> ajusta lo que quedaba hardcodeado en claro. */
+       acá toda la UI cambia de paleta sin tocar cada regla. El bloque de
+       overrides al final del <style> ajusta lo que quedaba hardcodeado. */
     --bg: var(--bg-0);
-    --bg-grad: var(--bg-0);
-    --paper: #16161a;       /* superficie principal (cards) */
-    --paper-soft: #1d1d23;  /* superficie secundaria */
-    --ink: #f5f1e6;
-    --ink-soft: #cfc8b8;
-    --ink-mute: #8a8478;
-    --line: #26262e;
-    --line-soft: #1d1d23;
-    --accent: #d4a017;            /* mostaza del logo = acento principal */
-    --accent-soft: rgba(212,160,23,0.28);
-    --accent-mute: rgba(212,160,23,0.12);
+    --bg-grad: radial-gradient(1100px 560px at 50% -8%, #16293F 0%, #0E1B2C 62%);
+    --paper: #16293F;       /* superficie principal (cards) */
+    --paper-soft: #1E344E;  /* superficie secundaria */
+    --ink: #FFFFFF;
+    --ink-soft: #D5E2F0;
+    --ink-mute: #93A7BD;
+    --line: #26405C;
+    --line-soft: #1E344E;
+    --accent: #F6B40E;            /* sol = acento principal (botones/highlights) */
+    --accent-soft: rgba(246,180,14,0.28);
+    --accent-mute: rgba(246,180,14,0.12);
+    --accent-2: #74ACDF;          /* celeste = acento secundario (links/tags) */
+    --accent-2-soft: rgba(116,172,223,0.16);
     --hit-strong: #ef4444;
     --hit-mid: #f97316;
     --hit-soft: #eab308;
     --hit-pos-strong: #16a34a;
     --hit-pos: #22c55e;
     --hit-pos-soft: #4ade80;
-    --hit-none: #8a8478;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-    --shadow: 0 8px 24px rgba(0,0,0,0.45);
-    --shadow-lg: 0 18px 50px rgba(0,0,0,0.55);
-    --shadow-gold: 0 6px 20px rgba(245,158,11,.32), 0 1px 0 rgba(255,255,255,.18) inset;
+    --hit-none: #93A7BD;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.40);
+    --shadow: 0 8px 24px rgba(0,0,0,0.50);
+    --shadow-lg: 0 18px 50px rgba(0,0,0,0.60);
+    --shadow-gold: 0 6px 20px rgba(246,180,14,.32), 0 1px 0 rgba(255,255,255,.18) inset;
     --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   * { box-sizing: border-box; }
@@ -411,7 +420,7 @@
     line-height: 1.55;
   }
   .src strong { color: var(--ink-soft); font-weight: 700; }
-  .src a { color: var(--accent); font-weight: 600; }
+  .src a { color: var(--sky-2); font-weight: 600; }
   .crumb {
     display: inline-flex;
     align-items: center;
@@ -624,6 +633,7 @@
     line-height: 1.6;
   }
   footer.foot strong { color: var(--ink-soft); }
+  .foot-indep { display: inline-block; font-size: 11.5px; color: var(--text-2); letter-spacing: .2px; }
   /* ============== PROGRESS ============== */
   .progress {
     display: flex;
@@ -1051,14 +1061,14 @@
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     background:
-      radial-gradient(900px 600px at 50% -260px, rgba(245,158,11,.10), transparent 70%),
+      radial-gradient(900px 600px at 50% -260px, rgba(246,180,14,.10), transparent 70%),
       radial-gradient(700px 520px at 12% 4%, rgba(123,63,14,.08), transparent 70%),
       var(--bg-0);
     background-attachment: fixed;
     color: var(--text-0);
   }
   .app { padding-bottom: 108px; }
-  ::selection { background: rgba(212,160,23,.30); color: #fff; }
+  ::selection { background: rgba(246,180,14,.30); color: #fff; }
 
   /* ---- Header / app-bar ---- */
   header.brand {
@@ -1075,8 +1085,9 @@
     overflow: hidden; box-shadow: var(--shadow-gold);
   }
   .brand-mark-svg { width: 100%; height: 100%; border-radius: 50%; display: block; }
-  .brand-name { font-weight: 800; font-size: 17px; letter-spacing: .2px; color: var(--text-0); }
-  .brand-name span { color: var(--gold-2); }
+  .brand-name { display: flex; flex-direction: column; font-weight: 800; font-size: 16px; line-height: 1.04; letter-spacing: .2px; }
+  .brand-name .l1 { color: var(--text-0); }
+  .brand-name .l2 { color: var(--accent-2); }
   .icon-btn {
     width: 44px; height: 44px; border-radius: 12px; flex: 0 0 44px;
     background: var(--bg-2); border: 1px solid var(--border-soft);
@@ -1117,7 +1128,7 @@
     box-shadow: var(--shadow-sm);
   }
   .perfil-box {
-    background: rgba(212,160,23,.08); border: 1px solid rgba(212,160,23,.22);
+    background: rgba(246,180,14,.08); border: 1px solid rgba(246,180,14,.22);
     color: var(--gold-1);
   }
   .perfil-box strong { color: var(--gold-2); }
@@ -1128,7 +1139,7 @@
   }
   .impact-notice strong, .bal-tip strong { color: var(--gold-1); }
   .src { border-top-color: var(--border-soft); }
-  .src a, .const-link { color: var(--gold-2); }
+  .src a, .const-link { color: var(--sky-2); }
   .crumb {
     background: var(--bg-2); border-color: var(--border-soft); color: var(--text-1);
   }
@@ -1156,7 +1167,7 @@
   }
   .chip:hover { background: var(--bg-3); border-color: var(--border-mid); }
   .chip.sel { background: var(--grad-gold); color: #1a0e02; border-color: transparent; box-shadow: var(--shadow-gold); }
-  .chip.sel-multi { background: rgba(212,160,23,.14); color: var(--gold-1); border-color: rgba(212,160,23,.40); }
+  .chip.sel-multi { background: rgba(246,180,14,.14); color: var(--gold-1); border-color: rgba(246,180,14,.40); }
   .fchip { background: var(--bg-2); border: 1.5px solid var(--border-soft); color: var(--text-1); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .fchip:hover { border-color: var(--border-mid); }
   .fchip.sel { background: var(--grad-gold); color: #1a0e02; border-color: transparent; box-shadow: var(--shadow-gold); }
@@ -1172,15 +1183,15 @@
   .result-count strong { color: var(--text-0); }
 
   /* ---- Pill (prototipo) + hero ---- */
-  .pill { background: rgba(212,160,23,.12); color: var(--gold-2); }
+  .pill { background: rgba(246,180,14,.12); color: var(--gold-2); }
   .hero .pitch strong, .hero .examples li em { color: var(--text-0); }
   .hero .examples h4 { color: var(--text-2); }
   .hero-resume, .last-measure { background: var(--bg-2); border: 1px solid var(--border-soft); }
 
   /* ---- Tags / badges / estados (colores hardcodeados en claro) ---- */
-  .measure-tag, .area-chip, .tl-tag { background: rgba(212,160,23,.12); color: var(--gold-2); }
+  .measure-tag, .area-chip, .tl-tag { background: var(--accent-2-soft); color: var(--sky-1); }
   .cobertura-badge { background: var(--grad-gold); color: #1a0e02; }
-  .const-art-num { background: rgba(212,160,23,.12); color: var(--gold-2); }
+  .const-art-num { background: var(--accent-2-soft); color: var(--sky-1); }
   .tl-pop { background: var(--bg-3); color: var(--text-1); }
   .dim-name, .const-resumen, .dim-body, .const-art-resumen, .cob-foot, .const-foot, .const-meta, .const-art-name { color: var(--text-1); }
   .dim-body strong, .dim-body em, .const-art { color: var(--text-0); }
@@ -1200,7 +1211,7 @@
   .estado-pill.e-suspendida { background: rgba(249,115,22,.16); color: #fdba74; }
   .estado-pill.e-derogada { background: var(--bg-3); color: var(--text-2); }
   .estado-pill.e-vetada { background: rgba(239,68,68,.16); color: #fda4a4; }
-  .estado-pill.e-convalidada { background: rgba(212,160,23,.14); color: var(--gold-1); }
+  .estado-pill.e-convalidada { background: rgba(246,180,14,.14); color: var(--gold-1); }
 
   .const-estado.c-amber { background: rgba(234,179,8,.16); color: #fde68a; }
   .const-estado.c-orange { background: rgba(249,115,22,.16); color: #fdba74; }
@@ -1367,7 +1378,7 @@
   }
   #ptr.show { opacity: 1; }
   #ptr .spin { width: 18px; height: 18px; border-radius: 50%;
-    border: 2px solid rgba(212,160,23,.25); border-top-color: var(--gold-1); }
+    border: 2px solid rgba(246,180,14,.25); border-top-color: var(--gold-1); }
   #ptr.loading .spin { animation: ptrspin .7s linear infinite; }
   @keyframes ptrspin { to { transform: rotate(360deg); } }
 
@@ -1497,15 +1508,11 @@
     <div class="brand-left" onclick="show('measures')" style="cursor:pointer;">
       <div class="brand-mark">
         <svg viewBox="0 0 512 512" class="brand-mark-svg" aria-hidden="true">
-          <rect width="512" height="512" fill="#0a0a0c"/>
-          <path d="M 76 320 A 180 180 0 0 1 436 320"
-                fill="none" stroke="#fbd24a" stroke-width="46" stroke-linecap="round"/>
-          <path d="M 130 320 A 126 126 0 0 1 382 320"
-                fill="none" stroke="#c47a2c" stroke-width="46" stroke-linecap="round"/>
-          <circle cx="256" cy="320" r="54" fill="#fbd24a"/>
+          <!-- Círculo sol liso (identidad argentina). NO es el Sol de Mayo: sin cara ni rayos. -->
+          <circle cx="256" cy="256" r="212" fill="#F6B40E"/>
         </svg>
       </div>
-      <div class="brand-name">¿Cómo te <span>pega</span>?</div>
+      <div class="brand-name"><span class="l1">¿Cómo te</span><span class="l2">pega?</span></div>
     </div>
     <button class="icon-btn" id="btnSearch" onclick="toggleSearch()" aria-label="Buscar medidas">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
@@ -1873,7 +1880,8 @@
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
-    Las mismas reglas se aplican a cualquier gobierno. Cuando un dato no es seguro, se dice.
+    Las mismas reglas se aplican a cualquier gobierno. Cuando un dato no es seguro, se dice.<br><br>
+    <span class="foot-indep">Proyecto independiente — no afiliado al Estado argentino.</span>
   </footer>
 </div>
 
