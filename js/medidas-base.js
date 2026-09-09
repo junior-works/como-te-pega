@@ -3805,7 +3805,383 @@ export const MEASURES_BASE = [
       { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos_soft", Trabajo: "pos_soft" } },
       { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
     ]
-  }
+  },
+{
+  id: "decreto_bono_previsional_agosto_686",
+  date: "2026-07-30",
+  title: "Bono extraordinario para jubilados y pensionados (agosto 2026)",
+  meta: "Decreto 686/2026 · BORA 30-jul-2026 · vigente · pago de agosto 2026 (por única vez)",
+  desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de agosto de 2026. El monto es completo para quienes cobran hasta el haber mínimo garantizado y decrece para haberes superiores, de modo que la suma haber + bono alcanza como tope el haber mínimo más $70.000. Es no remunerativo (no se le hacen descuentos ni se computa para ningún otro concepto) y no modifica la fórmula de movilidad de la Ley 27.609. Alcanza a prestaciones del SIPA (Ley 24.241), Pensión Universal para el Adulto Mayor y pensiones no contributivas por vejez, invalidez y madres de 7 o más hijos.",
+  tags: ["Plata", "Estabilidad"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345137/20260730",
+  impact: function(p) {
+    const dims = [];
+
+    if (p.ocupacion === 'jubilado_min') {
+      dims.push({ name: "Plata", level: "pos",
+        body: "Cobrás el <strong>bono completo (hasta $70.000)</strong> junto con el haber de agosto 2026. Es no remunerativo: no se te descuenta nada. Se suma al haber mínimo." });
+    }
+
+    if (p.ocupacion === 'jubilado_med') {
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "El bono <strong>decrece</strong> a medida que tu haber supera el mínimo: cobrás la diferencia hasta el tope de haber mínimo + $70.000. Por encima de ese tope el bono es $0." });
+    }
+
+    if (p.ocupacion === 'pensionado') {
+      dims.push({ name: "Plata", level: "pos",
+        body: "Alcanza a pensiones no contributivas (vejez, invalidez, madre de 7+ hijos) y a la PUAM: <strong>bono completo</strong> para quienes están en el mínimo, decreciente por encima." });
+    }
+
+    // Refuerzo por asistencia previsional aunque la ocupación no sea 'jubilado/pensionado'.
+    // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
+    const pnc = ['pnc_vejez','pnc_discap','pnc_madre'].some(a => (p.asistencia || []).includes(a));
+    if (pnc && !['jubilado_min','jubilado_med','pensionado'].includes(p.ocupacion)) {
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "Si cobrás una pensión no contributiva, el bono de agosto 2026 también te alcanza según el monto de tu prestación." });
+    }
+
+    if (['empleado_priv','empleado_pub','monotrib','autonomo','pyme','trab_informal','desempleado','estudiante','ama_casa'].includes(p.ocupacion)
+        && !pnc) {
+      dims.push({ name: "Plata", level: "soft",
+        body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones del mes de agosto 2026." });
+    }
+
+    dims.push({ name: "País / Equilibrio institucional", level: "soft",
+      body: "Pago por <strong>única vez</strong> para el mes de agosto 2026 sobre haberes que sigue liquidando ANSES; no cambia la fórmula de movilidad de la Ley 27.609. Continúa la práctica de decretos mensuales (Decretos 399/2026, 686/2026, entre otros) para compensar los efectos de la fórmula vigente." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Jubilados y pensionados en el haber mínimo (bono completo)",
+    "Beneficiarios de PUAM y pensiones no contributivas en el mínimo"
+  ],
+  compareProfiles: [
+    { name: "Jubilado/a de la mínima",
+      sub: "Jubilado mínima · CABA",
+      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } },
+    { name: "Jubilado/a de haber medio-alto",
+      sub: "Jubilado media-alta · interior",
+      badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Pensión no contributiva",
+      sub: "Pensionado · GBA",
+      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } }
+  ]
+},
+{
+  id: "decreto_combustibles_impuesto_693",
+  date: "2026-07-31",
+  title: "Impuestos a los combustibles: aumento parcial en agosto, resto en septiembre",
+  meta: "Decreto 693/2026 · BORA 31-jul-2026 · vigente · aplica desde 1-ago-2026",
+  desc: "Modifica el Decreto 617/2025 y difiere parcialmente los incrementos del Impuesto sobre los Combustibles Líquidos (ICL) y del Impuesto al Dióxido de Carbono. Para los hechos imponibles del 1 al 31 de agosto de 2026 se aplican incrementos parciales por litro (Nafta sin plomo y nafta virgen: ICL $10,572 + CO₂ $0,648; Gasoil: ICL $9,511 + CO₂ $1,084, con diferencial Patagonia de $5,150). Los efectos completos remanentes rigen desde el 1 de septiembre de 2026. No alcanza al GNC.",
+  tags: ["Plata", "Movilidad", "Impuestos"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345226/20260731",
+  impact: function(p) {
+    const dims = [];
+
+    const autoMoto = p.transporte === 'auto' || p.transporte === 'moto';
+    const mixtoConAuto = p.transporte === 'combinacion' || p.transporte === 'mixto';
+
+    if (autoMoto) {
+      dims.push({ name: "Plata", level: "mid",
+        body: "Cargás combustible: el aumento del ICL y del impuesto al CO₂ se traslada al precio del surtidor. En agosto el ajuste es <strong>parcial</strong>; el tramo remanente se aplica desde <strong>septiembre 2026</strong>." });
+      dims.push({ name: "Movilidad", level: "soft",
+        body: "Uso intensivo del vehículo: la suba impositiva encarece cada carga. En Patagonia opera el diferencial de gasoil (más bajo que el general)." });
+    } else if (mixtoConAuto) {
+      dims.push({ name: "Plata", level: "soft",
+        body: "Si combinás transporte con auto propio parte de la semana, el aumento de impuestos a los combustibles te alcanza en las cargas de ese uso." });
+    }
+
+    // Colectivos / trenes: el precio del gasoil influye en costos operativos del transporte público,
+    // pero el traslado a la tarifa depende de otras normas. Nota descriptiva, sin exagerar.
+    if (['2colectivos','combinacion','tren'].includes(p.transporte)) {
+      dims.push({ name: "Movilidad", level: "soft",
+        body: "El transporte público usa gasoil: cambios en el impuesto pueden reflejarse en costos operativos y, en función de la política tarifaria, eventualmente en la tarifa. En el corto plazo no hay impacto directo si no cargás combustible." });
+    }
+
+    // PyME que use combustible como insumo (fletes, reparto).
+    if (p.ocupacion === 'pyme') {
+      dims.push({ name: "Plata", level: "soft",
+        body: "Si tu actividad usa combustible como insumo (flete, reparto, generación), el ICL y el impuesto al CO₂ se trasladan al costo operativo desde agosto (parcial) y desde septiembre (completo)." });
+    }
+
+    // Trabajadores de plataformas de reparto / apps que usan moto/auto.
+    if (p.extra === 'plataforma' && (autoMoto || mixtoConAuto)) {
+      dims.push({ name: "Plata", level: "soft",
+        body: "Si trabajás con moto o auto en plataformas de reparto/transporte, el combustible es tu insumo directo: el aumento impacta el costo por viaje/entrega." });
+    }
+
+    dims.push({ name: "País / Equilibrio institucional", level: "soft",
+      body: "El decreto <strong>difiere parcialmente</strong> el ajuste previsto por el Decreto 617/2025. Es una postergación acotada: los efectos remanentes se acumulan y se aplican desde el 1 de septiembre de 2026." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Quienes no cargan combustible (impacto directo bajo o nulo en agosto)",
+    "Usuarios de gasoil en Patagonia (aplica diferencial más bajo)"
+  ],
+  compareProfiles: [
+    { name: "Empleado con auto",
+      sub: "Empleado privado · auto",
+      badges: { Plata: "mid", Movilidad: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "PyME con reparto",
+      sub: "PyME · combustible como insumo",
+      badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Usa colectivo",
+      sub: "Empleado · 2 colectivos",
+      badges: { Movilidad: "soft", "País / Equilibrio institucional": "soft" } }
+  ]
+},
+{
+  id: "res_enrege_374_tarifas_electricidad_agosto",
+  date: "2026-07-31",
+  title: "Nuevos cuadros tarifarios de electricidad (EDESUR / EDENOR, agosto 2026)",
+  meta: "Res. 374/2026 y 375/2026 ENReGE · BORA 31-jul-2026 · vigente · aplica desde 1-ago-2026",
+  desc: "El ENReGE aprueba nuevos cuadros tarifarios de distribución eléctrica de EDESUR (Res. 374/2026) y EDENOR (Res. 375/2026) con vigencia desde el 1 de agosto de 2026. Incremento del Costo Propio de Distribución (CPD): base mensual del 0,36% más actualización por índices (IPIM 67% + IPC 33%) del 1,35%, total 1,71% respecto de julio 2026. Se traslada el costo del Mercado Eléctrico Mayorista (MEM) de junio ($0,307 por kWh) y se fija un Valor Agregado de Distribución (VAD) medio de $63,540. Los usuarios residenciales beneficiarios del régimen de Subsidios Energéticos Focalizados (SEF) reciben una bonificación extraordinaria adicional del 16,59% para agosto de 2026, que se suma a la bonificación general del régimen. Aplica en el área de concesión del AMBA.",
+  tags: ["Servicios", "Plata"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345270/20260731",
+  impact: function(p) {
+    const dims = [];
+    // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
+    const conSEF = (p.asistencia || []).includes('sef') || p.ingreso === 'hasta_700k';
+    const enAMBA = ['caba','gba_norte','gba_sur','gba_oeste'].includes(p.zona);
+
+    if (enAMBA && conSEF) {
+      dims.push({ name: "Servicios", level: "soft",
+        body: "Vivís en el área de EDESUR o EDENOR y estás en el régimen <strong>SEF</strong>: sobre el nuevo cuadro tarifario recibís una <strong>bonificación extraordinaria adicional del 16,59%</strong> para agosto, que se suma a la bonificación general del SEF." });
+    } else if (enAMBA) {
+      dims.push({ name: "Servicios", level: "mid",
+        body: "Vivís en el área de EDESUR o EDENOR: la factura de agosto refleja el nuevo cuadro. El CPD sube <strong>1,71%</strong> respecto de julio y se traslada el costo del MEM de junio ($0,307 por kWh). Sin bonificación SEF, la factura absorbe el ajuste completo." });
+      dims.push({ name: "Plata", level: "soft",
+        body: "El ajuste es <strong>mensual y previsible</strong>: se compone de un incremento base (0,36%) más una actualización por índices IPIM+IPC (1,35%)." });
+    }
+
+    // Fuera del AMBA la resolución no aplica directamente (otras distribuidoras tienen sus propias resoluciones).
+    if (!enAMBA) {
+      dims.push({ name: "Servicios", level: "soft",
+        body: "Esta resolución cubre el AMBA (EDESUR y EDENOR). En otras jurisdicciones, la tarifa eléctrica la fija el regulador provincial o resoluciones espejo del ENReGE para la distribuidora local." });
+    }
+
+    dims.push({ name: "País / Equilibrio institucional", level: "soft",
+      body: "Es un acto regulatorio mensual del ENReGE dentro del esquema tarifario vigente. La bonificación extraordinaria del 16,59% para SEF de agosto se enmarca en un cronograma de reducción progresiva a lo largo de 2026 (tope 25% al inicio del año, decreciente)." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Hogares del AMBA en régimen SEF (bonificación extraordinaria 16,59% agosto)",
+    "Distribuidoras (recomposición del CPD por índice mensual)"
+  ],
+  compareProfiles: [
+    { name: "Hogar SEF en AMBA",
+      sub: "Ingreso ≤$700k · CABA/GBA",
+      badges: { Servicios: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Hogar AMBA sin subsidio",
+      sub: "Ingreso medio · GBA",
+      badges: { Servicios: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Hogar del interior",
+      sub: "Ingreso medio · Rosario/Córdoba",
+      badges: { Servicios: "soft", "País / Equilibrio institucional": "soft" } }
+  ]
+},
+{
+  id: "res_ms_cobro_extranjeros_1066",
+  date: "2026-08-11",
+  title: "Cobro a extranjeros no residentes por atención en hospitales nacionales",
+  meta: "Resolución 1066/2026 MS · BORA 11-ago-2026 · vigente · reglamenta DNU 366/2025",
+  desc: "Aprueba el procedimiento operativo para la atención de personas extranjeras en establecimientos sanitarios administrados por el Estado Nacional. Distingue tres situaciones: (a) atención de emergencia, garantizada sin restricción; (b) residentes permanentes, en igualdad con ciudadanos argentinos; (c) extranjeros sin residencia permanente, que deben presentar seguro de salud o abonar previamente la prestación no urgente. El profesional de salud es el único competente para clasificar cada caso como emergencia o atención habitual. Se establecen dos circuitos de cobro: recupero a la aseguradora (con seguro) o presupuesto y pago previo (sin seguro). Alcanza sólo a establecimientos del Estado nacional; no involucra hospitales provinciales ni municipales.",
+  tags: ["Salud", "País", "Calidad de servicios"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345792/20260811",
+  impact: function(p) {
+    const dims = [];
+
+    dims.push({ name: "Salud", level: "soft",
+      body: "Si sos argentino/a o residente permanente, <strong>no cambia nada</strong>: seguís atendiéndote como antes en los hospitales nacionales." });
+
+    dims.push({ name: "País / Equilibrio institucional", level: "soft",
+      body: "La resolución reglamenta el <strong>DNU 366/2025</strong>, que modificó el artículo 8° de la Ley de Migraciones 25.871. Alcanza sólo a establecimientos administrados por el Estado nacional; no fija aranceles ni obliga a provincias o municipios." });
+
+    dims.push({ name: "Calidad de servicios", level: "soft",
+      body: "Se agrega un paso administrativo previo a la atención no urgente para extranjeros sin residencia permanente: acreditar seguro o presupuesto y pago. Los circuitos de facturación son responsabilidad de cada hospital nacional." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Argentinos y residentes permanentes (sin cambios de acceso)",
+    "Hospitales nacionales (nuevo circuito de recupero de costos)"
+  ],
+  compareProfiles: [
+    { name: "Argentino/a con obra social",
+      sub: "Empleado privado · CABA",
+      badges: { Salud: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Jubilado/a con PAMI",
+      sub: "Jubilado · GBA",
+      badges: { Salud: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Familia que se atiende en hospital público",
+      sub: "Trab. informal · interior",
+      badges: { Salud: "soft", "Calidad de servicios": "soft" } }
+  ]
+},
+{
+  id: "res_educacion_vouchers_505",
+  date: "2026-08-13",
+  title: "Vouchers Educativos: suspende control mensual y cese del beneficio durante 2026",
+  meta: "Res. 505/2026 Secretaría de Educación · BORA 13-ago-2026 · vigente · suspende arts. 14 y 21 inc. e) del reglamento (Res. 205/2026)",
+  desc: "Suspende durante 2026 la aplicación de dos artículos del Reglamento General del Programa Vouchers Educativos (aprobado por Res. 205/2026): el art. 14 (certificaciones mensuales que las instituciones educativas debían realizar sobre los beneficiarios) y el art. 21 inciso e) (causal de cese de la prestación). El objetivo declarado es no interrumpir la trayectoria educativa de los beneficiarios mientras el ciclo lectivo esté en curso. El programa alcanza a familias con hijos de hasta 18 años en instituciones de gestión privada con al menos 75% de financiamiento estatal, con ingresos familiares no superiores a 7 Salarios Mínimos Vitales y Móviles (SMVM). La suspensión no modifica los requisitos de ingreso al programa ni el monto del voucher.",
+  tags: ["Educación", "Plata", "Vida familiar"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345883/20260813",
+  impact: function(p) {
+    const dims = [];
+
+    // Familias con hijos en edad escolar → beneficiarios potenciales del voucher.
+    const conHijos = ['1','2','3mas'].includes(p.hijos);
+    // Ingresos compatibles con el tope de 7 SMVM (usamos las franjas más bajas del catálogo).
+    const ingresoBajoMedio = ['hasta_700k','700k_1.5m','1.5m_3m'].includes(p.ingreso);
+
+    if (conHijos && ingresoBajoMedio) {
+      dims.push({ name: "Educación", level: "pos_soft",
+        body: "Si tus hijos son <strong>beneficiarios del programa Vouchers Educativos</strong>, durante 2026 no se aplica la certificación mensual ni el cese por esa vía: la prestación continúa hasta fin del ciclo lectivo. La medida no cambia los requisitos de ingreso ni el monto del voucher." });
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "Se sostiene el subsidio educativo mensual mientras el chico o la chica siga en la escuela. Si no sos beneficiario del programa, no cambia nada." });
+    }
+
+    if (conHijos && !ingresoBajoMedio) {
+      dims.push({ name: "Educación", level: "soft",
+        body: "El programa alcanza a familias con ingresos hasta <strong>7 SMVM</strong>. Por encima de ese tope no aplica el voucher, así que la suspensión de estos artículos no te afecta." });
+    }
+
+    if (!conHijos) {
+      dims.push({ name: "Educación", level: "soft",
+        body: "Es un cambio en las reglas del programa Vouchers Educativos: alcanza sólo a familias con hijos de hasta 18 años en escuelas de gestión privada con financiamiento estatal ≥75%. Si no tenés hijos en esa condición, no cambia nada." });
+    }
+
+    dims.push({ name: "País / Equilibrio institucional", level: "soft",
+      body: "Suspende hasta fin de 2026 dos artículos del reglamento aprobado por <strong>Res. 205/2026</strong> de la misma Secretaría. No modifica la ley del programa ni el presupuesto asignado." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Familias beneficiarias del Voucher Educativo con hijos en el ciclo lectivo 2026",
+    "Instituciones educativas de gestión privada con alumnos beneficiarios (menos carga administrativa mensual)"
+  ],
+  compareProfiles: [
+    { name: "Familia beneficiaria del voucher",
+      sub: "Empleado priv. · GBA · 2 hijos",
+      badges: { Educación: "pos_soft", Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Familia con hijos fuera del tope de ingresos",
+      sub: "Autónomo · CABA · 2 hijos",
+      badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Persona sin hijos en edad escolar",
+      sub: "Empleado priv. · CABA",
+      badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } }
+  ]
+},
+{
+  id: "decreto_bono_previsional_septiembre_824",
+  date: "2026-08-31",
+  title: "Bono extraordinario para jubilados y pensionados (septiembre 2026)",
+  meta: "Decreto 824/2026 · BORA 31-ago-2026 · vigente · pago de septiembre 2026 (por única vez)",
+  desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de septiembre de 2026. El monto es completo para quienes cobran hasta el haber mínimo garantizado y decrece para haberes superiores, de modo que la suma haber + bono alcanza como tope el haber mínimo más $70.000. Es no remunerativo (no se le hacen descuentos ni se computa para ningún otro concepto) y no modifica la fórmula de movilidad de la Ley 27.609. Alcanza a prestaciones del SIPA (Ley 24.241), Pensión Universal para el Adulto Mayor y pensiones no contributivas por vejez, invalidez y madres de 7 o más hijos, incluyendo pensiones graciables.",
+  tags: ["Plata", "Estabilidad"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/346555/20260831",
+  impact: function(p) {
+    const dims = [];
+
+    if (p.ocupacion === 'jubilado_min') {
+      dims.push({ name: "Plata", level: "pos",
+        body: "Cobrás el <strong>bono completo (hasta $70.000)</strong> junto con el haber de septiembre 2026. Es no remunerativo: no se te descuenta nada. Se suma al haber mínimo." });
+    }
+
+    if (p.ocupacion === 'jubilado_med') {
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "El bono <strong>decrece</strong> a medida que tu haber supera el mínimo: cobrás la diferencia hasta el tope de haber mínimo + $70.000. Por encima de ese tope el bono es $0." });
+    }
+
+    if (p.ocupacion === 'pensionado') {
+      dims.push({ name: "Plata", level: "pos",
+        body: "Alcanza a pensiones no contributivas (vejez, invalidez, madre de 7+ hijos y pensiones graciables) y a la PUAM: <strong>bono completo</strong> para quienes están en el mínimo, decreciente por encima." });
+    }
+
+    // Refuerzo por asistencia previsional aunque la ocupación no sea 'jubilado/pensionado'.
+    // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
+    const pnc = ['pnc_vejez','pnc_discap','pnc_madre'].some(a => (p.asistencia || []).includes(a));
+    if (pnc && !['jubilado_min','jubilado_med','pensionado'].includes(p.ocupacion)) {
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "Si cobrás una pensión no contributiva, el bono de septiembre 2026 también te alcanza según el monto de tu prestación." });
+    }
+
+    if (['empleado_priv','empleado_pub','monotrib','autonomo','pyme','trab_informal','desempleado','estudiante','ama_casa'].includes(p.ocupacion)
+        && !pnc) {
+      dims.push({ name: "Plata", level: "soft",
+        body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones del mes de septiembre 2026." });
+    }
+
+    dims.push({ name: "País / Equilibrio institucional", level: "soft",
+      body: "Pago por <strong>única vez</strong> para el mes de septiembre 2026 sobre haberes que sigue liquidando ANSES; no cambia la fórmula de movilidad de la Ley 27.609. Continúa la práctica de decretos mensuales (Decretos 399/2026, 686/2026, 824/2026) para compensar los efectos de la fórmula vigente." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Jubilados y pensionados en el haber mínimo (bono completo)",
+    "Beneficiarios de PUAM y pensiones no contributivas en el mínimo"
+  ],
+  compareProfiles: [
+    { name: "Jubilado/a de la mínima",
+      sub: "Jubilado mínima · CABA",
+      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } },
+    { name: "Jubilado/a de haber medio-alto",
+      sub: "Jubilado media-alta · interior",
+      badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+    { name: "Pensión no contributiva",
+      sub: "Pensionado · GBA",
+      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } }
+  ]
+},
+{
+  id: "ley_penal_juvenil_27801",
+  date: "2026-03-09",
+  title: "Nuevo régimen penal juvenil (edad de imputabilidad desde 14 años)",
+  meta: "Ley 27.801 · BORA 09-mar-2026 · vigente desde 05-sep-2026 · reglamentada por Decreto 875/2026",
+  desc: "Establece el régimen penal aplicable a personas adolescentes desde los <strong>14 años</strong> hasta las cero horas del día en que cumplen 18, cuando fueran imputadas por un hecho tipificado como delito. Deroga la Ley 22.278 (régimen anterior). Introduce la figura del <strong>supervisor</strong> —profesional especializado que sigue al adolescente imputado—, medidas socioeducativas y penas alternativas articuladas con los sistemas de salud, educación y protección, y un régimen de tutela y asistencia especializada a víctimas. Aplica a la justicia nacional y federal; invita a provincias y CABA a adaptar su legislación local. Entró en vigencia a los 180 días de su publicación (05/09/2026); la reglamentación se aprobó por Decreto 875/2026 y crea el Registro de Supervisores, un Comité Interministerial y una Mesa Federal para articular criterios entre jurisdicciones.",
+  tags: ["Familia", "País", "Estabilidad"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/339193/20260309",
+  impact: function(p) {
+    const dims = [];
+
+    const conHijos = p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas';
+
+    if (conHijos) {
+      dims.push({ name: "Vida familiar", level: "mid",
+        body: "Si tenés hijos o hijas <strong>entre 14 y 18 años</strong>, cambia el marco legal ante una imputación penal: hasta el 4/9/2026 rigió la Ley 22.278; desde el <strong>5/9/2026</strong> aplica el nuevo régimen con supervisor especializado, medidas socioeducativas y penas graduadas articuladas con salud, educación y protección." });
+
+      dims.push({ name: "Carga mental", level: "soft",
+        body: "Se agregan interlocutores institucionales nuevos —supervisor, equipos de salud, educación y protección— para el seguimiento del adolescente imputado. Se refuerza la asistencia especializada a víctimas." });
+    }
+
+    if (p.ocupacion === 'estudiante') {
+      dims.push({ name: "Estabilidad", level: "soft",
+        body: "Si tenés entre 14 y 18 años y estás bajo justicia nacional o federal, quedás alcanzado por el nuevo régimen ante una imputación penal. Sustituye al de la Ley 22.278." });
+    }
+
+    dims.push({ name: "País / Equilibrio institucional", level: "mid",
+      body: "Rige en <strong>justicia nacional y federal</strong>; provincias y CABA quedan invitadas a adaptar su legislación local. La reglamentación (<strong>Decreto 875/2026</strong>) crea el Registro de Supervisores, un Comité Interministerial y una Mesa Federal para coordinar criterios entre jurisdicciones." });
+
+    return dims;
+  },
+  compareWinners: [
+    "Víctimas de delitos cometidos por adolescentes (tutela y asistencia especializada)",
+    "Justicia federal y nacional (marco procedimental unificado y reglamentado)"
+  ],
+  compareProfiles: [
+    { name: "Familia con hijos adolescentes",
+      sub: "Empleado privado · GBA · 2 hijos",
+      badges: { "Vida familiar": "mid", "Carga mental": "soft", "País / Equilibrio institucional": "mid" } },
+    { name: "Adolescente estudiante",
+      sub: "Estudiante · CABA",
+      badges: { Estabilidad: "soft", "País / Equilibrio institucional": "mid" } },
+    { name: "Sin adolescentes en la familia",
+      sub: "Empleado privado · CABA · 0 hijos",
+      badges: { "País / Equilibrio institucional": "mid" } }
+  ]
+}
 ];
 
 // Mapa id → medida base, para que data.js mergee los datos de Supabase encima.

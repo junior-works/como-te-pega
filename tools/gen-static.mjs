@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { MEASURES_BASE } from '../js/medidas-base.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://junior-works.github.io/como-te-pega';
+const SITE = 'https://comotepega.com';
 
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')

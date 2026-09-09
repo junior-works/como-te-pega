@@ -1,6 +1,6 @@
 {
   "packageId": "com.juniorworks.comotepega",
-  "host": "junior-works.github.io",
+  "host": "comotepega.com",
   "name": "Cómo Te Pega",
   "launcherName": "Cómo Te Pega",
   "display": "standalone",
@@ -12,9 +12,9 @@
   "navigationDividerColorDark": "#000000",
   "backgroundColor": "#0A0A0C",
   "enableNotifications": false,
-  "startUrl": "/como-te-pega/?source=pwa",
-  "iconUrl": "https://junior-works.github.io/como-te-pega/assets/icons/icon-512.png",
-  "maskableIconUrl": "https://junior-works.github.io/como-te-pega/assets/icons/icon-512.png",
+  "startUrl": "/?source=pwa",
+  "iconUrl": "https://comotepega.com/assets/icons/icon-512.png",
+  "maskableIconUrl": "https://comotepega.com/assets/icons/icon-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "C:\\Proyectos Junior Works\\como-te-pega\\android\\android.keystore",
@@ -24,7 +24,7 @@
   "appVersionCode": 5,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://junior-works.github.io/como-te-pega/manifest.json",
+  "webManifestUrl": "https://comotepega.com/manifest.json",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -33,7 +33,7 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://junior-works.github.io/como-te-pega/",
+  "fullScopeUrl": "https://comotepega.com/",
   "minSdkVersion": 21,
   "orientation": "portrait",
   "fingerprints": [
