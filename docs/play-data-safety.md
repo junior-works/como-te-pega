@@ -49,7 +49,7 @@ Repasado uno por uno para dejar constancia de que se miró:
 
 ## 4. Enlace a la política de privacidad
 
-`https://junior-works.github.io/como-te-pega/privacy.html`
+`https://comotepega.com/privacy.html`
 
 Está enlazada además desde el pie de la app.
 
@@ -69,3 +69,20 @@ Se documentan acá para que la declaración no quede incompleta si Play pregunta
 - [ ] Confirmar que sigue sin haber SDK de analytics ni publicidad.
 - [ ] Si algún día las métricas dejan de ser locales y se envían a un servidor,
       **esta declaración deja de ser cierta** y hay que rehacerla antes de publicar.
+
+---
+
+## Estado en Play Console (09/09/2026)
+
+Verificado en *Contenido de la app*: **10 declaraciones completadas** (última
+modificación 6 jun 2026), incluida **Seguridad de los datos**. La pestaña
+*Requiere atención* está vacía: no hay nada pendiente.
+
+Lo único que hubo que corregir tras mudar el dominio fue la **URL de la política
+de privacidad**, que seguía apuntando a `junior-works.github.io`. Se cambió a
+`https://comotepega.com/privacy.html` y se envió a revisión junto con la
+versión 6 (1.6.0).
+
+> Recordatorio para el futuro: cada vez que cambie el dominio hay que revisar
+> esta URL en Play Console. No se actualiza sola y una política inaccesible es
+> motivo de rechazo.
