@@ -36,7 +36,16 @@
   "fullScopeUrl": "https://junior-works.github.io/como-te-pega/",
   "minSdkVersion": 21,
   "orientation": "portrait",
-  "fingerprints": [],
+  "fingerprints": [
+    {
+      "name": "play-app-signing",
+      "value": "77:4F:44:DC:40:A9:B2:DF:B5:91:09:49:E8:CE:99:F5:6A:DC:67:CB:9C:AB:42:6C:F5:01:BD:FE:28:8C:2E:6E"
+    },
+    {
+      "name": "upload-key",
+      "value": "F5:EF:7B:97:BB:8A:96:0F:94:F1:E2:94:42:25:45:50:1B:72:6F:0A:60:43:A6:06:82:B4:79:E6:92:BB:56:81"
+    }
+  ],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
   "protocolHandlers": [],
