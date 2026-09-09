@@ -1593,9 +1593,17 @@
   <header class="brand">
     <div class="brand-left" onclick="show('measures')" style="cursor:pointer;">
       <div class="brand-mark">
-        <svg viewBox="0 0 512 512" class="brand-mark-svg" aria-hidden="true">
-          <!-- Círculo sol liso (identidad argentina). NO es el Sol de Mayo: sin cara ni rayos. -->
-          <circle cx="256" cy="256" r="212" fill="#F6B40E"/>
+        <svg viewBox="106 106 300 300" class="brand-mark-svg" aria-hidden="true">
+          <!-- v1.5: la cabecera usa la MISMA marca que el ícono de la app y el favicon
+               (antes era un círculo amarillo suelto, y no coincidía con nada).
+               Identidad argentina: onda externa celeste, onda interna blanca, sol amarillo.
+               NO es el Sol de Mayo: sin cara ni rayos. -->
+          <rect width="512" height="512" fill="#0a0a0c"/>
+          <path d="M 138 305 A 118 118 0 0 1 374 305"
+                fill="none" stroke="#74ACDF" stroke-width="34" stroke-linecap="round"/>
+          <path d="M 173 305 A 83 83 0 0 1 339 305"
+                fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linecap="round"/>
+          <circle cx="256" cy="305" r="38" fill="#F6B40E"/>
         </svg>
       </div>
       <div class="brand-name"><span class="l1">¿Cómo te</span><span class="l2">pega?</span></div>
@@ -1612,7 +1620,7 @@
   <section id="screen-hero" class="screen active">
     <div class="hero">
       <div id="heroResume"></div>
-      <span class="pill">v1.4 · septiembre 2026</span>
+      <span class="pill">v1.5 · septiembre 2026</span>
       <p class="pitch">Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial te impacta — <strong>no solo en el bolsillo</strong>, también en tu tiempo, tu salud, tu vivienda y tu vida. <em>Misma regla para cualquier gobierno.</em></p>
       <button class="btn accent" onclick="show('profile')">Empezar</button>
       <div class="examples">
@@ -2003,7 +2011,7 @@
   </section>
 
   <footer class="foot">
-    <strong>v1.4 · datos desde Supabase</strong> · septiembre 2026<br>
+    <strong>v1.5 · datos desde Supabase</strong> · septiembre 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
