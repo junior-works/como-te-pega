@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://junior-works.github.io/como-te-pega/sitemap.xml

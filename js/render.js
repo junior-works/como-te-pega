@@ -312,18 +312,20 @@ function applyScreen(screenId) {
   const el = document.getElementById('screen-' + screenId);
   if (el) el.classList.add('active');
   if (screenId === 'hero') renderHeroResume();
-  if (screenId === 'measures') { renderHome(); updateMiniBar(); }
+  if (screenId === 'measures') { renderHome(); updateMiniBar(); renderNewsletter('newsletterMeasures', 'medidas'); }
   if (screenId === 'profile') updateProfileSummary();
-  if (screenId === 'impact') { updateProfileSummary(); }
+  if (screenId === 'impact') { updateProfileSummary(); renderSupport('supportImpact', 'impact'); renderNewsletter('newsletterImpact', 'impact'); }
   if (screenId === 'compare') renderCompare();
   if (screenId === 'sectores') renderSectores();
   if (screenId === 'historial') renderHistorial();
-  if (screenId === 'balance') { updateProfileSummary(); renderBalance(); }
+  if (screenId === 'balance') { updateProfileSummary(); renderBalance(); renderNewsletter('newsletterBalance', 'balance'); renderSupport('supportBalance', 'balance'); }
+  if (screenId === 'guardadas') renderGuardadas();
   updateBottomNav(screenId);
   window.scrollTo(0, 0);
 }
 
-function show(screenId) {
+function show(screenId, opts) {
+  opts = opts || {};
   const dir = (SCREEN_RANK[screenId] ?? 0) >= (SCREEN_RANK[_curScreen] ?? 0) ? 'fwd' : 'back';
   _curScreen = screenId;
   // Transición de entrada: view-transitions nativo si existe; si no, slide CSS.
@@ -334,14 +336,137 @@ function show(screenId) {
     const el = document.getElementById('screen-' + screenId);
     if (el) { void el.offsetWidth; el.classList.add(dir === 'fwd' ? 'slide-fwd' : 'slide-back'); }
   }
+  // v1.3 — cada pantalla es una URL: el botón Atrás del navegador funciona.
+  if (!opts.silent) pushRoute(screenId, opts.replace);
 }
 window.show = show;
+
+/* ==================================================================
+ * v1.3 — ROUTER (History API)
+ * ------------------------------------------------------------------
+ * Rutas por querystring, NO por path: la app vive en GitHub Pages
+ * (hosting estático) y un path inexistente daría 404. `?v=medida&m=id`
+ * carga siempre index.html, así que el deep link funciona de verdad.
+ *
+ * Compatibilidad: los links viejos `#m=<id>` que ya circulan por
+ * WhatsApp se siguen entendiendo y se reescriben a la ruta nueva con
+ * replaceState (sin agregar una entrada al historial).
+ * ================================================================== */
+const ROUTE_FOR = {
+  hero: '', profile: 'perfil', measures: 'medidas', impact: 'medida',
+  compare: 'comparar', sectores: 'clases', balance: 'balance',
+  historial: 'historial', guardadas: 'guardadas', cuenta: 'datos'
+};
+const SCREEN_FOR = {};
+Object.keys(ROUTE_FOR).forEach(k => { if (ROUTE_FOR[k]) SCREEN_FOR[ROUTE_FOR[k]] = k; });
+// Pantallas que dependen de una medida concreta (llevan &m= en la URL).
+const MEASURE_SCREENS = new Set(['impact', 'compare', 'sectores']);
+
+function routeUrl(screen, measureId) {
+  const p = new URLSearchParams();
+  const v = ROUTE_FOR[screen];
+  if (v) p.set('v', v);
+  if (MEASURE_SCREENS.has(screen) && measureId) p.set('m', measureId);
+  const qs = p.toString();
+  return location.pathname + (qs ? '?' + qs : '');
+}
+
+function pushRoute(screen, replace) {
+  const mid = state.measure ? state.measure.id : null;
+  const url = routeUrl(screen, mid);
+  const st = { screen: screen, m: MEASURE_SCREENS.has(screen) ? mid : null };
+  try {
+    const same = (location.pathname + location.search) === url;
+    if (replace || same) history.replaceState(st, '', url);
+    else history.pushState(st, '', url);
+  } catch (e) { /* file:// o navegador viejo: seguimos sin router */ }
+  updateSeo(screen);
+}
+
+// Lee la URL actual y devuelve { screen, m }. Entiende el formato viejo.
+function parseRoute() {
+  const p = new URLSearchParams(location.search);
+  let m = p.get('m');
+  let v = p.get('v');
+  if (!m) {
+    const hm = (location.hash.match(/[#&]m=([^&]+)/) || [])[1];
+    if (hm) { m = decodeURIComponent(hm); if (!v) v = 'medida'; }
+  }
+  const screen = (v && SCREEN_FOR[v]) || (m ? 'impact' : null);
+  return { screen: screen, m: m };
+}
+
+// Aplica una ruta sin tocar el historial (la usa popstate y el arranque).
+function applyRoute(route, opts) {
+  opts = opts || {};
+  let screen = route && route.screen;
+  const mid = route && route.m;
+  if (mid && MEASURE_SCREENS.has(screen || '')) {
+    const m = getMeasures().find(x => x.id === mid);
+    if (m) { state.measure = m; renderImpact(); }
+    else screen = 'measures';
+  }
+  // Pantallas que necesitan perfil: si no hay, no dejamos una vista rota.
+  if ((screen === 'balance' || screen === 'compare' || screen === 'sectores') && !state.perfil.ocupacion) {
+    screen = state.measure && screen !== 'balance' ? 'impact' : 'profile';
+  }
+  if (!screen) screen = 'hero';
+  show(screen, { silent: !!opts.silent, replace: !opts.silent });
+  if (opts.silent) updateSeo(screen);
+}
+
+window.addEventListener('popstate', (e) => {
+  const st = (e.state && e.state.screen) ? e.state : parseRoute();
+  applyRoute(st, { silent: true });
+});
+
+/* ---- SEO: título, descripción y canonical por medida ---- */
+const SEO_BASE_TITLE = 'Cómo Te Pega — cómo te impactan las medidas del Boletín Oficial';
+const SEO_BASE_DESC = 'Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial argentino te pega a vos: en el bolsillo, el tiempo, la salud y la vivienda. Fuentes oficiales, sin publicidad.';
+const SEO_SCREEN_TITLE = {
+  measures: 'Todas las medidas del Boletín Oficial — Cómo Te Pega',
+  historial: 'Historial cronológico de medidas — Cómo Te Pega',
+  balance: 'Tu balance histórico — Cómo Te Pega',
+  guardadas: 'Tus medidas guardadas — Cómo Te Pega',
+  cuenta: 'Tus datos — Cómo Te Pega',
+  profile: 'Armá tu perfil — Cómo Te Pega'
+};
+// Carpeta donde vive la app (`/como-te-pega/` en Pages, `/` en local).
+function appBase() {
+  return location.pathname.replace(/[^/]*$/, '');
+}
+
+function setMeta(sel, attr, val) {
+  const el = document.head.querySelector(sel);
+  if (el && val) el.setAttribute(attr, val);
+}
+function updateSeo(screen) {
+  const m = MEASURE_SCREENS.has(screen) ? state.measure : null;
+  const title = m ? `${m.title} — cómo te pega | Cómo Te Pega`
+                  : (SEO_SCREEN_TITLE[screen] || SEO_BASE_TITLE);
+  const descRaw = m ? `${m.meta}. ${m.desc}` : SEO_BASE_DESC;
+  const desc = descRaw.length > 300 ? descRaw.slice(0, 297) + '…' : descRaw;
+  // Canonical: si la medida tiene página estática propia (generada por
+  // tools/gen-static.mjs), esa es la URL que debe indexar Google. Así el
+  // deep link de la app no compite con ella por el mismo contenido.
+  const url = m ? (location.origin + appBase() + 'medida/' + encodeURIComponent(m.id) + '/')
+                : (location.origin + routeUrl(screen, null));
+  document.title = title;
+  setMeta('meta[name="description"]', 'content', desc);
+  setMeta('link[rel="canonical"]', 'href', url);
+  setMeta('meta[property="og:title"]', 'content', title);
+  setMeta('meta[property="og:description"]', 'content', desc);
+  setMeta('meta[property="og:url"]', 'content', url);
+  setMeta('meta[name="twitter:title"]', 'content', title);
+  setMeta('meta[name="twitter:description"]', 'content', desc);
+}
 
 // ============== v0.9 — BOTTOM NAV ==============
 // Las sub-pantallas (impact/compare/…) cuelgan visualmente de "Medidas".
 const NAV_TAB_FOR = {
   measures: 'measures', impact: 'measures', historial: 'measures',
-  compare: 'measures', sectores: 'measures', balance: 'balance', profile: 'profile'
+  compare: 'measures', sectores: 'measures', guardadas: 'measures',
+  balance: 'balance', profile: 'profile', cuenta: 'profile'
 };
 function updateBottomNav(screenId) {
   document.body.classList.toggle('no-nav', screenId === 'hero');
@@ -375,8 +500,9 @@ window.showToast = showToast;
 // ============== v0.9 — WEB SHARE ==============
 function shareMeasure(m) {
   if (!m) return;
-  const url = location.origin + location.pathname + '#m=' + encodeURIComponent(m.id);
+  const url = location.origin + routeUrl('impact', m.id);
   const payload = { title: m.title, text: 'Te paso esta medida en Cómo Te Pega', url };
+  ctpTrack('share_medida');
   if (navigator.share) {
     navigator.share(payload).catch(() => {});
   } else if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -434,7 +560,8 @@ function closeSheet(e) {
 window.closeSheet = closeSheet;
 
 // ============== v0.9.4 — MODAL MERCADO PAGO (datos copiables) ==============
-function openMpModal() {
+function openMpModal(origin) {
+  ctpTrack('apoyo_abierto:' + (origin || 'otro'));
   document.getElementById('mpBackdrop')?.classList.add('show');
 }
 // Cierra si el click vino del backdrop (no de adentro del modal) o sin evento (botón Cerrar).
@@ -627,6 +754,7 @@ function wireChips() {
         }
         persistPerfil(); // v0.8
         checkProfileComplete();
+        updateTuneCount(); // v1.3 — contador del bloque opcional
       });
     });
   });
@@ -729,6 +857,7 @@ function openMeasure(id) {
   if (!m) return;
   state.measure = m;
   persistLastMeasure(id); // v0.8
+  ctpTrack('medida_abierta');
   renderImpact();
   show('impact');
 }
@@ -953,9 +1082,14 @@ function renderMeasureCards() {
     list.innerHTML = '<div style="font-size:13px;color:var(--ink-mute);padding:14px 0;">No hay medidas con esos filtros.</div>';
     return;
   }
-  const hasPerfil = !!state.perfil.ocupacion;
   list.innerHTML = '';
-  state.list.items.forEach(m => {
+  state.list.items.forEach(m => list.appendChild(measureCardEl(m)));
+}
+
+// v1.3 — la tarjeta de una medida, reutilizada por el listado y por Guardadas.
+function measureCardEl(m) {
+  {
+    const hasPerfil = !!state.perfil.ocupacion;
     const card = document.createElement('div');
     card.className = 'card measure';
     const pop = (m.popularidad || 0);
@@ -994,8 +1128,8 @@ function renderMeasureCards() {
     `;
     card.onclick = () => openMeasure(m.id);
     attachLongPress(card, m); // v0.9 — long-press → bottom-sheet
-    list.appendChild(card);
-  });
+    return card;
+  }
 }
 
 // ============== IMPACT (descripción + cobertura + constitución SIEMPRE) ==============
@@ -1521,6 +1655,8 @@ function injectBalanceScreen() {
     <div class="bal-section-title">Línea de tiempo</div>
     <div class="bal-filter" id="balanceFilter"></div>
     <div class="timeline" id="timeline"></div>
+    <div id="newsletterBalance"></div>
+    <div id="supportBalance"></div>
   `;
   measuresScreen.parentNode.insertBefore(sec, measuresScreen.nextSibling);
 }
@@ -1670,14 +1806,279 @@ function nuevaPrueba() {
   document.querySelectorAll('.chips .chip').forEach(c => c.classList.remove('sel', 'sel-multi'));
   checkProfileComplete();
   updateProfileSummary();
+  updateTuneCount();
   show('hero');
 }
 window.nuevaPrueba = nuevaPrueba;
 
 // ============== INIT ==============
 // Llamado por el bootstrap de módulos una vez que window.MEASURES está cargado.
+
+/* ==================================================================
+ * v1.3 — MÉTRICAS MÍNIMAS, LOCALES Y ANÓNIMAS
+ * ------------------------------------------------------------------
+ * No hay cookies, ni terceros, ni red: son contadores en este mismo
+ * navegador. Sirven para responder "¿la gente termina el perfil?"
+ * cuando alguien nos lo cuenta o cuando lo miramos en un dispositivo
+ * de prueba, sin construir un sistema de vigilancia por el camino.
+ * Si algún día se manda a un servidor, tiene que ser agregado y
+ * anunciado en la política de privacidad. Hoy NO sale de acá.
+ * ================================================================== */
+const LS_METRICS = 'ctp.metrics';
+function ctpTrack(evt) {
+  try {
+    const m = lsGet(LS_METRICS) || {};
+    m[evt] = (m[evt] || 0) + 1;
+    m['_last'] = new Date().toISOString().slice(0, 10);
+    lsSet(LS_METRICS, m);
+  } catch (e) {}
+}
+window.ctpTrack = ctpTrack;
+window.ctpMetrics = () => lsGet(LS_METRICS) || {};
+function trackSupport(via, origin) { ctpTrack('apoyo_click:' + via + ':' + (origin || 'otro')); }
+window.trackSupport = trackSupport;
+
+/* ==================================================================
+ * v1.3 — PERFIL EN DOS TIEMPOS
+ * ------------------------------------------------------------------
+ * Esencial (5 datos) → resultado → "Afiná el resultado" opcional.
+ * El pedido de apoyo NO vive más acá: aparece recién después de que
+ * la persona vio cómo le pega una medida.
+ * ================================================================== */
+const TUNE_FIELDS = ['extra', 'pareja', 'hijos', 'adultos', 'asistencia', 'salud', 'discapacidad'];
+
+function tuneFilled() {
+  return TUNE_FIELDS.filter(f => {
+    const v = state.perfil[f];
+    return Array.isArray(v) ? v.length > 0 : !!v;
+  }).length;
+}
+
+function updateTuneCount() {
+  const el = document.getElementById('tuneCount');
+  if (!el) return;
+  const n = tuneFilled();
+  el.textContent = n ? n + '/' + TUNE_FIELDS.length : '';
+}
+
+function toggleTune(forceOpen) {
+  const panel = document.getElementById('tunePanel');
+  const btn = document.getElementById('tuneToggle');
+  const done = document.getElementById('btnTuneDone');
+  if (!panel || !btn) return;
+  const open = (typeof forceOpen === 'boolean') ? forceOpen : panel.hidden;
+  panel.hidden = !open;
+  if (done) done.hidden = !open;
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (open) {
+    ctpTrack('perfil_afinar_abierto');
+    requestAnimationFrame(() => btn.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
+}
+window.toggleTune = toggleTune;
+
+// CTA principal del perfil: primero el resultado, después el resto.
+function verMisMedidas() {
+  if (!perfilComplete(state.perfil)) { showToast('Faltan datos del bloque de arriba'); return; }
+  ctpTrack('perfil_completado');
+  navTo('measures');
+}
+window.verMisMedidas = verMisMedidas;
+
+/* ==================================================================
+ * v1.3 — GUARDADAS
+ * ================================================================== */
+function renderGuardadas() {
+  const cont = document.getElementById('guardadasList');
+  if (!cont) return;
+  const ids = getSaved();
+  const all = getMeasures();
+  const items = ids.map(id => all.find(m => m.id === id)).filter(Boolean);
+  if (!items.length) {
+    cont.innerHTML = '<div class="empty-state"><span class="empty-ico">🔖</span>' +
+      'Todavía no guardaste ninguna medida.<br>En el listado, mantené presionada una tarjeta y elegí <strong>Guardar para después</strong>.</div>';
+    return;
+  }
+  cont.innerHTML = '';
+  items.forEach(m => cont.appendChild(measureCardEl(m)));
+}
+window.renderGuardadas = renderGuardadas;
+
+/* ==================================================================
+ * v1.3 — TUS DATOS: exportar / importar / borrar
+ * ------------------------------------------------------------------
+ * Resuelve "quiero usarlo en el celular y en la compu" sin cuentas ni
+ * emails: un archivo JSON que la persona se lleva. Y hace verdadera la
+ * promesa de "exportable" que la política de privacidad ya hacía.
+ * ================================================================== */
+function exportPerfil() {
+  const payload = {
+    app: 'como-te-pega',
+    formato: 1,
+    exportado: new Date().toISOString(),
+    perfil: state.perfil,
+    guardadas: getSaved()
+  };
+  try {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'como-te-pega-perfil.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    showToast('Perfil descargado');
+    ctpTrack('perfil_exportado');
+  } catch (e) { showToast('No se pudo descargar el perfil'); }
+}
+window.exportPerfil = exportPerfil;
+
+function importPerfil(input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try { data = JSON.parse(reader.result); } catch (e) { showToast('Ese archivo no es un perfil válido'); return; }
+    if (!data || data.app !== 'como-te-pega' || !data.perfil) { showToast('Ese archivo no es un perfil de Cómo Te Pega'); return; }
+    state.perfil = Object.assign({ asistencia: [] }, data.perfil);
+    if (!Array.isArray(state.perfil.asistencia)) state.perfil.asistencia = [];
+    persistPerfil();
+    if (Array.isArray(data.guardadas)) lsSet(LS_SAVED, data.guardadas.filter(x => typeof x === 'string'));
+    restoreChipSelections();
+    checkProfileComplete();
+    updateProfileSummary();
+    updateTuneCount();
+    ctpTrack('perfil_importado');
+    showToast('Perfil importado');
+    navTo(perfilComplete(state.perfil) ? 'measures' : 'profile');
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+window.importPerfil = importPerfil;
+
+// Borrado total: perfil, filtros, guardadas, última medida y métricas.
+function borrarTodo() {
+  if (!confirm('¿Borrar tu perfil, tus guardadas y tus preferencias de este dispositivo? No se puede deshacer.')) return;
+  [LS.perfil, LS.filters, LS.lastMeasure, LS_SAVED, LS_METRICS,
+   'ctp_visit_count', 'ctp_install_dismissed', 'ctp_balance_filter'].forEach(k => lsDel(k));
+  state.perfil = { asistencia: [] };
+  state.filters = FILTERS_DEFAULT();
+  state.measure = null;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel', 'sel-multi'));
+  checkProfileComplete();
+  updateProfileSummary();
+  updateTuneCount();
+  showToast('Listo: no queda nada tuyo en este dispositivo');
+  navTo('hero');
+}
+window.borrarTodo = borrarTodo;
+
+/* ==================================================================
+ * v1.4 — APOYO Y NEWSLETTER
+ * ------------------------------------------------------------------
+ * Todo sale de `APOYO` / `NEWSLETTER` en config.js. Si un link está
+ * vacío, esa opción no se dibuja: se puede publicar la app antes de
+ * tener el plan mensual creado.
+ *
+ * ⚠️ El apoyo es una DONACIÓN. No compra nada, no desbloquea nada, no
+ * da beneficios. Por eso el vocabulario evita "membresía", "suscripción",
+ * "socio", "premium" y "beneficios": decimos APORTE. Ver la nota larga
+ * en config.js antes de cambiar cualquiera de estos textos.
+ * ================================================================== */
+function apoyoCfg() { return window.CTP_APOYO || {}; }
+function newsletterCfg() { return window.CTP_NEWSLETTER || {}; }
+
+// ¿Estamos dentro de la app Android (TWA) o de la PWA instalada?
+function isAppInstalada() {
+  try {
+    if (window.matchMedia('(display-mode: standalone)').matches) return true;
+    if (window.navigator.standalone === true) return true;
+    if (document.referrer.startsWith('android-app://')) return true;
+    return new URLSearchParams(location.search).get('source') === 'pwa';
+  } catch (e) { return false; }
+}
+
+function renderSupport(containerId, origin) {
+  const cont = document.getElementById(containerId);
+  if (!cont) return;
+  const cfg = apoyoCfg();
+  // Modo conservador para la app: solo transferencia, sin links de cobro.
+  const soloTransferencia = isAppInstalada() && cfg.enAndroid === false;
+
+  const botones = [];
+  if (cfg.mensual && !soloTransferencia) {
+    botones.push(
+      `<a class="support-btn mensual" href="${escapeAttr(cfg.mensual)}" target="_blank" rel="noopener"` +
+      ` onclick="trackSupport('mensual','${escapeAttr(origin)}')">` +
+      `<span class="support-icon" aria-hidden="true">🌱</span>` +
+      `<span class="support-label">Un aporte por mes</span>` +
+      `<span class="support-note">Lo podés cortar cuando quieras</span></a>`);
+  }
+  if (cfg.cafecito && !soloTransferencia) {
+    botones.push(
+      `<a class="support-btn cafecito" href="${escapeAttr(cfg.cafecito)}" target="_blank" rel="noopener"` +
+      ` onclick="trackSupport('cafecito','${escapeAttr(origin)}')">` +
+      `<span class="support-icon" aria-hidden="true">☕</span>` +
+      `<span class="support-label">Una vez, y listo</span></a>`);
+  }
+  if (cfg.alias) {
+    botones.push(
+      `<button type="button" class="support-btn mp" onclick="openMpModal('${escapeAttr(origin)}')">` +
+      `<span class="support-icon" aria-hidden="true">💳</span>` +
+      `<span class="support-label">Transferencia</span>` +
+      `<span class="support-note">Llega completo, sin comisión</span></button>`);
+  }
+  if (!botones.length) { cont.innerHTML = ''; return; }
+
+  cont.innerHTML =
+    '<section class="support-section">' +
+      '<h3 class="support-title">Esto se mantiene gratis y sin publicidad</h3>' +
+      '<p class="support-desc">Cada medida se lee, se chequea contra la fuente oficial y se escribe a mano. ' +
+      'Si te sirvió, sostenelo. Es voluntario: no compra ni desbloquea nada.</p>' +
+      '<div class="support-buttons' + (botones.length > 2 ? ' col' : '') + '">' + botones.join('') + '</div>' +
+      '<p class="support-foot">El dinero entra a la cuenta familiar del proyecto. ' +
+      'Nadie que aporte puede elegir, editar ni ocultar medidas.</p>' +
+    '</section>';
+}
+window.renderSupport = renderSupport;
+
+function renderNewsletter(containerId, origin) {
+  const cont = document.getElementById(containerId);
+  if (!cont) return;
+  const n = newsletterCfg();
+  if (!n.url) { cont.innerHTML = ''; return; }
+  cont.innerHTML =
+    '<section class="news-section">' +
+      '<h3 class="news-title">' + (n.titulo || 'El resumen semanal') + '</h3>' +
+      '<p class="news-desc">' + (n.bajada || '') + '</p>' +
+      '<a class="news-btn" href="' + escapeAttr(n.url) + '" target="_blank" rel="noopener"' +
+      ' onclick="ctpTrack(\'newsletter_click:' + escapeAttr(origin) + '\')">Quiero recibirlo →</a>' +
+    '</section>';
+}
+window.renderNewsletter = renderNewsletter;
+
+// Datos copiables del modal de transferencia (alias / CBU / titular).
+function renderMpFields() {
+  const cont = document.getElementById('mpFields');
+  if (!cont) return;
+  const c = apoyoCfg();
+  const row = (label, val, cls) =>
+    '<div class="mp-field ' + cls + '"><div class="mp-field-label">' + label + '</div>' +
+    '<div class="mp-field-row"><span class="mp-field-val">' + escapeAttr(val) + '</span>' +
+    '<button type="button" class="mp-copy" onclick="copyMpData(\'' + escapeAttr(val) + '\', \'' + label + ' copiado\')">📋 Copiar</button>' +
+    '</div></div>';
+  let html = '';
+  if (c.alias) html += row('Alias', c.alias, 'alias');
+  if (c.cbu) html += row('CBU', c.cbu, 'sec');
+  if (c.titular) html += '<div class="mp-field sec"><div class="mp-field-label">Titular</div><div class="mp-static">' + escapeAttr(c.titular) + '</div></div>';
+  cont.innerHTML = html;
+}
+
 function initApp() {
   injectBalanceScreen();
+  renderMpFields();   // v1.4 — alias/CBU desde config.js
   wireChips();
   wireGlobalSearch();    // v0.9 — búsqueda del header
   initPullToRefresh();   // v0.9 — pull-to-refresh en el listado
@@ -1686,20 +2087,29 @@ function initApp() {
   checkProfileComplete();
   updateProfileSummary();
 
-  // v0.9 — deep-link a una medida (#m=<id>) desde un link compartido.
-  const hm = (location.hash.match(/[#&]m=([^&]+)/) || [])[1];
-  const deepId = hm ? decodeURIComponent(hm) : null;
-  if (deepId && getMeasures().find(x => x.id === deepId)) {
-    openMeasure(deepId); // setea pantalla impact + bottom nav
+  updateTuneCount();
+  ctpTrack('visita');
+
+  // v1.3 — la URL manda: deep link a una medida o a una pantalla concreta.
+  // Entiende tanto `?v=medida&m=<id>` como los `#m=<id>` viejos.
+  const route = parseRoute();
+  if (route.screen) {
+    if (route.m && !getMeasures().find(x => x.id === route.m)) {
+      showToast('Esa medida ya no está en el catálogo');
+      route.screen = 'measures'; route.m = null;
+    }
+    if (route.m) ctpTrack('medida_por_link');
+    applyRoute(route, { silent: false });
     return;
   }
 
   if (tienePerfil) {
     // Perfil completo guardado → saltar el hero y entrar directo al listado.
-    show('measures');
+    show('measures', { replace: true });
   } else {
     updateBottomNav('hero'); // oculta el bottom nav en el onboarding
     renderHeroResume();
+    pushRoute('hero', true);
   }
 }
 window.initApp = initApp;

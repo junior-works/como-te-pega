@@ -119,9 +119,76 @@ commitea/pushea ni bumpea versión. Termina en borradores + notificación.
 > a `js/medidas-base.js` y corre el SQL de la migración. El loop nunca toca los datos
 > en producción.
 
+## Navegación y URLs (v1.3)
+
+Cada pantalla es una URL de verdad y el botón **Atrás** del navegador funciona.
+Las rutas van por *querystring*, no por path, porque el hosting es estático
+(GitHub Pages) y un path inexistente daría 404:
+
+| Pantalla | URL |
+|---|---|
+| Inicio | `/` |
+| Perfil | `/?v=perfil` |
+| Medidas | `/?v=medidas` |
+| Ficha de una medida | `/?v=medida&m=<id>` |
+| Comparador / clases | `/?v=comparar&m=<id>` · `/?v=clases&m=<id>` |
+| Balance · Historial | `/?v=balance` · `/?v=historial` |
+| Guardadas · Tus datos | `/?v=guardadas` · `/?v=datos` |
+
+Los links viejos `#m=<id>` que ya circulan por WhatsApp **se siguen entendiendo**
+y se reescriben a la ruta nueva con `replaceState`.
+
+## SEO: una página real por medida
+
+`node tools/gen-static.mjs` genera `medida/<id>/index.html` para las 81 medidas,
+más `sitemap.xml` y `robots.txt`. Son páginas servidas como HTML (no SPA), con
+título, resumen, fuente y un CTA a la app: es lo que puede indexar Google, porque
+la gente busca *"bono jubilados septiembre 2026"*, no *"Cómo Te Pega"*.
+
+El `canonical` de la app apunta a esa página estática, así el deep link no compite
+con ella por el mismo contenido. **Correr el generador cada vez que se agregan
+medidas al catálogo**, y commitear el resultado.
+
+## Perfil en dos tiempos (v1.3)
+
+Cinco datos esenciales (ocupación, zona, vivienda, ingreso, transporte) → resultado
+→ bloque *"Afiná el resultado"* opcional (familia, salud, beneficios, ingresos extra).
+El pedido de apoyo **ya no vive en el perfil**: aparece al final de la ficha de una
+medida, recién después de que la persona vio el valor.
+
+## Datos de la persona
+
+Siguen siendo 100% locales. Desde v1.3 se pueden **exportar e importar** como
+archivo JSON (pantalla *Tus datos*), que es como se resuelve el multi-dispositivo
+sin cuentas ni emails, y hay un **borrado total** real. Las métricas son contadores
+en `localStorage` que **no salen del dispositivo** (`window.ctpMetrics()` para verlos).
+
+## Apoyo y newsletter (v1.4)
+
+Los enlaces viven en `config.js` (`APOYO`, `NEWSLETTER`). **Si un campo queda
+vacío, esa opción no se dibuja**, así se puede publicar antes de tener el plan
+mensual creado.
+
+El apoyo es una **donación voluntaria**: no compra nada, no desbloquea nada, no da
+beneficios. De eso depende que no aplique la facturación de Google Play (que rige
+para la venta de bienes y servicios digitales). Por eso el vocabulario de la app
+evita *membresía*, *suscripción*, *socio*, *premium* y *beneficios*, y dice
+**aporte**. Interruptor de emergencia: `APOYO.enAndroid = false` deja, dentro de la
+app Android, solo el alias para transferir.
+
+Hoy están activos el **aporte puntual** (Cafecito) y la **transferencia** al
+alias/CBU: los dos van directo a la cuenta del titular en Argentina. El **aporte
+mensual** está pendiente — Cafecito no hace débito automático y Mercado Pago
+necesita que el titular inicie sesión una vez. Mientras `APOYO.mensual` esté
+vacío, esa opción no se muestra y la app funciona igual.
+
+Detalle completo, lo investigado y por qué se descartó PayPal:
+[`docs/monetizacion.md`](docs/monetizacion.md).
+
 ## Estado
 
-Prototipo **v0.6** — fetch desde Supabase + trending mediático
+**v1.4** — apoyo y newsletter configurables. Sobre el v1.3 — router real, perfil en dos tiempos, guardadas, export/import y páginas
+estáticas por medida para SEO. Sobre el v0.6 — fetch desde Supabase + trending mediático
 ("lo que están discutiendo todos") + historial cronológico + apartado
 constitucional por medida. Construido sobre el v0.5 (rebrand, clase social
 derivada y vista por sector social).

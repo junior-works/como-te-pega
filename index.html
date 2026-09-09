@@ -6,7 +6,24 @@
 <meta name="theme-color" content="#0E1B2C">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<title>Cómo Te Pega</title>
+<title>Cómo Te Pega — cómo te impactan las medidas del Boletín Oficial</title>
+<meta name="description" content="Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial argentino te pega a vos: en el bolsillo, el tiempo, la salud y la vivienda. Fuentes oficiales, sin publicidad.">
+<link rel="canonical" href="https://junior-works.github.io/como-te-pega/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cómo Te Pega">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Cómo Te Pega — cómo te impactan las medidas del Boletín Oficial">
+<meta property="og:description" content="Mirá cómo cada medida del Boletín Oficial te pega a vos. Perfil privado, fuentes oficiales, sin publicidad.">
+<meta property="og:url" content="https://junior-works.github.io/como-te-pega/">
+<meta property="og:image" content="https://junior-works.github.io/como-te-pega/assets/icons/icon-512.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cómo Te Pega">
+<meta name="twitter:description" content="Mirá cómo cada medida del Boletín Oficial te pega a vos.">
+<meta name="twitter:image" content="https://junior-works.github.io/como-te-pega/assets/icons/icon-512.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Cómo Te Pega","url":"https://junior-works.github.io/como-te-pega/","applicationCategory":"GovernmentApplication","operatingSystem":"Web, Android","inLanguage":"es-AR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"ARS"},"description":"Calculadora personal de impacto de las medidas publicadas en el Boletín Oficial argentino.","publisher":{"@type":"Organization","name":"Junior Works"}}
+</script>
 <!-- Tipografía: Plus Jakarta Sans (rediseño dark v0.9.0) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1500,6 +1517,75 @@
     touch-action: manipulation;
   }
   .mp-close:hover { background: var(--border-soft); }
+
+  /* ===== v1.3 — "Afiná el resultado" (perfil opcional colapsable) ===== */
+  .tune { margin: 22px 0 6px; }
+  .tune-toggle {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    background: var(--paper); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 14px; padding: 14px 16px; font: inherit; font-weight: 600;
+    cursor: pointer; text-align: left; transition: border-color .18s var(--ease);
+  }
+  .tune-toggle:hover { border-color: var(--border-mid); }
+  .tune-toggle-txt { flex: 1; }
+  .tune-opt { font-weight: 400; color: var(--ink-mute); }
+  .tune-count {
+    font-size: 12px; font-weight: 700; color: var(--on-accent);
+    background: var(--grad-gold); border-radius: 999px; padding: 2px 9px;
+  }
+  .tune-count:empty { display: none; }
+  .tune-caret { color: var(--ink-mute); transition: transform .22s var(--ease); }
+  .tune-toggle[aria-expanded="true"] .tune-caret { transform: rotate(180deg); }
+  .tune-sub { color: var(--ink-mute); font-size: 13px; line-height: 1.5; margin: 8px 2px 0; }
+  .tune-panel { margin-top: 12px; }
+  .tune-done { margin-top: 14px; }
+
+  /* ===== v1.3 — pantalla "Tus datos" ===== */
+  .cuenta-actions { display: flex; flex-direction: column; gap: 8px; }
+  .cuenta-actions .btn { margin: 0; }
+  .btn.ghost.danger { color: #fca5a5; border-color: rgba(239,68,68,.45); }
+  .btn.ghost.danger:hover { background: rgba(239,68,68,.10); }
+
+  /* ===== v1.3 — footer: links legales ===== */
+  .foot-links { display: inline-block; margin-top: 8px; }
+  .foot-links a { color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; }
+  .foot-links a:hover { color: var(--accent); }
+
+  /* ===== v1.3 — nota al pie del bloque de apoyo ===== */
+  .support-foot { color: var(--ink-mute); font-size: 12px; line-height: 1.5; margin: 12px 0 0; text-align: center; }
+
+  /* ===== v1.3 — vacío de guardadas ===== */
+  .empty-state { color: var(--ink-mute); text-align: center; padding: 34px 18px; line-height: 1.6; }
+  .empty-state .empty-ico { font-size: 30px; display: block; margin-bottom: 10px; }
+
+  /* ===== v1.4 — apoyo: opción mensual y layout en columna ===== */
+  .support-buttons.col { grid-template-columns: 1fr; }
+  .support-btn { flex-direction: column; gap: 3px; text-align: center; padding: 13px 12px; }
+  .support-buttons.col .support-btn { flex-direction: row; gap: 10px; flex-wrap: wrap; }
+  .support-note { font-size: 11.5px; font-weight: 500; color: var(--ink-mute); line-height: 1.3; }
+  .support-btn:hover .support-note { color: rgba(26,14,2,.72); }
+  .support-buttons.col .support-note { width: 100%; text-align: center; }
+  .support-btn.mensual {
+    background: var(--grad-gold-soft); border-color: var(--accent-soft);
+  }
+  .support-btn.mensual .support-label { color: var(--accent); }
+  .support-btn.mensual:hover .support-label { color: #1a0e02; }
+
+  /* ===== v1.4 — newsletter ===== */
+  .news-section {
+    margin: 14px 0 8px; padding: 18px;
+    background: var(--paper); border: 1px dashed var(--border-mid); border-radius: 16px;
+  }
+  .news-title { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .news-desc { margin: 0 0 14px; font-size: 13px; color: var(--ink-mute); line-height: 1.45; }
+  .news-btn {
+    display: block; text-align: center; text-decoration: none;
+    min-height: 44px; padding: 13px; border-radius: 12px;
+    background: var(--bg-3); border: 1px solid var(--border-soft);
+    color: var(--ink); font-weight: 700; font-size: 14px;
+    transition: background .18s var(--ease), border-color .18s var(--ease);
+  }
+  .news-btn:hover { background: var(--grad-gold); color: #1a0e02; border-color: transparent; }
 </style>
 </head>
 <body>
@@ -1526,7 +1612,7 @@
   <section id="screen-hero" class="screen active">
     <div class="hero">
       <div id="heroResume"></div>
-      <span class="pill">v1.2 · julio 2026</span>
+      <span class="pill">v1.4 · septiembre 2026</span>
       <p class="pitch">Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial te impacta — <strong>no solo en el bolsillo</strong>, también en tu tiempo, tu salud, tu vivienda y tu vida. <em>Misma regla para cualquier gobierno.</em></p>
       <button class="btn accent" onclick="show('profile')">Empezar</button>
       <div class="examples">
@@ -1545,10 +1631,9 @@
   <section id="screen-profile" class="screen">
     <div class="crumb" onclick="show('hero')">← Volver</div>
     <h2 class="step">Contanos quién sos</h2>
-    <p class="step-sub">Cuanto mejor te describamos, más preciso es el impacto que ves. Si algo no aplica, dejalo en "—".</p>
+    <p class="step-sub">Con estos cinco datos ya podemos calcular cómo te pega cada medida. Después, si querés, afinás el resultado.</p>
 
     <div class="card">
-
       <div class="card-section">
         <h3>¿A qué te dedicás?</h3>
         <div class="field">
@@ -1571,16 +1656,6 @@
           </div>
         </div>
 
-        <div class="field">
-          <label>¿Tenés ingresos extra?</label>
-          <div class="chips" data-field="extra">
-            <button class="chip" data-v="no">No</button>
-            <button class="chip" data-v="plataforma">Uber / Rappi / Pedidos Ya / Cabify</button>
-            <button class="chip" data-v="segundo">Segundo empleo formal</button>
-            <button class="chip" data-v="changas">Changas / informal</button>
-            <button class="chip" data-v="renta">Renta (alquiler, inversiones)</button>
-          </div>
-        </div>
       </div>
 
       <div class="card-section">
@@ -1622,6 +1697,68 @@
       </div>
 
       <div class="card-section">
+        <h3>Ingresos del hogar</h3>
+        <div class="field">
+          <label>Ingreso mensual del hogar (total)</label>
+          <div class="hint">Sumá tu sueldo, el de tu pareja si convive, jubilaciones, pensiones y planes.</div>
+          <div class="chips" data-field="ingreso">
+            <button class="chip" data-v="hasta_700k">Hasta $700.000</button>
+            <button class="chip" data-v="700k_1.5m">$700k – $1,5M</button>
+            <button class="chip" data-v="1.5m_3m">$1,5M – $3M</button>
+            <button class="chip" data-v="3m_6m">$3M – $6M</button>
+            <button class="chip" data-v="6m_15m">$6M – $15M</button>
+            <button class="chip" data-v="mas_15m">Más de $15M</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-section">
+        <h3>Movilidad</h3>
+        <div class="field">
+          <label>¿Cómo te movés cada día?</label>
+          <div class="chips" data-field="transporte">
+            <button class="chip" data-v="2colectivos">2 colectivos al día</button>
+            <button class="chip" data-v="combinacion">Colectivo + tren / subte</button>
+            <button class="chip" data-v="tren">Solo tren</button>
+            <button class="chip" data-v="auto">Auto particular</button>
+            <button class="chip" data-v="moto">Moto</button>
+            <button class="chip" data-v="cerca">A pie / bici (cerca)</button>
+            <button class="chip" data-v="mixto">Combinación (varias modalidades)</button>
+            <button class="chip" data-v="solo_finde">Casi no me muevo / solo fin de semana</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn accent" id="btnGoMeasures" onclick="verMisMedidas()" disabled>Ver cómo te pegan las medidas →</button>
+    <button class="btn ghost" id="btnSkip" onclick="navTo('measures')" style="display: none;">Saltar — quiero ver igual</button>
+
+    <!-- Afiná el resultado: todo lo opcional, colapsado por defecto. -->
+    <section class="tune">
+      <button type="button" class="tune-toggle" id="tuneToggle" aria-expanded="false" aria-controls="tunePanel" onclick="toggleTune()">
+        <span class="tune-toggle-txt">Afiná el resultado <span class="tune-opt">(opcional)</span></span>
+        <span class="tune-count" id="tuneCount"></span>
+        <span class="tune-caret" aria-hidden="true">▾</span>
+      </button>
+      <p class="tune-sub">Familia, salud, beneficios e ingresos extra. Cuanto más contás, más precisa es la cuenta. Si algo no aplica, dejalo sin marcar.</p>
+      <div class="card tune-panel" id="tunePanel" hidden>
+
+      <div class="card-section">
+        <h3>Ingresos extra</h3>
+        <div class="field">
+          <label>¿Tenés ingresos extra?</label>
+          <div class="chips" data-field="extra">
+            <button class="chip" data-v="no">No</button>
+            <button class="chip" data-v="plataforma">Uber / Rappi / Pedidos Ya / Cabify</button>
+            <button class="chip" data-v="segundo">Segundo empleo formal</button>
+            <button class="chip" data-v="changas">Changas / informal</button>
+            <button class="chip" data-v="renta">Renta (alquiler, inversiones)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-section">
         <h3>Tu familia</h3>
         <div class="field">
           <label>¿Vivís con pareja?</label>
@@ -1647,22 +1784,6 @@
             <button class="chip" data-v="0">No</button>
             <button class="chip" data-v="1">1</button>
             <button class="chip" data-v="2mas">2 o más</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-section">
-        <h3>Ingresos del hogar</h3>
-        <div class="field">
-          <label>Ingreso mensual del hogar (total)</label>
-          <div class="hint">Sumá tu sueldo, el de tu pareja si convive, jubilaciones, pensiones y planes.</div>
-          <div class="chips" data-field="ingreso">
-            <button class="chip" data-v="hasta_700k">Hasta $700.000</button>
-            <button class="chip" data-v="700k_1.5m">$700k – $1,5M</button>
-            <button class="chip" data-v="1.5m_3m">$1,5M – $3M</button>
-            <button class="chip" data-v="3m_6m">$3M – $6M</button>
-            <button class="chip" data-v="6m_15m">$6M – $15M</button>
-            <button class="chip" data-v="mas_15m">Más de $15M</button>
           </div>
         </div>
       </div>
@@ -1714,42 +1835,8 @@
         </div>
       </div>
 
-      <div class="card-section">
-        <h3>Movilidad</h3>
-        <div class="field">
-          <label>¿Cómo te movés cada día?</label>
-          <div class="chips" data-field="transporte">
-            <button class="chip" data-v="2colectivos">2 colectivos al día</button>
-            <button class="chip" data-v="combinacion">Colectivo + tren / subte</button>
-            <button class="chip" data-v="tren">Solo tren</button>
-            <button class="chip" data-v="auto">Auto particular</button>
-            <button class="chip" data-v="moto">Moto</button>
-            <button class="chip" data-v="cerca">A pie / bici (cerca)</button>
-            <button class="chip" data-v="mixto">Combinación (varias modalidades)</button>
-            <button class="chip" data-v="solo_finde">Casi no me muevo / solo fin de semana</button>
-          </div>
-        </div>
       </div>
-
-    </div>
-
-    <button class="btn accent" id="btnGoMeasures" onclick="show('measures')" disabled>Ver cómo te pegan las medidas →</button>
-    <button class="btn ghost" id="btnSkip" onclick="show('measures')" style="display: none;">Saltar — quiero ver igual</button>
-
-    <!-- Apoyá el proyecto (A3). Cafecito = link directo; MP = modal con datos copiables. -->
-    <section class="support-section">
-      <h3 class="support-title">Apoyá el proyecto</h3>
-      <p class="support-desc">Cómo Te Pega es gratis y sin publicidad. Si te resulta útil, podés apoyar para que siga así.</p>
-      <div class="support-buttons">
-        <a class="support-btn cafecito" href="https://cafecito.app/juniorworks" target="_blank" rel="noopener">
-          <span class="support-icon" aria-hidden="true">☕</span>
-          <span class="support-label">Cafecito</span>
-        </a>
-        <button type="button" class="support-btn mp" onclick="openMpModal()">
-          <span class="support-icon" aria-hidden="true">💳</span>
-          <span class="support-label">Mercado Pago</span>
-        </button>
-      </div>
+      <button class="btn accent tune-done" id="btnTuneDone" onclick="verMisMedidas()" hidden>Listo — ver mis medidas →</button>
     </section>
   </section>
 
@@ -1758,6 +1845,7 @@
     <div class="crumb" onclick="show('profile')">← Editar perfil</div>
     <div class="perfil-row">
       <div class="perfil-box" id="perfilSummary"><strong>TU PERFIL</strong>—</div>
+      <button class="btn-nueva" id="btnGuardadas" onclick="navTo('guardadas')" title="Ver las medidas que guardaste">🔖 Guardadas</button>
       <button class="btn-nueva" id="btnNuevaPrueba" onclick="nuevaPrueba()" title="Borrar el perfil y empezar de nuevo">↻ Nueva prueba</button>
     </div>
     <div id="lastMeasureBanner"></div>
@@ -1787,6 +1875,7 @@
     <div class="result-count" id="resultCount"></div>
     <div id="measureList"></div>
     <button class="btn ghost" id="btnLoadMore" onclick="loadMoreMeasures()" style="display:none;">Mostrar 15 más</button>
+    <div id="newsletterMeasures"></div>
     <button class="btn ghost" onclick="show('historial')" style="margin-top: 12px;">🕑 Ver historial cronológico completo →</button>
   </section>
 
@@ -1818,6 +1907,13 @@
     <div id="impactNotice"></div>
     <button class="btn ghost" onclick="show('balance')" style="margin-top: 8px;">📊 Ver tu balance histórico</button>
     <div class="src" id="sourceBox" style="margin-top: 14px;"></div>
+
+    <!-- Apoyá el proyecto — se arma desde config.js (APOYO). Aparece DESPUÉS
+         de que la persona vio cómo le pega la medida, nunca antes. -->
+    <div id="supportImpact"></div>
+
+    <!-- Resumen semanal — captación, gratis, separada del perfil. -->
+    <div id="newsletterImpact"></div>
   </section>
 
   <!-- ============== COMPARE ============== -->
@@ -1875,13 +1971,49 @@
     <div class="timeline hist-timeline" id="histTimeline"></div>
   </section>
 
+
+  <!-- ============== GUARDADAS ============== -->
+  <section id="screen-guardadas" class="screen">
+    <div class="crumb" onclick="navTo('measures')">← Volver a medidas</div>
+    <h2 class="step">Guardadas</h2>
+    <p class="step-sub">Las medidas que marcaste para leer después. Se guardan solo en este dispositivo. Para guardar una, mantené presionada su tarjeta en el listado.</p>
+    <div id="guardadasList"></div>
+  </section>
+
+  <!-- ============== TU PERFIL (gestión) ============== -->
+  <section id="screen-cuenta" class="screen">
+    <div class="crumb" onclick="navTo('profile')">← Volver</div>
+    <h2 class="step">Tus datos</h2>
+    <p class="step-sub">Tu perfil vive solamente en este navegador. Nunca sale de tu dispositivo ni viaja a nuestros servidores.</p>
+    <div class="card" style="padding:18px;">
+      <h3 style="margin:0 0 6px;font-size:15px;">Pasarlo a otro dispositivo</h3>
+      <p class="hint" style="margin-bottom:10px;">Descargá un archivo con tu perfil y abrilo en el otro dispositivo. No lleva tu nombre, tu mail ni nada que te identifique.</p>
+      <div class="cuenta-actions">
+        <button class="btn ghost" onclick="exportPerfil()">⬇ Descargar mi perfil</button>
+        <button class="btn ghost" onclick="document.getElementById('importPerfilFile').click()">⬆ Importar un perfil</button>
+        <input type="file" id="importPerfilFile" accept="application/json,.json" hidden onchange="importPerfil(this)">
+      </div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0;">
+      <h3 style="margin:0 0 6px;font-size:15px;">Borrar todo</h3>
+      <p class="hint" style="margin-bottom:10px;">Elimina el perfil, los filtros, las guardadas y el historial local. No se puede deshacer.</p>
+      <button class="btn ghost danger" onclick="borrarTodo()">Borrar mis datos de este dispositivo</button>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0;">
+      <p class="hint" style="margin:0;">Detalle completo en la <a href="privacy.html" target="_blank" rel="noopener">política de privacidad</a>.</p>
+    </div>
+  </section>
+
   <footer class="foot">
-    <strong>v1.2 · datos desde Supabase</strong> · julio 2026<br>
+    <strong>v1.4 · datos desde Supabase</strong> · septiembre 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
     Las mismas reglas se aplican a cualquier gobierno. Cuando un dato no es seguro, se dice.<br><br>
-    <span class="foot-indep">Proyecto independiente — no afiliado al Estado argentino.</span>
+    <span class="foot-indep">Proyecto independiente — no afiliado al Estado argentino.</span><br>
+    <span class="foot-links">
+      <a href="privacy.html">Política de privacidad</a> ·
+      <a href="#" onclick="navTo('cuenta');return false;">Tus datos</a> ·
+      <a href="#" onclick="navTo('guardadas');return false;">Guardadas</a>
+    </span>
   </footer>
 </div>
 
@@ -1894,34 +2026,13 @@
 <!-- Modal Mercado Pago (datos copiables) -->
 <div id="mpBackdrop" onclick="closeMpModal(event)">
   <div class="mp-modal" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
-    <h3 class="mp-title" id="mpTitle">Donar con Mercado Pago</h3>
-    <p class="mp-sub">Mandá tu aporte desde tu app de Mercado Pago a este alias:</p>
-
-    <div class="mp-field alias">
-      <div class="mp-field-label">Alias</div>
-      <div class="mp-field-row">
-        <span class="mp-field-val" id="mpAlias">Mallorca83.mp</span>
-        <button type="button" class="mp-copy" onclick="copyMpData('Mallorca83.mp', 'Alias copiado')">📋 Copiar</button>
-      </div>
-    </div>
-
-    <div class="mp-field sec">
-      <div class="mp-field-label">CBU</div>
-      <div class="mp-field-row">
-        <span class="mp-field-val">0000003100065127446351</span>
-        <button type="button" class="mp-copy" onclick="copyMpData('0000003100065127446351', 'CBU copiado')">📋 Copiar</button>
-      </div>
-    </div>
-
-    <div class="mp-field sec">
-      <div class="mp-field-label">Titular</div>
-      <div class="mp-static">Carlos Amancio Acevedo</div>
-    </div>
-
-    <p class="mp-foot">El dinero entra a la cuenta familiar del proyecto.<br>¡Gracias por apoyar!</p>
-
+    <h3 class="mp-title" id="mpTitle">Transferir a la cuenta del proyecto</h3>
+    <p class="mp-sub">Mandá tu aporte desde tu app de Mercado Pago o tu banco. Es la vía con menos comisión: llega completo.</p>
+    <div id="mpFields"></div>
+    <p class="mp-foot">El dinero entra a la cuenta familiar del proyecto.<br>Es un aporte voluntario: no compra ni desbloquea nada.</p>
     <button type="button" class="mp-close" onclick="closeMpModal()">Cerrar</button>
   </div>
+</div>
 </div>
 
 <!-- Bottom-sheet contextual (long-press en una card) -->
@@ -1970,6 +2081,10 @@
   import { calcularClaseSocial, CLASES_SOCIALES, PERFILES_ARQUETIPICOS } from './js/clases-sociales.js';
   import { loadData, queryMeasures } from './js/data.js';
   import { DIM_ICONS } from './js/medidas-base.js';
+  import { APOYO, NEWSLETTER } from './config.js';
+
+  window.CTP_APOYO = APOYO;
+  window.CTP_NEWSLETTER = NEWSLETTER;
 
   // Puente para el script clásico (onclick globales).
   window.calcularClaseSocial = calcularClaseSocial;
