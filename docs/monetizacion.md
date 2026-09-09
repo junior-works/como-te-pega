@@ -70,30 +70,61 @@ Con veinte minutos —presencial o por videollamada, guiándolo dónde tocar— 
 queda creado y andando solo. Es el camino que mantiene el dinero yendo directo a
 su cuenta.
 
-### PayPal no es el camino
+### RESUELTO (10-09-2026): va por Ko-fi
 
-Se evaluó y se descartó, por tres razones, en orden de peso:
+Se descartó esperar al Mercado Pago del padre por una razón práctica: el acceso
+a esa cuenta es difícil de coordinar. La decisión la tomó Charly.
 
-1. **La plata dejaría de ir directo.** Una cuenta PayPal de otra persona hace que
-   el dinero haga escala y después haya que girarlo a Argentina, perdiendo en
-   comisión y tipo de cambio. Rompe el principio del proyecto.
-2. **La audiencia es argentina y paga en pesos.** Casi nadie dona por PayPal en
-   Argentina: es incómodo y caro para quien paga. Del lado de quien cobra son
-   ~5,4% + cargo fijo, retiros de 3 a 5 días hábiles y retenciones de hasta 21
-   días en cuentas nuevas.
-3. **Lo recurrente en PayPal requiere cuenta Business** y no ofrece un enlace
-   mensual listo para compartir como sí hace Mercado Pago; empuja a integración.
+**Cuenta: `ko-fi.com/juniorworks`** (ya existía desde junio 2026, registrada con
+`perrosdelaislapalma@gmail.com`).
 
-Si algún día hay tráfico de afuera que lo justifique, PayPal podría sumarse como
-**opción secundaria etiquetada para gente fuera de Argentina**, nunca como el
-circuito principal.
+Configuración que importa:
 
-### Alternativa sin el titular, si alguna vez hace falta
+- Modo de membresía: **"Simple monthly tips (no tiers)"**. Sin niveles, sin
+  recompensas, sin contenido exclusivo. Es la única configuración compatible con
+  la regla de oro de este documento: quien aporta **no recibe nada distinto**.
+  **No pasar a modo "tiers" nunca**, salvo que se rehaga todo este análisis.
+- Comisión Ko-fi: **0% en aportes puntuales, 5% en mensuales** (plan gratuito).
+- Liquida a PayPal o Stripe.
 
-Ko-fi o Buy Me a Coffee tienen membresías mensuales recurrentes y liquidan a
-PayPal. Funcionan sin depender del titular, pero rompen lo de "directo a su
-cuenta" y suman comisión más pérdida cambiaria en el camino a Argentina. Es el
-plan B, no el A.
+#### PayPal directo: descartado, y por qué
+
+1. **El botón de donaciones de PayPal exige ser ONG registrada.** Un particular
+   no puede usarlo.
+2. **Lo recurrente requiere cuenta Business** y no da enlace mensual listo:
+   empuja a integración.
+
+#### LO QUE HAY QUE SABER: el mensual es caro para el donante argentino
+
+Ko-fi cobra **en dólares desde el exterior**. Para una tarjeta argentina eso
+significa dólar oficial **+ 30% de percepción de Ganancias** (el Impuesto PAÍS
+se eliminó, así que bajó ~50% respecto de antes, pero la percepción sigue).
+Es recuperable ante ARCA, pero es trámite.
+
+**Ko-fi resuelve el acceso, no el costo.** La única vía que evita ese 30% sigue
+siendo **Mercado Pago con la cuenta del titular en Argentina**. Si alguna vez se
+puede coordinar esa sesión de veinte minutos, conviene migrar el mensual allá y
+dejar Ko-fi como opción para gente de afuera.
+
+Mientras tanto: **Cafecito sigue siendo la vía barata para el aporte puntual**
+(en pesos, sin recargo) y es la que hay que seguir empujando para el público
+argentino.
+
+#### Detalle de UX ya contemplado
+
+El link `ko-fi.com/juniorworks` abre la pestaña **"One time"**, no la mensual, y
+no existe URL que abra directo en "Monthly". Por eso el botón de la app dice:
+
+```
+🌱 Un aporte por mes
+   En Ko-fi elegí «Monthly» · lo cortás cuando quieras
+```
+
+#### Bloqueo inicial (resolver una sola vez)
+
+Ko-fi mostraba *"Please confirm your location to continue accepting payments"*.
+Es un diálogo con el país preseleccionado (Spain) y un botón Save. **Hasta que
+eso se confirme, Ko-fi no cobra.**
 
 ## 3 bis. Qué falta hacer cuando se destrabe
 

@@ -41,9 +41,12 @@ export const APOYO = {
   // Aporte puntual (Cafecito cobra y liquida; nosotros no cobramos nada).
   cafecito: "https://cafecito.app/juniorworks",
 
-  // Aporte MENSUAL. Pegar acá el link del plan (Cafecito o Mercado Pago).
+  // Aporte MENSUAL. Ko-fi, modo "simple monthly tips" (sin niveles ni
+  // recompensas: nadie recibe nada distinto por aportar).
+  // OJO: el link abre la pestaña "One time"; la persona tiene que tocar
+  // "Monthly". Por eso el botón lo aclara.
   // Vacío = la opción mensual no aparece en ningún lado.
-  mensual: "",
+  mensual: "https://ko-fi.com/juniorworks",
 
   // Transferencia directa a la cuenta familiar (lo más barato: 0% de comisión).
   alias: "Mallorca83.mp",

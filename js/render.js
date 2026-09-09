@@ -2014,7 +2014,7 @@ function renderSupport(containerId, origin) {
       ` onclick="trackSupport('mensual','${escapeAttr(origin)}')">` +
       `<span class="support-icon" aria-hidden="true">🌱</span>` +
       `<span class="support-label">Un aporte por mes</span>` +
-      `<span class="support-note">Lo podés cortar cuando quieras</span></a>`);
+      `<span class="support-note">En Ko-fi eleg\u00ed \u00abMonthly\u00bb \u00b7 lo cort\u00e1s cuando quieras</span></a>`);
   }
   if (cfg.cafecito && !soloTransferencia) {
     botones.push(
