@@ -20,8 +20,8 @@
     "path": "C:\\Proyectos Junior Works\\como-te-pega\\android\\android.keystore",
     "alias": "comotepega"
   },
-  "appVersionName": "1.2.0",
-  "appVersionCode": 4,
+  "appVersionName": "1.5.0",
+  "appVersionCode": 5,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://junior-works.github.io/como-te-pega/manifest.json",
@@ -52,5 +52,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "1.2.0"
+  "appVersion": "1.5.0"
 }
