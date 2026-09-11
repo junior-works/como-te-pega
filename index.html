@@ -1586,6 +1586,45 @@
     transition: background .18s var(--ease), border-color .18s var(--ease);
   }
   .news-btn:hover { background: var(--grad-gold); color: #1a0e02; border-color: transparent; }
+
+  /* ===== v1.7 — Tarjeta para compartir ===== */
+  #cardBackdrop {
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(6,12,20,.72); backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+    opacity: 0; pointer-events: none; transition: opacity .18s ease;
+  }
+  #cardBackdrop.show { opacity: 1; pointer-events: auto; }
+  .card-modal {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px;
+    padding: 20px; width: min(460px, 100%); max-height: 92vh; overflow-y: auto;
+    transform: scale(.97); transition: transform .18s ease;
+  }
+  #cardBackdrop.show .card-modal { transform: scale(1); }
+  .card-preview { margin: 14px 0 6px; text-align: center; }
+  .card-preview canvas {
+    width: min(260px, 62vw); height: auto; border-radius: 12px;
+    border: 1px solid var(--line); display: inline-block;
+  }
+  .card-opts-title {
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-mute); margin: 14px 0 6px;
+  }
+  .card-opt {
+    display: flex; align-items: center; gap: 10px; padding: 9px 10px;
+    border: 1px solid var(--line-soft); border-radius: 10px; margin-bottom: 6px;
+    font-size: 14px; color: var(--ink-soft); cursor: pointer;
+  }
+  .card-opt span { flex: 1; }
+  .card-opt em { font-style: normal; font-size: 12px; color: var(--ink-mute); }
+  .card-opt input { accent-color: var(--accent); width: 17px; height: 17px; }
+  .card-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .card-btn {
+    flex: 1 1 auto; min-width: 96px; padding: 11px 12px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--bg-3); color: var(--ink);
+    font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .card-btn.primary { background: var(--accent); border-color: var(--accent); color: #1A1205; }
 </style>
 </head>
 <body>
@@ -1620,7 +1659,7 @@
   <section id="screen-hero" class="screen active">
     <div class="hero">
       <div id="heroResume"></div>
-      <span class="pill">v1.5 · septiembre 2026</span>
+      <span class="pill">v1.7 · septiembre 2026</span>
       <p class="pitch">Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial te impacta — <strong>no solo en el bolsillo</strong>, también en tu tiempo, tu salud, tu vivienda y tu vida. <em>Misma regla para cualquier gobierno.</em></p>
       <button class="btn accent" onclick="show('profile')">Empezar</button>
       <div class="examples">
@@ -1891,9 +1930,14 @@
   <section id="screen-impact" class="screen">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
       <div class="crumb" onclick="show('measures')" style="margin-bottom:0;">← Otras medidas</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+      <button class="icon-btn" id="btnCard" onclick="openCardModal()" aria-label="Crear mi tarjeta para compartir" title="Crear mi tarjeta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 9h8M8 13h5"></path></svg>
+      </button>
       <button class="icon-btn" id="btnShare" onclick="shareCurrentMeasure()" aria-label="Compartir esta medida">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
       </button>
+      </div>
     </div>
     <div class="perfil-box" id="perfilSummary2" style="margin-top:14px;"><strong>TU PERFIL</strong>—</div>
     <h2 class="step" id="measureTitle"></h2>
@@ -2011,7 +2055,7 @@
   </section>
 
   <footer class="foot">
-    <strong>v1.5 · datos desde Supabase</strong> · septiembre 2026<br>
+    <strong>v1.7 · datos desde Supabase</strong> · septiembre 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>
@@ -2041,6 +2085,23 @@
     <button type="button" class="mp-close" onclick="closeMpModal()">Cerrar</button>
   </div>
 </div>
+</div>
+
+<!-- Tarjeta para compartir (imagen 4:5 generada en el dispositivo) -->
+<div id="cardBackdrop" onclick="closeCardModal(event)">
+  <div class="card-modal" role="dialog" aria-modal="true" aria-labelledby="cardTitle">
+    <h3 class="mp-title" id="cardTitle">Mi tarjeta para compartir</h3>
+    <p class="mp-sub">Se arma en tu teléfono. No incluye tu nombre, tu mail ni tu ingreso: solo cómo te pega.</p>
+    <div class="card-preview"><canvas id="cardCanvas" aria-label="Vista previa de la tarjeta"></canvas></div>
+    <div class="card-opts-title">Qué mostrar</div>
+    <div id="cardOptions"></div>
+    <div class="card-actions">
+      <button type="button" class="card-btn primary" onclick="shareCard()">Compartir</button>
+      <button type="button" class="card-btn" onclick="downloadCard()">Descargar</button>
+      <button type="button" class="card-btn" onclick="copyCardLink()">Copiar link</button>
+    </div>
+    <button type="button" class="mp-close" onclick="closeCardModal()">Cerrar</button>
+  </div>
 </div>
 
 <!-- Bottom-sheet contextual (long-press en una card) -->

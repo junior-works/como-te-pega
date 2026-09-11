@@ -357,7 +357,7 @@ const ROUTE_FOR = {
   compare: 'comparar', sectores: 'clases', balance: 'balance',
   historial: 'historial', guardadas: 'guardadas', cuenta: 'datos'
 };
-const SCREEN_FOR = {};
+const SCREEN_FOR = Object.create(null);
 Object.keys(ROUTE_FOR).forEach(k => { if (ROUTE_FOR[k]) SCREEN_FOR[ROUTE_FOR[k]] = k; });
 // Pantallas que dependen de una medida concreta (llevan &m= en la URL).
 const MEASURE_SCREENS = new Set(['impact', 'compare', 'sectores']);
@@ -390,7 +390,10 @@ function parseRoute() {
   let v = p.get('v');
   if (!m) {
     const hm = (location.hash.match(/[#&]m=([^&]+)/) || [])[1];
-    if (hm) { m = decodeURIComponent(hm); if (!v) v = 'medida'; }
+    if (hm) {
+      try { m = decodeURIComponent(hm); } catch (_) { m = null; }
+      if (m && !v) v = 'medida';
+    }
   }
   const screen = (v && SCREEN_FOR[v]) || (m ? 'impact' : null);
   return { screen: screen, m: m };
@@ -401,6 +404,7 @@ function applyRoute(route, opts) {
   opts = opts || {};
   let screen = route && route.screen;
   const mid = route && route.m;
+  if (MEASURE_SCREENS.has(screen) && !mid) screen = 'measures';
   if (mid && MEASURE_SCREENS.has(screen || '')) {
     const m = getMeasures().find(x => x.id === mid);
     if (m) { state.measure = m; renderImpact(); }
@@ -514,6 +518,484 @@ function shareMeasure(m) {
 function shareCurrentMeasure() { shareMeasure(state.measure); }
 window.shareMeasure = shareMeasure;
 window.shareCurrentMeasure = shareCurrentMeasure;
+
+
+// ============== v1.7 — TARJETA PARA COMPARTIR (imagen 4:5, local) ==============
+// Genera una imagen 1080x1350 en un <canvas>, 100% en el dispositivo: no se sube
+// nada a ningún servidor. NO incluye nombre, mail, ingreso exacto ni ningún dato
+// que identifique a la persona: solo las dimensiones y el nivel de impacto, que
+// es lo mismo que ya se ve en pantalla.
+const CARD_W = 1080, CARD_H = 1350;
+
+// Colores de nivel para la tarjeta. Fondo oscuro, así que se usan los tonos
+// claros (los mismos del tema oscuro de la app) para que contrasten.
+// El que ve la tarjeta no usa la app: "fuerte" solo no dice si es bueno o malo.
+// Por eso la etiqueta lleva siempre el signo escrito, no solo el color.
+const CARD_LEVEL = {
+  strong:     { bg: 'rgba(239,68,68,.20)',  fg: '#FDA4A4', txt: 'en contra · fuerte' },
+  mid:        { bg: 'rgba(249,115,22,.20)', fg: '#FDBA74', txt: 'en contra · medio' },
+  soft:       { bg: 'rgba(234,179,8,.20)',  fg: '#FDE68A', txt: 'en contra · leve' },
+  pos_strong: { bg: 'rgba(34,197,94,.22)',  fg: '#86EFAC', txt: 'a favor · fuerte' },
+  pos:        { bg: 'rgba(34,197,94,.18)',  fg: '#A7F3C5', txt: 'a favor · medio' },
+  pos_soft:   { bg: 'rgba(34,197,94,.14)',  fg: '#BBF7D0', txt: 'a favor · leve' },
+  none:       { bg: 'rgba(147,167,189,.16)',fg: '#93A7BD', txt: 'no me toca' }
+};
+
+// --- Perfil en primera persona, sin datos identificatorios ---
+// La medida sola no mueve a nadie: "¿a quién le pega?" es la pregunta. Esta línea
+// contesta eso con la ocupación, la zona y la situación de vivienda/familia. NO
+// lleva nombre, mail, ingreso exacto ni edad: son las mismas categorías amplias
+// que ya se ven en pantalla, no permiten identificar a la persona.
+const CARD_OCU = {
+  empleado_priv: 'empleado en blanco', empleado_pub: 'empleado público',
+  monotrib: 'monotributista', autonomo: 'trabajador autónomo',
+  trab_informal: 'trabajador informal', domestica_reg: 'trabajadora doméstica registrada',
+  domestica_no_reg: 'trabajadora doméstica sin registrar', jubilado_min: 'jubilado con la mínima',
+  jubilado_med: 'jubilado', pensionado: 'pensionado', estudiante: 'estudiante',
+  desempleado: 'desempleado', ama_casa: 'ama de casa', pyme: 'dueño de una PyME'
+};
+const CARD_ZONA = {
+  caba: 'CABA', gba_norte: 'zona norte del GBA', gba_sur: 'zona sur del GBA',
+  gba_oeste: 'zona oeste del GBA', laplata: 'La Plata', cba_cap: 'Córdoba capital',
+  cba_int: 'el interior de Córdoba', rosario: 'Rosario', santafe_int: 'el interior de Santa Fe',
+  mendoza: 'Mendoza', tucuman: 'Tucumán', nea: 'el NEA', noa: 'el NOA', cuyo: 'Cuyo',
+  patagonia: 'la Patagonia', pueblo: 'un pueblo chico'
+};
+const CARD_VIV = {
+  alquila: 'alquilo', propio: 'tengo casa propia', propio_credito: 'pago un crédito de la casa',
+  familiar: 'vivo con familia', alquila_renta: 'alquilo y tengo una renta',
+  ocupada: 'vivo en una casa informal'
+};
+
+function cardProfileLine() {
+  const p = state.perfil || {};
+  const ocu = CARD_OCU[p.ocupacion];
+  if (!ocu) return '';
+  let head = 'Soy ' + ocu;
+  const z = CARD_ZONA[p.zona];
+  if (z) head += ' de ' + z;
+  const bits = [];
+  if (CARD_VIV[p.vivienda]) bits.push(CARD_VIV[p.vivienda]);
+  if (p.hijos && p.hijos !== '0') bits.push(p.hijos === '1' ? 'con 1 hijo' : (p.hijos === '3mas' ? 'con 3 o más hijos' : 'con ' + p.hijos + ' hijos'));
+  if (p.adultos && p.adultos !== '0') bits.push(p.adultos === '1' ? 'con 1 adulto a cargo' : 'con 2 o más adultos a cargo');
+  return head + (bits.length ? ', ' + bits.join(', ') : '') + '.';
+}
+
+const CARD_FONT = '"Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif';
+
+// Estado del editor de la tarjeta: qué dimensiones entran y si se ve el título.
+const cardState = { kind: 'medida', dims: [], picked: [], showTitle: true,
+                   showProfile: true, measure: null, balance: null };
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+// Corta un texto en líneas que entren en maxW. Devuelve como mucho maxLines,
+// con puntos suspensivos en la última si sobra.
+function wrapLines(ctx, text, maxW, maxLines) {
+  const words = String(text || '').split(/\s+/);
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width <= maxW || !cur) cur = test;
+    else { lines.push(cur); cur = w; if (lines.length === maxLines) break; }
+  }
+  if (lines.length < maxLines && cur) lines.push(cur);
+  if (lines.length === maxLines && cur && lines[maxLines - 1] !== cur) {
+    let last = lines[maxLines - 1];
+    while (ctx.measureText(last + '…').width > maxW && last.length > 1) last = last.slice(0, -1);
+    lines[maxLines - 1] = last + '…';
+  }
+  return lines;
+}
+
+// Dibuja la marca (mismo arco del ícono: onda celeste, onda blanca, sol).
+function drawBrand(ctx, cx, cy, scale) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 46;
+  ctx.strokeStyle = '#74ACDF';
+  ctx.beginPath(); ctx.arc(0, 0, 180, Math.PI, 0); ctx.stroke();
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.beginPath(); ctx.arc(0, 0, 126, Math.PI, 0); ctx.stroke();
+  ctx.fillStyle = '#F6B40E';
+  ctx.beginPath(); ctx.arc(0, 0, 54, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+
+// Fondo + marca: comunes a las dos tarjetas. Devuelve la Y donde sigue el contenido.
+function drawCardHead(ctx, M) {
+  const g = ctx.createRadialGradient(CARD_W / 2, -120, 80, CARD_W / 2, 420, 1100);
+  g.addColorStop(0, '#16293F');
+  g.addColorStop(1, '#0E1B2C');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, CARD_W, CARD_H);
+
+  let y = 150;
+  drawBrand(ctx, M + 62, y, 0.30);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.font = '700 46px ' + CARD_FONT;
+  ctx.fillText('¿Cómo te', M + 140, y - 4);
+  ctx.fillStyle = '#F6B40E';
+  ctx.fillText('pega?', M + 140, y + 46);
+  return y + 150;
+}
+
+// Línea de perfil en primera persona. Devuelve la Y siguiente.
+function drawCardProfile(ctx, M, y) {
+  if (!cardState.showProfile) return y;
+  const line = cardProfileLine();
+  if (!line) return y;
+  ctx.font = '600 40px ' + CARD_FONT;
+  const lines = wrapLines(ctx, line, CARD_W - M * 2 - 40, 2);
+  const h = lines.length * 52 + 40;
+  ctx.fillStyle = 'rgba(116,172,223,.12)';
+  roundRect(ctx, M, y - 34, CARD_W - M * 2, h, 22); ctx.fill();
+  ctx.fillStyle = '#CFE0F2';
+  let ly = y + 8;
+  lines.forEach(l => { ctx.fillText(l, M + 30, ly); ly += 52; });
+  return y - 34 + h + 34;
+}
+
+// Pie común.
+function drawCardFoot(ctx, M) {
+  const footY = CARD_H - 150;
+  ctx.fillStyle = 'rgba(255,255,255,.08)';
+  ctx.fillRect(M, footY - 76, CARD_W - M * 2, 2);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '600 40px ' + CARD_FONT;
+  ctx.fillText('Mirá cómo te pega a vos', M, footY);
+  ctx.fillStyle = '#F6B40E';
+  ctx.font = '700 44px ' + CARD_FONT;
+  ctx.fillText('comotepega.com', M, footY + 60);
+}
+
+function drawCard(canvas) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = CARD_W; canvas.height = CARD_H;
+  if (cardState.kind === 'balance') drawCardBalance(ctx);
+  else drawCardMedida(ctx);
+}
+
+function drawCardMedida(ctx) {
+  const M = 84;
+  let y = drawCardHead(ctx, M);
+
+  y = drawCardProfile(ctx, M, y);
+
+  ctx.fillStyle = '#93A7BD';
+  ctx.font = '500 36px ' + CARD_FONT;
+  ctx.fillText('Y esta medida me pega así:', M, y);
+  y += 34;
+
+  if (cardState.showTitle && cardState.measure) {
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '700 52px ' + CARD_FONT;
+    const lines = wrapLines(ctx, cardState.measure.title, CARD_W - M * 2, 3);
+    y += 42;
+    lines.forEach(l => { ctx.fillText(l, M, y); y += 62; });
+    y += 14;
+  } else {
+    y += 30;
+  }
+
+  // Dimensiones, centradas en el espacio que queda entre el título y el pie.
+  const picked = cardState.dims.filter((_, i) => cardState.picked[i]).slice(0, 5);
+  const rowH = 112, gap = 20;
+  const blockH = picked.length * rowH + Math.max(0, picked.length - 1) * gap;
+  const zoneTop = y;
+  const zoneBottom = CARD_H - 150 - 110;
+  y = Math.max(zoneTop, zoneTop + (zoneBottom - zoneTop - blockH) / 2);
+  picked.forEach(d => {
+    const cfg = CARD_LEVEL[d.level] || CARD_LEVEL.none;
+    ctx.fillStyle = 'rgba(255,255,255,.05)';
+    roundRect(ctx, M, y, CARD_W - M * 2, rowH, 26); ctx.fill();
+
+    ctx.font = '400 52px ' + CARD_FONT;
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(dimIcon(d), M + 34, y + rowH / 2 + 2);
+
+    // La pastilla se mide primero: el nombre se corta antes de pisarla.
+    ctx.font = '700 30px ' + CARD_FONT;
+    const label = cfg.txt;
+    const pw = ctx.measureText(label).width + 46, ph = 54;
+    const px = CARD_W - M - 24 - pw;
+
+    ctx.font = '600 40px ' + CARD_FONT;
+    ctx.fillStyle = '#FFFFFF';
+    const nameMax = px - (M + 110) - 20;
+    ctx.fillText(wrapLines(ctx, d.name, nameMax, 1)[0] || d.name, M + 110, y + rowH / 2 + 2);
+
+    ctx.font = '700 30px ' + CARD_FONT;
+    ctx.fillStyle = cfg.bg;
+    roundRect(ctx, px, y + (rowH - ph) / 2, pw, ph, ph / 2); ctx.fill();
+    ctx.fillStyle = cfg.fg;
+    ctx.textAlign = 'center';
+    ctx.fillText(label, px + pw / 2, y + rowH / 2 + 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+
+    y += rowH + gap;
+  });
+
+  drawCardFoot(ctx, M);
+}
+
+// Tarjeta del balance global: "soy jubilado con la mínima y de 88 medidas,
+// 60 me pegan en contra, 10 no me tocan y 4 me favorecen".
+function drawCardBalance(ctx) {
+  const M = 84;
+  const b = cardState.balance || { contra: 0, neutral: 0, favor: 0, total: 0, dims: [] };
+  let y = drawCardHead(ctx, M);
+
+  y = drawCardProfile(ctx, M, y);
+
+  ctx.fillStyle = '#93A7BD';
+  ctx.font = '500 36px ' + CARD_FONT;
+  ctx.fillText('De ' + b.total + ' medidas vigentes desde dic-2023:', M, y);
+  y += 60;
+
+  const cols = [
+    { n: b.contra,  lbl: 'ME PEGAN\nEN CONTRA', fg: '#FDA4A4', bg: 'rgba(239,68,68,.18)' },
+    { n: b.neutral, lbl: 'NO ME\nTOCAN',        fg: '#93A7BD', bg: 'rgba(147,167,189,.14)' },
+    { n: b.favor,   lbl: 'ME\nFAVORECEN',       fg: '#86EFAC', bg: 'rgba(34,197,94,.18)' }
+  ];
+  const cw = (CARD_W - M * 2 - 32) / 3, ch = 270;
+  cols.forEach((c, i) => {
+    const x = M + i * (cw + 16);
+    ctx.fillStyle = c.bg;
+    roundRect(ctx, x, y, cw, ch, 28); ctx.fill();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = c.fg;
+    ctx.font = '800 110px ' + CARD_FONT;
+    ctx.fillText(String(c.n), x + cw / 2, y + 132);
+    ctx.font = '700 27px ' + CARD_FONT;
+    c.lbl.split('\n').forEach((l, j) => ctx.fillText(l, x + cw / 2, y + 192 + j * 34));
+    ctx.textAlign = 'left';
+  });
+  y += ch + 56;
+
+  // Barra proporcional: se ve el peso relativo de un vistazo.
+  const barH = 26, tot = Math.max(1, b.contra + b.neutral + b.favor);
+  let bx = M;
+  [['#EF4444', b.contra], ['rgba(147,167,189,.55)', b.neutral], ['#22C55E', b.favor]].forEach(([col, n]) => {
+    if (!n) return;
+    const w = (CARD_W - M * 2) * n / tot;
+    ctx.fillStyle = col; ctx.fillRect(bx, y, w, barH); bx += w;
+  });
+  y += barH + 66;
+
+  // Top dimensiones donde más pega. Se ancla al pie para no pisarlo: el bloque
+  // termina siempre 100px arriba de la línea del footer, suba o baje lo de arriba.
+  const top = (b.dims || []).slice(0, 3);
+  if (top.length) {
+    const rowH = 62;
+    const blockBottom = CARD_H - 150 - 100;
+    y = Math.max(y, blockBottom - top.length * rowH - 46);
+    ctx.fillStyle = '#93A7BD';
+    ctx.font = '700 28px ' + CARD_FONT;
+    ctx.fillText('DONDE MÁS ME PEGA', M, y);
+    y += 52;
+    top.forEach(d => {
+      // El conteo se mide primero; el nombre se recorta para no solaparse.
+      ctx.font = '700 38px ' + CARD_FONT;
+      const cnt = d.neg + ' en contra';
+      const cw2 = ctx.measureText(cnt).width;
+      ctx.font = '600 38px ' + CARD_FONT;
+      ctx.fillStyle = '#FFFFFF';
+      const nameMax = (CARD_W - M - cw2 - 24) - M;
+      ctx.fillText(wrapLines(ctx, d.icon + '  ' + d.name, nameMax, 1)[0] || d.name, M, y);
+      ctx.font = '700 38px ' + CARD_FONT;
+      ctx.fillStyle = '#FDA4A4';
+      ctx.textAlign = 'right';
+      ctx.fillText(cnt, CARD_W - M, y);
+      ctx.textAlign = 'left';
+      y += rowH;
+    });
+  }
+
+  drawCardFoot(ctx, M);
+}
+
+// Abre el editor de tarjeta para la medida abierta.
+function openCardModal() {
+  const m = state.measure;
+  if (!m) return;
+  if (!m.hasRules) { showToast('Esta medida todavía no tiene análisis por perfil'); return; }
+  if (!state.perfil.ocupacion) { showToast('Cargá tu perfil para armar la tarjeta'); show('profile'); return; }
+
+  const dims = (m.impact(state.perfil) || []).filter(d => d.level && d.level !== 'none');
+  if (!dims.length) { showToast('Con tu perfil esta medida no tiene impacto directo'); return; }
+
+  cardState.kind = 'medida';
+  cardState.measure = m;
+  cardState.balance = null;
+  cardState.dims = dims;
+  cardState.picked = dims.map((_, i) => i < 4);   // por defecto, las primeras 4
+  cardState.showTitle = true;
+  cardState.showProfile = true;
+
+  const opts = document.getElementById('cardOptions');
+  if (opts) {
+    opts.innerHTML = dims.map((d, i) =>
+      `<label class="card-opt"><input type="checkbox" ${cardState.picked[i] ? 'checked' : ''} ` +
+      `onchange="toggleCardDim(${i}, this.checked)"> <span>${dimIcon(d)} ${d.name}</span>` +
+      `<em>${(CARD_LEVEL[d.level] || CARD_LEVEL.none).txt}</em></label>`
+    ).join('') +
+    `<label class="card-opt"><input type="checkbox" checked onchange="toggleCardTitle(this.checked)">` +
+    ` <span>Mostrar el nombre de la medida</span></label>` +
+    cardProfileOptionHTML();
+  }
+
+  const t = document.getElementById('cardTitle');
+  if (t) t.textContent = 'Mi tarjeta de esta medida';
+  ctpTrack('tarjeta_abierta');
+  document.getElementById('cardBackdrop')?.classList.add('show');
+  refreshCard();
+}
+// Opción "mostrar mi perfil": misma casilla en las dos tarjetas.
+function cardProfileOptionHTML() {
+  const line = cardProfileLine();
+  if (!line) return '';
+  return `<label class="card-opt"><input type="checkbox" checked onchange="toggleCardProfile(this.checked)">` +
+         ` <span>Mostrar quién soy</span><em>${line.replace(/[<>]/g, '')}</em></label>`;
+}
+
+// Tarjeta del balance global: la que contesta "¿a quién le pega y cuánto?".
+function openBalanceCardModal() {
+  if (!state.perfil.ocupacion) { showToast('Cargá tu perfil para armar la tarjeta'); show('profile'); return; }
+  const scored = getMeasures().map(m => ({ m, ...scoreMeasure(m) }));
+  if (!scored.length) { showToast('Todavía no hay medidas para tu balance'); return; }
+
+  let contra = 0, neutral = 0, favor = 0;
+  scored.forEach(x => {
+    if (x.bucket === 'pos') favor++;
+    else if (x.bucket === 'neutral') neutral++;
+    else contra++;
+  });
+  const tally = aggregateDims(scored);
+  const dims = Object.entries(tally)
+    .map(([name, d]) => ({ name, neg: d.neg, pos: d.pos, icon: d.icon || '•' }))
+    .filter(d => d.neg > 0)
+    .sort((a, b) => b.neg - a.neg);
+
+  cardState.kind = 'balance';
+  cardState.measure = null;
+  cardState.dims = [];
+  cardState.picked = [];
+  cardState.showProfile = true;
+  cardState.balance = { contra, neutral, favor, total: scored.length, dims };
+
+  const opts = document.getElementById('cardOptions');
+  if (opts) opts.innerHTML = cardProfileOptionHTML();
+
+  const t = document.getElementById('cardTitle');
+  if (t) t.textContent = 'Mi tarjeta del balance';
+  ctpTrack('tarjeta_balance_abierta');
+  document.getElementById('cardBackdrop')?.classList.add('show');
+  refreshCard();
+}
+
+function toggleCardProfile(on) { cardState.showProfile = on; refreshCard(); }
+
+function closeCardModal(e) {
+  if (e && e.target && e.target.id !== 'cardBackdrop') return;
+  document.getElementById('cardBackdrop')?.classList.remove('show');
+}
+function toggleCardDim(i, on) {
+  const total = cardState.picked.filter(Boolean).length;
+  if (on && total >= 5) { showToast('Hasta 5 para que se lea bien'); refreshCardOptions(); return; }
+  cardState.picked[i] = on;
+  refreshCard();
+}
+function toggleCardTitle(on) { cardState.showTitle = on; refreshCard(); }
+function refreshCardOptions() {
+  const boxes = document.querySelectorAll('#cardOptions input[type=checkbox]');
+  cardState.picked.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; });
+}
+function refreshCard() {
+  const c = document.getElementById('cardCanvas');
+  if (c) drawCard(c);
+}
+
+function cardToBlob() {
+  return new Promise(res => {
+    const c = document.getElementById('cardCanvas');
+    if (!c) return res(null);
+    c.toBlob(b => res(b), 'image/png');
+  });
+}
+function cardFilename() {
+  if (cardState.kind === 'balance') return 'comotepega-mi-balance.png';
+  const id = cardState.measure ? cardState.measure.id : 'medida';
+  return 'comotepega-' + id + '.png';
+}
+function cardShareUrl() {
+  if (cardState.kind === 'balance' || !cardState.measure) return location.origin + location.pathname;
+  return location.origin + routeUrl('impact', cardState.measure.id);
+}
+function cardShareText() {
+  return cardState.kind === 'balance'
+    ? 'Así me pegan las medidas a mí. Fijate cómo te pegan a vos: '
+    : 'Mirá cómo me pega esta medida. Fijate cómo te pega a vos: ';
+}
+
+async function shareCard() {
+  const blob = await cardToBlob();
+  if (!blob) { showToast('No se pudo generar la imagen'); return; }
+  const file = new File([blob], cardFilename(), { type: 'image/png' });
+  const url = cardShareUrl();
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], text: cardShareText() + url });
+      ctpTrack('tarjeta_compartida');
+    } catch (_) { /* el usuario canceló */ }
+  } else {
+    downloadCard();
+    showToast('Tu navegador no comparte imágenes: la descargamos');
+  }
+}
+async function downloadCard() {
+  const blob = await cardToBlob();
+  if (!blob) { showToast('No se pudo generar la imagen'); return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = cardFilename();
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  ctpTrack('tarjeta_descargada');
+  showToast('Imagen descargada');
+}
+function copyCardLink() {
+  const url = cardShareUrl();
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(url).then(
+      () => { ctpTrack('tarjeta_link_copiado'); showToast('Link copiado'); },
+      () => showToast('No se pudo copiar')
+    );
+  } else showToast('Copiar no está disponible en este navegador');
+}
+
+window.openCardModal = openCardModal;
+window.openBalanceCardModal = openBalanceCardModal;
+window.toggleCardProfile = toggleCardProfile;
+window.closeCardModal = closeCardModal;
+window.toggleCardDim = toggleCardDim;
+window.toggleCardTitle = toggleCardTitle;
+window.shareCard = shareCard;
+window.downloadCard = downloadCard;
+window.copyCardLink = copyCardLink;
 
 // ============== v0.9 — GUARDADAS (marcar para después) ==============
 const LS_SAVED = 'ctp.saved';
@@ -1647,6 +2129,7 @@ function injectBalanceScreen() {
       <div class="bal-card neutral"><div class="big" id="balNeutral">—</div><div class="lbl">Neutras</div></div>
       <div class="bal-card favor"><div class="big" id="balFavor">—</div><div class="lbl">A favor</div></div>
     </div>
+    <button class="btn ghost" id="btnBalanceCard" onclick="openBalanceCardModal()" style="margin-top:10px;">🖼️ Crear mi tarjeta del balance</button>
     <div style="font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.7px; margin: 18px 4px 6px; font-weight: 700;">Intensidad de los impactos en contra</div>
     <div class="stacked-bar" id="stackedBar"></div>
     <div class="bal-tip" id="balTip">—</div>
@@ -1933,18 +2416,44 @@ function exportPerfil() {
 }
 window.exportPerfil = exportPerfil;
 
+// Validar todo antes de reemplazar el perfil actual. Solo admitir vocabularios
+// que la UI y las reglas de impacto conocen; nunca copiar propiedades arbitrarias.
+function validarPerfilImportado(data) {
+  const objeto = v => !!v && typeof v === 'object' && !Array.isArray(v);
+  if (!objeto(data) || data.app !== 'como-te-pega' || data.formato !== 1 || !objeto(data.perfil)) {
+    throw new Error('Formato de perfil no compatible');
+  }
+  const perfil = { asistencia: [] };
+  for (const [campo, valores] of Object.entries(FIELD_LABELS)) {
+    if (!Object.prototype.hasOwnProperty.call(data.perfil, campo)) continue;
+    const valor = data.perfil[campo];
+    if (campo === 'asistencia') {
+      if (!Array.isArray(valor) || valor.some(v => typeof v !== 'string' || !Object.prototype.hasOwnProperty.call(valores, v))) throw new Error('Asistencia no válida');
+      perfil.asistencia = [...new Set(valor)];
+      if (perfil.asistencia.length > 1 && perfil.asistencia.includes('ninguno')) throw new Error('Asistencia contradictoria');
+    } else if (valor !== null && valor !== '') {
+      if (typeof valor !== 'string' || !Object.prototype.hasOwnProperty.call(valores, valor)) throw new Error('Campo no válido: ' + campo);
+      perfil[campo] = valor;
+    }
+  }
+  if (data.guardadas !== undefined && (!Array.isArray(data.guardadas) || data.guardadas.some(id => typeof id !== 'string' || !/^[a-zA-Z0-9_-]{1,200}$/.test(id)))) throw new Error('Guardadas no válidas');
+  return { perfil, guardadas: data.guardadas === undefined ? null : [...new Set(data.guardadas)] };
+}
+
 function importPerfil(input) {
   const file = input && input.files && input.files[0];
   if (!file) return;
+  if (file.size > 1024 * 1024) { showToast('El archivo es demasiado grande para ser un perfil'); input.value = ''; return; }
   const reader = new FileReader();
   reader.onload = () => {
     let data;
     try { data = JSON.parse(reader.result); } catch (e) { showToast('Ese archivo no es un perfil válido'); return; }
-    if (!data || data.app !== 'como-te-pega' || !data.perfil) { showToast('Ese archivo no es un perfil de Cómo Te Pega'); return; }
-    state.perfil = Object.assign({ asistencia: [] }, data.perfil);
-    if (!Array.isArray(state.perfil.asistencia)) state.perfil.asistencia = [];
+    let validado;
+    try { validado = validarPerfilImportado(data); }
+    catch (_) { showToast('Ese perfil no es compatible o contiene datos inválidos. Tu perfil actual no cambió.'); return; }
+    state.perfil = validado.perfil;
     persistPerfil();
-    if (Array.isArray(data.guardadas)) lsSet(LS_SAVED, data.guardadas.filter(x => typeof x === 'string'));
+    if (validado.guardadas !== null) lsSet(LS_SAVED, validado.guardadas);
     restoreChipSelections();
     checkProfileComplete();
     updateProfileSummary();
@@ -1953,6 +2462,7 @@ function importPerfil(input) {
     showToast('Perfil importado');
     navTo(perfilComplete(state.perfil) ? 'measures' : 'profile');
   };
+  reader.onerror = () => showToast('No se pudo leer el archivo. Tu perfil actual no cambió.');
   reader.readAsText(file);
   input.value = '';
 }
