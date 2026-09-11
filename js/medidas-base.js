@@ -438,6 +438,8 @@ export const MEASURES_BASE = [
     area: "Educación",
     estado: "vigente",
     fuente: "Boletín Oficial · Ley 27.795 · Decreto 647/2025 · Diario de Sesiones HCDN 17-sep-2025 · HSN 02-oct-2025",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "pos", body: "El rechazo del veto por los 2/3 demuestra que el Congreso ejerce su rol constitucional sobre el presupuesto (art. 75:8 CN). Refuerza el equilibrio de poderes que la Constitución diseña." },
     impact: function(p) {
       const dims = [];
 
@@ -480,8 +482,6 @@ export const MEASURES_BASE = [
           body: "La universidad pública es la fábrica de médicos, enfermeros y kinesiólogos que vas a necesitar los próximos años. Defenderla = más profesionales formados disponibles a futuro." });
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "pos_soft",
           body: "Misma lógica para abogados, contadores, ingenieros, agrónomos. La calidad futura de los servicios que vos consumís depende de quién se forma hoy." });
-        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "pos",
-          body: "El rechazo del veto por los 2/3 demuestra que el Congreso ejerce su rol constitucional sobre el presupuesto (art. 75:8 CN). Refuerza el equilibrio de poderes que la Constitución diseña." });
       }
 
       // BRANCH 5 — Empleado privado / autónomo / monotrib / PyME sin hijos (impacto sistémico futuro)
@@ -517,6 +517,8 @@ export const MEASURES_BASE = [
     desc: "Cierre de la Agencia Télam (creada en 1945, principal agencia nacional de noticias) y reconversión en Agencia de Publicidad del Estado. ~700+ empleados afectados (despedidos, indemnizados o reubicados).",
     tags: ["Trabajo","País","Comunicaciones"],
     fuente: "Boletín Oficial — DNU 538/2024. Amparos sindicales SiPreBA, FATPREN (rechazados en Cámara).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Menos pluralidad en producción de noticias estatales. Las provincias y los medios alternativos pierden una fuente histórica de información gratuita y federal." },
     impact: function(p) {
       const dims = [];
       // Empleado público
@@ -536,8 +538,6 @@ export const MEASURES_BASE = [
       const noEsEmpleadoPub = p.ocupacion !== 'empleado_pub';
       const noEsMedios = !(p.ocupacion === 'empleado_priv' && enAMBA);
       if (noEsEmpleadoPub && noEsMedios) {
-        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-          body: "Menos pluralidad en producción de noticias estatales. Las provincias y los medios alternativos pierden una fuente histórica de información gratuita y federal." });
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "Cobertura de eventos provinciales y regionales se reduce. Las noticias del interior tienden a estar más concentradas en menos medios comerciales con sede en CABA." });
       }
@@ -554,11 +554,11 @@ export const MEASURES_BASE = [
       return dims;
     },
     compareProfiles: [
-      { name: "Empleado público nacional sector medios", sub: "Estatal · Comunicación", badges: { Trabajo: "strong", Estabilidad: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Periodista freelance CABA", sub: "Empleado privado · Medios", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Ciudadano del interior", sub: "Jubilado · Interior", badges: { "País / Equilibrio institucional": "soft", "Calidad de servicios": "soft" } },
+      { name: "Empleado público nacional sector medios", sub: "Estatal · Comunicación", badges: { Trabajo: "strong", Estabilidad: "mid" } },
+      { name: "Periodista freelance CABA", sub: "Empleado privado · Medios", badges: { Trabajo: "soft" } },
+      { name: "Ciudadano del interior", sub: "Jubilado · Interior", badges: { "Calidad de servicios": "soft" } },
       { name: "PyME publicidad sector medios privados", sub: "Empresario PyME · CABA", badges: { Trabajo: "pos_soft", "Calidad de servicios": "none" } },
-      { name: "Estudiante de comunicación", sub: "Estudiante · CABA", badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } }
+      { name: "Estudiante de comunicación", sub: "Estudiante · CABA", badges: { Educación: "soft" } }
     ]
   },
 
@@ -570,6 +570,8 @@ export const MEASURES_BASE = [
     desc: "Para proyectos USD 200M+ en minería, hidrocarburos, energía, infraestructura, agroindustria y forestal. Beneficios por 30 años: Ganancias 18,75% (vs 25%), estabilidad fiscal y cambiaria, libre disponibilidad de dividendos, sin retenciones a exportaciones. ~USD 25.500M aprobados a jun-2026.",
     tags: ["Plata","Trabajo","País"],
     fuente: "Boletín Oficial — Ley 27.742 · Dto 749/2024 reglamentación · RG ARCA importaciones. Informes CGERA, IPA, UIA, Aviacionline.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Los proyectos RIGI tienen jurisdicción internacional para disputas (CIADI). Compromiso a 30 años por encima del ciclo electoral. Debate constitucional sobre soberanía en proyectos en territorio argentino." },
     impact: function(p) {
       const dims = [];
       const enZonaRIGI = p.zona === 'mendoza' || p.zona === 'noa' || p.zona === 'cuyo' || p.zona === 'patagonia';
@@ -609,8 +611,6 @@ export const MEASURES_BASE = [
       if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Presión fiscal a mediano plazo puede impactar fondos previsionales." });
-        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-          body: "Los proyectos RIGI tienen jurisdicción internacional para disputas (CIADI). Compromiso a 30 años por encima del ciclo electoral. Debate constitucional sobre soberanía en proyectos en territorio argentino." });
       }
       // Estudiante / informal / cuidado hogar / desempleado
       const perfilSocial = p.ocupacion === 'estudiante' || p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa' || p.ocupacion === 'desempleado';
@@ -629,7 +629,7 @@ export const MEASURES_BASE = [
       { name: "PyME zona RIGI sector competidor", sub: "Empresario PyME · NOA", badges: { Plata: "mid", Trabajo: "mid", Estabilidad: "mid" } },
       { name: "Empleado Vaca Muerta", sub: "Empleado privado · Patagonia", badges: { Trabajo: "pos", Plata: "pos_soft" } },
       { name: "Empleado privado CABA sin sector RIGI", sub: "Empleado privado · CABA", badges: { Plata: "soft", Trabajo: "none" } },
-      { name: "Jubilado mínima CABA", sub: "Jubilado · No zona RIGI", badges: { Plata: "soft", "País / Equilibrio institucional": "mid" } },
+      { name: "Jubilado mínima CABA", sub: "Jubilado · No zona RIGI", badges: { Plata: "soft" } },
       { name: "PyME no RIGI interior", sub: "Empresario PyME · Sector ajeno", badges: { Plata: "soft", Trabajo: "none" } }
     ]
   },
@@ -725,6 +725,8 @@ export const MEASURES_BASE = [
     desc: "PAMI endureció el subsidio social: umbral pasó de 5% a 15% del ingreso en medicamentos, no tener auto < 15 años (antes 10), reclasificación de medicamentos comunes como 'eventuales' (paracetamol, omeprazol, loratadina, etc.). 850.000 afiliados afectados. Cautelar Mendoza oct-2025 restituyó parcialmente; Res. 428/2026 restauró parcialmente cobertura.",
     tags: ["Salud","Plata","Carga mental"],
     fuente: "Boletín Oficial — Resoluciones PAMI 2431/2024, 2537/2024, 428/2026. Cautelar Juzgado Federal N°2 Mendoza (Quirós) 29-oct-2025. Defensoría Adultos Mayores 2025.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "La cautelar judicial sigue abierta y PAMI apeló. Debate sobre si una resolución administrativa puede modificar coberturas que el régimen estableció." },
     impact: function(p) {
       const dims = [];
       // Jubilado mínima
@@ -770,8 +772,6 @@ export const MEASURES_BASE = [
           body: "El sistema de salud pública se llena con casos que podrían haberse evitado con medicación a tiempo. Hospitales reportan más complicaciones por hipertensión y diabetes mal controladas." });
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "Más espera en hospitales públicos, menos turnos disponibles." });
-        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-          body: "La cautelar judicial sigue abierta y PAMI apeló. Debate sobre si una resolución administrativa puede modificar coberturas que el régimen estableció." });
       }
       return dims;
     },
@@ -780,7 +780,7 @@ export const MEASURES_BASE = [
       { name: "Jubilado medio con prepaga", sub: "Jubilado med. · Mixta", badges: { Salud: "mid", Plata: "soft" } },
       { name: "Pensión no contributiva discapacidad", sub: "Pensionado · PNC", badges: { Salud: "strong", Plata: "strong" } },
       { name: "Empleado priv. con padre jubilado a cargo", sub: "Empleado · Adulto a cargo", badges: { Plata: "mid", "Carga mental": "mid", Tiempo: "soft" } },
-      { name: "Adulto joven sin familia mayor", sub: "Empleado · Sin adultos a cargo", badges: { Salud: "soft", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } }
+      { name: "Adulto joven sin familia mayor", sub: "Empleado · Sin adultos a cargo", badges: { Salud: "soft", "Calidad de servicios": "soft" } }
     ]
   },
 
@@ -867,6 +867,8 @@ export const MEASURES_BASE = [
     desc: "Reforma laboral por DNU: período de prueba 3 → 8 meses, sistema privado de capitalización de despido, restricción a derecho de huelga (75% prestación en 'servicios esenciales'), bloqueos/tomas como 'injuria grave' (despido sin indemnización), cuotas sindicales solidarias eliminadas, tope a indemnización por antigüedad. ADEMÁS DEROGÓ MÚLTIPLES MULTAS al empleador: multas Ley 24.013 por trabajo no registrado, doble indemnización Ley 25.323 art. 1, multa 50% por demora art. 25.323 art. 2, Ley 25.345 antievasión, multa 3 salarios art. 80 LCT por no entregar certificado, multa retención aportes art. 132 bis LCT. CNAT Sala Feria 30-ene-2024 declaró inconstitucionalidad Título IV completo (art. 99:3 CN). CNAT Sala II abril 2024 confirmó. Bloque suspendido judicialmente, sin recurso a CSJN. Ley Bases (jul-2024) reincorporó parte en su Título de Modernización Laboral.",
     tags: ["Trabajo","Estabilidad","Plata"],
     fuente: "Boletín Oficial — DNU 70/2023 Título IV. Fallos CNAT 30-ene-2024 y abril 2024. Doctrina laboral AADTYSS, CAM, MyA Abogados.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "strong", body: "La CNAT declaró inconstitucional el Título IV completo por violación del art. 99:3 CN (régimen de DNU). El bloque sigue suspendido. Es uno de los conflictos constitucionales más fuertes del período. El gobierno no presentó recurso extraordinario a la CSJN: no se va a última instancia, se aplica por Ley Bases en su lugar." },
     impact: function(p) {
       const dims = [];
       // Empleado privado / Autónomo / Monotributista
@@ -916,11 +918,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
           body: "Marco general más débil. Si trabajás en negro, tu empleador tiene menos riesgo de tenerte así. Si te despiden, lo que podés recuperar en juicio cayó." });
       }
-      // Sociedad en general
-      if (true) {
-        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
-          body: "La CNAT declaró inconstitucional el Título IV completo por violación del art. 99:3 CN (régimen de DNU). El bloque sigue suspendido. Es uno de los conflictos constitucionales más fuertes del período. El gobierno no presentó recurso extraordinario a la CSJN: no se va a última instancia, se aplica por Ley Bases en su lugar." });
-      }
       return dims;
     },
     compareWinners: [
@@ -931,10 +928,10 @@ export const MEASURES_BASE = [
     ],
     compareProfiles: [
       { name: "Empleado privado relación nueva", sub: "Empleado · Primer trabajo", badges: { Trabajo: "strong", Estabilidad: "strong", Plata: "strong", "Carga mental": "mid" } },
-      { name: "Empleado público sector esencial", sub: "Empleado público · Salud/Educación", badges: { Trabajo: "strong", Estabilidad: "strong", "País / Equilibrio institucional": "strong" } },
+      { name: "Empleado público sector esencial", sub: "Empleado público · Salud/Educación", badges: { Trabajo: "strong", Estabilidad: "strong" } },
       { name: "Trabajador informal", sub: "Trabajo informal · Sin registración", badges: { Trabajo: "mid", Plata: "mid" } },
       { name: "PyME contratante", sub: "Empresario PyME", badges: { Plata: "pos_strong", Trabajo: "pos", Estabilidad: "pos" } },
-      { name: "Estudiante buscando primer empleo", sub: "Estudiante · CABA", badges: { Trabajo: "mid", "Movilidad social": "mid", "País / Equilibrio institucional": "strong" } },
+      { name: "Estudiante buscando primer empleo", sub: "Estudiante · CABA", badges: { Trabajo: "mid", "Movilidad social": "mid" } },
       { name: "Doméstica no registrada", sub: "Doméstica · En negro", badges: { Trabajo: "mid", Plata: "mid" } }
     ]
   },
@@ -947,6 +944,8 @@ export const MEASURES_BASE = [
     desc: "Habilita a fuerzas de seguridad a intervenir en protestas SIN orden judicial previa. Permite identificar, filmar y recolectar datos de manifestantes aunque no haya actos violentos. Cobro a manifestantes y organizaciones por costo del operativo. Sanciones administrativas a beneficiarios de planes sociales que protesten (potencial suspensión de AUH, Potenciar Trabajo, PNC). Aplica a cortes, marchas, concentraciones. Juez CAF 11 (Cormick) 29-dic-2025 declaró nulidad en 38 pp. por exceso de competencia del PEN (art. 75:12 CN) y restricción de derechos del art. 14 CN sin ley del Congreso. Cormick suspendió efectos de su propia sentencia ante apelación. Sigue vigente. Combinado con espionaje interno por SIDE (denuncias documentadas por CELS, ICSI) prohibido por Ley 25.520.",
     tags: ["País","Trabajo","Carga mental"],
     fuente: "Boletín Oficial — Resolución 943/2023 Min. Seguridad. Fallo Cormick CAF 11 dic-2025. CELS, Plan de Inteligencia 2024 (Caputo), Comisión Bicameral del Congreso.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "strong", body: "Tres elementos combinados sin ley del Congreso: (1) restricción al derecho de reunión (art. 14 CN) por resolución administrativa; (2) habilitación de identificación/filmación sin orden judicial; (3) procesamiento de esa información por SIDE pese a prohibición expresa de Ley 25.520. La Justicia Federal CAF declaró nulidad por exceso de competencia. Comisión Bicameral del Senado investigando. Como ciudadano, vos también podrías necesitar manifestarte mañana — el marco que rige es contestado por la Justicia." },
     impact: function(p) {
       const dims = [];
       // Beneficiario de plan social
@@ -1003,14 +1002,12 @@ export const MEASURES_BASE = [
           body: "Menos demoras puntuales por cortes." });
       }
       // Sociedad en general — todos los perfiles reciben este punto
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
-        body: "Tres elementos combinados sin ley del Congreso: (1) restricción al derecho de reunión (art. 14 CN) por resolución administrativa; (2) habilitación de identificación/filmación sin orden judicial; (3) procesamiento de esa información por SIDE pese a prohibición expresa de Ley 25.520. La Justicia Federal CAF declaró nulidad por exceso de competencia. Comisión Bicameral del Senado investigando. Como ciudadano, vos también podrías necesitar manifestarte mañana — el marco que rige es contestado por la Justicia." });
       return dims;
     },
     compareProfiles: [
       { name: "Beneficiaria AUH que protesta", sub: "Cuidado hogar · 2 hijos · AUH", badges: { Plata: "strong", Estabilidad: "strong", "Carga mental": "strong" } },
       { name: "Delegado sindical sector público", sub: "Empleado público · Activo", badges: { Trabajo: "strong", "Carga mental": "strong", Estabilidad: "strong" } },
-      { name: "Jubilada activista de los miércoles", sub: "Jubilada mínima · CABA", badges: { "Carga mental": "strong", "País / Equilibrio institucional": "strong" } },
+      { name: "Jubilada activista de los miércoles", sub: "Jubilada mínima · CABA", badges: { "Carga mental": "strong" } },
       { name: "Estudiante con movilización", sub: "Estudiante · UBA/UNC", badges: { "Carga mental": "mid", Plata: "soft", "Movilidad social": "soft" } },
       { name: "Comerciante CABA en zona de cortes", sub: "PyME · Microcentro/Congreso", badges: { Plata: "pos", Trabajo: "pos_soft" } },
       { name: "Conductor profesional AMBA", sub: "Empleado priv. · Auto", badges: { Tiempo: "pos", Plata: "pos_soft" } }
@@ -1025,6 +1022,8 @@ export const MEASURES_BASE = [
     desc: "Decreto 116/2025 transformó al BNA de Sociedad del Estado a Sociedad Anónima — paso intermedio típico antes de privatización. BNA: 100% capital estatal, mayor banco del país, más sucursales que cualquier otro, 17.400 empleados, función social explícita en carta orgánica (PyMEs, agropecuario chico-mediano, economías regionales, jubilados con préstamo Previsional). Juez Federal Dolores (Ramos Padilla) 13-mar-2025 cautelar 6 meses; Cámara Federal La Plata 05-jun-2025 confirmó; 10-mar-2026 prórroga hasta sep-2026. Razón: Ley Bases EXCLUYÓ EXPRESAMENTE al BNA del capítulo de privatización; el PEN excedió atribuciones (art. 76 CN).",
     tags: ["Trabajo","País","Plata"],
     fuente: "Boletín Oficial — Decreto 116/2025. Fallos Ramos Padilla 13-mar-2025 y 10-mar-2026. Cámara Federal La Plata 05-jun-2025. La Bancaria, Infobae, La Nación, Perfil.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "strong", body: "El Congreso EXCLUYÓ expresamente al BNA del capítulo de privatización de la Ley Bases. El Ejecutivo, por decreto, intentó hacer lo que el Congreso le negó. La Justicia (Ramos Padilla + Cámara Federal La Plata) viene confirmando la cautelar porque entiende que es exceso de atribuciones delegadas (art. 76 CN)." },
     impact: function(p) {
       const dims = [];
       const enInteriorChico = p.zona === 'pueblo' || p.zona === 'cba_int' || p.zona === 'santafe_int' || p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cuyo' || p.zona === 'patagonia';
@@ -1071,8 +1070,6 @@ export const MEASURES_BASE = [
           body: "Riesgo de menor atención en sucursales no rentables (interior)." });
       }
       // Sociedad en general
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
-        body: "El Congreso EXCLUYÓ expresamente al BNA del capítulo de privatización de la Ley Bases. El Ejecutivo, por decreto, intentó hacer lo que el Congreso le negó. La Justicia (Ramos Padilla + Cámara Federal La Plata) viene confirmando la cautelar porque entiende que es exceso de atribuciones delegadas (art. 76 CN)." });
       return dims;
     },
     compareProfiles: [
@@ -1093,6 +1090,8 @@ export const MEASURES_BASE = [
     desc: "Declara emergencia nacional en discapacidad hasta dic-2026 (prorrogable). Compensación de emergencia a prestadores (terapeutas, transportistas adaptados, centros, talleres, hogares) por diferencia entre aumentos de aranceles 2023-2024 vs IPC. Financiamiento adecuado y sostenible de PNC por discapacidad. Régimen de regularización tributaria para prestadores. Jefatura de Gabinete debe asignar partidas sin reducir crédito del área Social. Vetada por PEN 04-ago-2025; veto rechazado por Diputados y Senado con 2/3 (sep-2025); Decreto 681/2025 promulgó pero suspendió ejecución; Juez Federal Campana (González Charbay) 12-dic-2025 declaró nulo art. II del Decreto 681 por 'veto encubierto' y violación a división de poderes. Impacto fiscal estimado OPC: 0,22-0,42% PBI. Afecta a ~1,6M con CUD + ~1,1M con PNC + ~50.000 prestadores + ~5M familiares directos.",
     tags: ["Salud","Plata","País"],
     fuente: "Boletín Oficial — Ley 27.793 + Decreto 681/2025 + Decreto 84/2026 reglamentación. Fallo Juzgado Federal Campana 12-dic-2025. Oficina de Presupuesto del Congreso.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "pos", body: "Rechazo del veto por 2/3 + fallo Campana contra el 'veto encubierto' del Decreto 681 = ejercicio claro de los poderes constitucionales. Congreso y Justicia ejerciendo su rol frente al Ejecutivo. Buena salud institucional." },
     impact: function(p) {
       const dims = [];
       // Persona con discapacidad propia con CUD
@@ -1139,16 +1138,13 @@ export const MEASURES_BASE = [
           body: "Sostener un sistema de discapacidad que funciona ahorra al sistema de salud general (los problemas no atendidos terminan en hospitales públicos)." });
       }
       // Sociedad en general
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "pos",
-        body: "Rechazo del veto por 2/3 + fallo Campana contra el 'veto encubierto' del Decreto 681 = ejercicio claro de los poderes constitucionales. Congreso y Justicia ejerciendo su rol frente al Ejecutivo. Buena salud institucional." });
       return dims;
     },
     compareProfiles: [
       { name: "Persona con CUD que usa terapias", sub: "Discapacidad propia c/CUD", badges: { Salud: "pos_strong", Plata: "pos_strong", Estabilidad: "pos_strong", "Movilidad social": "pos" } },
       { name: "Familia con hijo con CUD", sub: "Empleado priv. · Hijo c/CUD", badges: { Plata: "pos_strong", Salud: "pos", "Vida familiar / ocio": "pos", "Carga mental": "pos" } },
       { name: "Pensión no contributiva discapacidad", sub: "Pensionado · PNC discap.", badges: { Plata: "pos_strong", Salud: "pos_strong", Estabilidad: "pos_strong" } },
-      { name: "Empleado público sector ANDIS", sub: "Empleado público · Discapacidad", badges: { "País / Equilibrio institucional": "pos" } },
-      { name: "Contribuyente sin discapacidad familiar", sub: "Empleado priv. · Sin CUD", badges: { Plata: "soft", Salud: "pos_soft", "País / Equilibrio institucional": "pos" } }
+      { name: "Contribuyente sin discapacidad familiar", sub: "Empleado priv. · Sin CUD", badges: { Plata: "soft", Salud: "pos_soft" } }
     ]
   },
 
@@ -1160,6 +1156,8 @@ export const MEASURES_BASE = [
     desc: "Eliminó Impuestos Internos a autos de gama media-alta (escala 1: 20% — $41-75M) y de lujo (escala 2: 35% — $75M+), motos cilindrada media-alta ($15-23M), embarcaciones, aeronaves, objetos suntuarios (joyería, perfumería premium), seguros generales, telefonía celular y satelital. Implementación gradual feb-2025 (suspensión escala 1) → 2025 (escala 2 baja a 18%) → feb-2026 (eliminación completa). Rebajas en autos premium 10-15%, hasta USD 26.000 por unidad en top gama. Modelos afectados arrancan en USD 70.000.",
     tags: ["Plata","Fiscal","Lujo"],
     fuente: "Boletín Oficial — Ley de Modernización Laboral art. 192 (feb-2026). Infobae, El Economista, El Cronista, Chequeado.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Es decisión política de qué consumos premiar. Reducir impuesto a un BMW vs. mantener impuestos a productos masivos cambia la distribución del peso tributario. El argumento del gobierno es 'simplificación + más volumen = más recaudación a futuro'. El argumento opositor es 'regresividad fiscal: el que más tiene paga menos'. El dato objetivo es que la base recaudatoria del Estado se redujo en el corto plazo." },
     impact: function(p) {
       const dims = [];
       // Comprador potencial de bienes premium (proxy: ingreso muy alto)
@@ -1201,15 +1199,13 @@ export const MEASURES_BASE = [
           body: "Política fiscal que beneficia consumos de élite y no a la base productiva ni a la formación." });
       }
       // Sociedad en general
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Es decisión política de qué consumos premiar. Reducir impuesto a un BMW vs. mantener impuestos a productos masivos cambia la distribución del peso tributario. El argumento del gobierno es 'simplificación + más volumen = más recaudación a futuro'. El argumento opositor es 'regresividad fiscal: el que más tiene paga menos'. El dato objetivo es que la base recaudatoria del Estado se redujo en el corto plazo." });
       return dims;
     },
     compareProfiles: [
       { name: "Empresario que compra auto premium", sub: "Empresario · USD 60-80k", badges: { Plata: "pos_strong", Movilidad: "pos" } },
       { name: "Comprador top gama (Porsche, M5)", sub: "Gran empresario · USD 100k+", badges: { Plata: "pos_strong", Movilidad: "pos" } },
       { name: "Empleado privado ingreso medio", sub: "Empleado · $1,5M-3M", badges: { Plata: "soft" } },
-      { name: "Jubilado mínima sin discapacidad", sub: "Jubilado · Sin compra premium", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Jubilado mínima sin discapacidad", sub: "Jubilado · Sin compra premium", badges: { Plata: "soft" } },
       { name: "Empleado público nacional", sub: "Empleado público · Cualquier sector", badges: { Plata: "soft" } },
       { name: "Familia con CUD y trabajadora informal", sub: "Trabajo informal · Familiar c/CUD", badges: { Plata: "soft", "Movilidad social": "soft" } }
     ]
@@ -1222,6 +1218,8 @@ export const MEASURES_BASE = [
     desc: "Reducción de aranceles a importación: ropa y calzado 35%→20%, telas 26%→18%, hilados 18%→12-16%. Justificación oficial: Argentina con indumentaria más cara de la región (remera 310% más cara que España). Impacto verificado a abr-2026: 20.700 puestos perdidos en cadena textil/indumentaria/cuero/calzado, 17% caída empleo registrado, 380 empresas cerradas (Pro Tejer), 33% caída de producción, 6-7 de cada 10 máquinas paradas. Importaciones prendas terminadas +129% en cantidad. Casos: Textilana suspensiones 175 personas, VVC Catamarca paros. Sin observación constitucional firme (es facultad propia del PEN ajustar aranceles).",
     tags: ["Trabajo","Plata","Industria"],
     fuente: "Boletín Oficial — Decreto 236/2025. Pro Tejer, CIAI, SIPA, Infobae, El Cronista.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Decisión de desindustrializar sin política industrial complementaria. Argentina no es Brasil (que sigue protegiendo industria) ni Vietnam (que produce con escala). El modelo elegido implica importar lo que antes hacíamos." },
     impact: function(p) {
       const dims = [];
       const esTrabajador = p.ocupacion === 'empleado_priv' || p.ocupacion === 'autonomo' || p.ocupacion === 'monotrib';
@@ -1264,8 +1262,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
           body: "En provincias con monocultivo industrial, las opciones de empleo alternativo son limitadas. Si la textil cierra, no hay otra fábrica." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Decisión de desindustrializar sin política industrial complementaria. Argentina no es Brasil (que sigue protegiendo industria) ni Vietnam (que produce con escala). El modelo elegido implica importar lo que antes hacíamos." });
       return dims;
     },
     compareProfiles: [
@@ -1285,6 +1281,8 @@ export const MEASURES_BASE = [
     desc: "Dispone que arts. 81, 92, 93 y 94 de Ley 27.701 (Presupuesto 2023) NO se prorrogan a 2024. El art. 81 fijaba piso de $85.000M para el Fondo Compensador del Transporte del Interior, que subsidiaba boleto de colectivos urbanos e interurbanos fuera del AMBA. Resultado: provincias del interior sin aporte nacional (AMBA siguió con subsidios). Cobertura previa del FCI: Rosario 27% subsidios, Córdoba 28%, Bariloche 35%, Río Gallegos 40%. Tarifas pasaron de media $252 (ene-2024) a $607 (abr-2024) → $1.720-1.895 a jun-2026. Interior paga casi el triple que AMBA. Cautelares Chubut (fallo Sastre, Rawson feb-2024), Cámara Federal Rosario, Santa Fe, Córdoba. Nación incumplió parcialmente el fallo Sastre.",
     tags: ["Plata","Movilidad","Transporte"],
     fuente: "Boletín Oficial — DNU 280/2024. Fallo Sastre Federal Rawson feb-2024. Chequeado, Cenital, La Nación.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Asimetría federal: AMBA sigue con subsidio nacional, interior no. Y desobediencia documentada al fallo Sastre (Rawson, feb-2024) que ordenaba mantener subsidios — Nación cumplió parcialmente para 2023 y luego dictó el DNU 280 que lo desoyó." },
     impact: function(p) {
       const dims = [];
       const enInterior = !['caba','gba_norte','gba_sur','gba_oeste','laplata'].includes(p.zona);
@@ -1326,8 +1324,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
           body: "Ahorro fiscal real del Tesoro Nacional (los $85.000M que no se transfirieron). En teoría redirigido a otros usos o menor presión tributaria — depende de la redistribución." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Asimetría federal: AMBA sigue con subsidio nacional, interior no. Y desobediencia documentada al fallo Sastre (Rawson, feb-2024) que ordenaba mantener subsidios — Nación cumplió parcialmente para 2023 y luego dictó el DNU 280 que lo desoyó." });
       return dims;
     },
     compareProfiles: [
@@ -1347,6 +1343,8 @@ export const MEASURES_BASE = [
     desc: "Deroga incisos g y m del art. 5, los arts. 6, 18, 19, 25 inc. a y 27 de la Ley 26.682 de Marco Regulatorio de la Medicina Prepaga. Quita facultades a Ministerio de Salud y Superintendencia de Servicios de Salud de autorizar y revisar valores de cuotas. Habilita libre fijación de precios. Suprime modelos de contrato entre prepagas y prestadores. Aumentos acumulados >100% en pocos meses durante 2024; a jun-2026 acumulan 350-450% según plan vs IPC ~280%. Cautelares individuales y colectivas. Jurisprudencia federal consolidada (CAF Sala III, Sala V): aumentos deben ser razonables con IPC como parámetro; derecho a la salud (tratados art. 75:22 CN) prima sobre lógica de mercado. 26-may-2025 Justicia anuló retroactivamente aumentos.",
     tags: ["Salud","Plata","Carga mental"],
     fuente: "Boletín Oficial — DNU 70/2023 (arts. derogadores de Ley 26.682). Microjuris, Infobae, CELS, CADIME.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Jurisprudencia federal consolidada limita lo que el DNU autoriza. El derecho a la salud con jerarquía constitucional (tratados internacionales) recorta la libre fijación. El argumento 'desregular para que la competencia baje precios' no se cumplió empíricamente: precios subieron 350-450%, no bajaron. Mercado oligopólico (Swiss Medical, OSDE, Medifé, Galeno) generó alza coordinada." },
     impact: function(p) {
       const dims = [];
       if (p.salud === 'prepaga') {
@@ -1376,8 +1374,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Salud", icon: "❤️", level: "mid",
           body: "La migración de afiliados que abandonan prepaga aumenta la demanda en hospitales públicos. Esperas más largas para turnos de especialistas. Saturación de guardias." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Jurisprudencia federal consolidada limita lo que el DNU autoriza. El derecho a la salud con jerarquía constitucional (tratados internacionales) recorta la libre fijación. El argumento 'desregular para que la competencia baje precios' no se cumplió empíricamente: precios subieron 350-450%, no bajaron. Mercado oligopólico (Swiss Medical, OSDE, Medifé, Galeno) generó alza coordinada." });
       return dims;
     },
     compareProfiles: [
@@ -1396,6 +1392,8 @@ export const MEASURES_BASE = [
     desc: "Decreto 270/2024 (22-mar-2024) reorganizó la jurisdicción del Hospital Posadas (oeste GBA, referencia para 6 millones de habitantes) bajo la Subsecretaría de Institutos y Fiscalización del Min. de Salud. Decisiones Administrativas posteriores (DA 215, 264, 418, 601, 602, 892 de 2024) reorganizaron estructura y plantas. Consecuencias documentadas (CICOP, prensa, Justicia): ~90 desvinculaciones jun-2024, +110 en jun-2025, total 200-250 trabajadores. Casos de despido a personal reinstalado por Justicia (re-despido). Casos a delegados sindicales con tutela activa (kinesiólogo CICOP). CICOP litiga colectivamente; órdenes individuales de reinstalación firmes.",
     tags: ["Trabajo","Salud","País"],
     fuente: "Boletín Oficial — Decreto 270/2024 + Decisiones Administrativas 215, 264, 418, 601, 602, 892/2024. CICOP, Página 12, Perfil, Infobae.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "El incumplimiento de órdenes judiciales de reinstalación (re-despido) es punto institucional concreto. La Justicia ordena, el gobierno vuelve a despedir. Casos de despido a delegados con tutela sindical activa también." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'empleado_pub') {
@@ -1425,8 +1423,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
           body: "Ahorro fiscal por reducción de masa salarial." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "El incumplimiento de órdenes judiciales de reinstalación (re-despido) es punto institucional concreto. La Justicia ordena, el gobierno vuelve a despedir. Casos de despido a delegados con tutela sindical activa también." });
       return dims;
     },
     compareProfiles: [
@@ -1445,6 +1441,8 @@ export const MEASURES_BASE = [
     desc: "Ley sancionada 22-ago-2025 declara emergencia sanitaria pediátrica por 2 años. Recomposición salarial inmediata para residentes y profesionales del Hospital Garrahan, Notti (Mendoza), Sor María Ludovica (La Plata). Asignación urgente de recursos para insumos críticos. Deroga Resolución 2109/2025 (que había congelado partidas para residencias). Veto total del PEN por Decreto 651/2025 (11-sep-2025). Veto rechazado por Diputados 17-sep-2025 (181-60-1) y Senado 02-oct-2025 (59-7-3) — alcanzaron 2/3 en ambas cámaras. Ley vigente; implementación efectiva disputada. Contexto: 70% pacientes Garrahan del interior. Salarios residentes: $800k → $1.3M (suba unilateral parcial jul-2025). Carga 70 hs/semana con guardias 24 hs.",
     tags: ["Salud","Plata","País"],
     fuente: "Boletín Oficial — Ley de Emergencia Pediátrica + Decreto 651/2025 (veto) + Actas Diputados 17-sep-2025 + Senado 02-oct-2025. Infobae, Perfil, Palabras del Derecho.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "pos", body: "Veto del PEN rechazado con 2/3 en ambas cámaras. Congreso ejerciendo facultades constitucionales. Buena salud institucional independiente de la posición sobre la política específica." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'empleado_pub') {
@@ -1474,8 +1472,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Impacto fiscal real (asignación adicional al presupuesto Salud). Es difuso para vos pero está." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "pos",
-        body: "Veto del PEN rechazado con 2/3 en ambas cámaras. Congreso ejerciendo facultades constitucionales. Buena salud institucional independiente de la posición sobre la política específica." });
       dims.push({ name: "Salud", icon: "❤️", level: "pos_soft",
         body: "Sistema pediátrico federal sostenido. Beneficio sistémico para la sociedad." });
       return dims;
@@ -1484,8 +1480,8 @@ export const MEASURES_BASE = [
       { name: "Residente médica del Garrahan", sub: "Empleada pública · Salud", badges: { Plata: "pos_strong", Trabajo: "pos", Estabilidad: "pos" } },
       { name: "Familia del interior con hijo oncológico", sub: "Empleado priv. · NOA · 2 hijos", badges: { Salud: "pos_strong", "Carga mental": "pos", Movilidad: "pos_soft" } },
       { name: "Familia CABA con hijo en Garrahan", sub: "Empleado priv. · CABA · 1 hijo", badges: { Salud: "pos_strong", "Carga mental": "pos" } },
-      { name: "Empleado público sector salud", sub: "Empleado público · Hosp. nacional", badges: { Trabajo: "pos", "País / Equilibrio institucional": "pos" } },
-      { name: "Contribuyente sin hijos pequeños", sub: "Monotributista · Sin hijos", badges: { Plata: "soft", "País / Equilibrio institucional": "pos" } }
+      { name: "Empleado público sector salud", sub: "Empleado público · Hosp. nacional", badges: { Trabajo: "pos" } },
+      { name: "Contribuyente sin hijos pequeños", sub: "Monotributista · Sin hijos", badges: { Plata: "soft" } }
     ]
   },
   {
@@ -1550,6 +1546,8 @@ export const MEASURES_BASE = [
     desc: "Régimen de Regularización de Activos. Alícuotas escalonadas 5% (hasta 30-sep-2024) / 10% (oct-dic 2024) / 15% (ene-mar 2025). USD 100k umbral exento. Mediante Cuenta Especial de Regularización (CERA) en banco argentino con inmovilización hasta 31-ene-2025: alícuota 0%. Exonera Bienes Personales hasta 31-dic-2023 sobre lo blanqueado. Adhesión hasta 31-mar-2025. Excluidos: funcionarios públicos y sus familias.",
     tags: ["Plata","Fiscal"],
     fuente: "Boletín Oficial — Ley 27.743 Tit. II + Decreto 608/2024 + RG ARCA 5528. Chequeado, Tributum.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Es el tercer blanqueo del siglo XXI (Macri 2017, Massa 2022/2023, Milei 2024). Cultura del 'esperar el próximo blanqueo' como estrategia tributaria. Erosiona la cultura de cumplimiento." },
     impact: function(p) {
       const dims = [];
       const ingresoMuyAlto = p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
@@ -1573,8 +1571,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Costo fiscal indirecto sobre tu vida cotidiana vía servicios públicos, ANSES, planes sociales." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Es el tercer blanqueo del siglo XXI (Macri 2017, Massa 2022/2023, Milei 2024). Cultura del 'esperar el próximo blanqueo' como estrategia tributaria. Erosiona la cultura de cumplimiento." });
       return dims;
     },
     compareProfiles: [
@@ -1593,6 +1589,8 @@ export const MEASURES_BASE = [
     desc: "MNI sube de $27M a $100M. Mínimo casa habitación: $137M → $350M. Alícuotas bajan escalonadas hacia 2027 (proporcional única). REIBP: pago adelantado por 5 años (0,45% no regularizado, 0,50% blanqueado). Contribuyentes cumplidores (declararon 2020-2022 + no blanquearon): 0,375% por 2023-2025.",
     tags: ["Plata","Fiscal"],
     fuente: "Boletín Oficial — Ley 27.743 Tit. III + Decreto 608/2024. Chequeado.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Se alivia el impuesto patrimonial (progresivo) y se mantiene la carga sobre IVA y Ganancias (regresivos en la práctica). El sistema fiscal argentino se vuelve más regresivo en el corto plazo." },
     impact: function(p) {
       const dims = [];
       const ingresoAlto = p.ingreso === '3m_6m' || p.ingreso === 'mas_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
@@ -1618,8 +1616,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Costo fiscal indirecto: el sistema tributario se vuelve más regresivo (más peso de IVA, menos peso de impuestos patrimoniales)." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Se alivia el impuesto patrimonial (progresivo) y se mantiene la carga sobre IVA y Ganancias (regresivos en la práctica). El sistema fiscal argentino se vuelve más regresivo en el corto plazo." });
       return dims;
     },
     compareProfiles: [
@@ -1638,6 +1634,8 @@ export const MEASURES_BASE = [
     desc: "Resolución General Conjunta 5466/2023 (27-dic-2023) derogó SIRA, creó SEDI + Padrón de Deuda Comercial. Resolución General Conjunta 5651/2025 (24-feb-2025) derogó SEDI: importaciones quedan libres de control previo. Importaciones de bienes terminados +129% en cantidad. Sectores sustitutivos afectados: Tierra del Fuego electrónica (Mirgor 760 despidos + Newsan 1000 suspensiones, >15% de los 13.000 metalúrgicos provinciales), textil/calzado (20.700 puestos perdidos), electrodomésticos.",
     tags: ["Trabajo","Importaciones","Industria"],
     fuente: "Boletín Oficial — RGC 5466/2023 + RGC 5651/2025. Comunicación BCRA A 7917. AIERA, La Nación, ANRed.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Decisión de desindustrializar sin política industrial complementaria. El argumento 'el SIRA era ineficiente y corrupto' es válido; el 'barrer todo el control sin reemplazar con criterio productivo' es otra discusión." },
     impact: function(p) {
       const dims = [];
       const esPymeIndustrial = p.ocupacion === 'pyme';
@@ -1664,8 +1662,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Movilidad", icon: "🛤️", level: "pos_soft",
           body: "Acceso a productos premium que antes estaban limitados." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Decisión de desindustrializar sin política industrial complementaria. El argumento 'el SIRA era ineficiente y corrupto' es válido; el 'barrer todo el control sin reemplazar con criterio productivo' es otra discusión." });
       return dims;
     },
     compareProfiles: [
@@ -1684,6 +1680,8 @@ export const MEASURES_BASE = [
     desc: "INTA pasa de organismo descentralizado autárquico a desconcentrado bajo Sec. Bioeconomía del Min. Economía: pierde autonomía institucional y financiera, presidente unipersonal designado por PEN. INTI pierde autonomía: depende de Sec. Industria y Comercio. INASE (semillas) disuelto. INAFCI (agricultura familiar) disuelto. INTA: 75 años, ~6.000 trabajadores, 53 estaciones experimentales. INTI: ~3.000 trabajadores, certificaciones técnicas. INAFCI canalizaba programas para ~250.000 productores familiares.",
     tags: ["Trabajo","Salud","País"],
     fuente: "Boletín Oficial — Decreto 462/2025. CARBAP, Infobae, La Nación, Motivar.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "strong", body: "Eliminación de autonomías institucionales construidas en 75 años (INTA es de 1956). Centralización del poder técnico en el Min. Economía. Pérdida de capacidad de investigación pública aplicada con criterio territorial. Argentina queda como caso atípico vs Brasil (EMBRAPA fortalecida), Chile (INIA con autonomía), Uruguay (INIA con presupuesto creciente)." },
     impact: function(p) {
       const dims = [];
       const enZonaAgro = p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cuyo' || p.zona === 'patagonia' || p.zona === 'pueblo' || p.zona === 'cba_int' || p.zona === 'santafe_int';
@@ -1717,8 +1715,6 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Salud", icon: "❤️", level: "mid",
         body: "INTI hacía certificaciones de seguridad alimentaria, ensayos de productos para el hogar (juguetes, biberones, electrodomésticos, materiales constructivos), equipamiento médico hospitalario y calidad de agua. Sin autonomía técnica, esa función pasa al Min. Economía bajo Sec. Industria y Comercio — riesgo concreto de que productos defectuosos lleguen al mercado, especialmente importaciones aceleradas sin filtro. Casos históricos cuando ANMAT/INTI bajaron capacidad: medicamentos adulterados, agua contaminada, juguetes con plomo." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "strong",
-        body: "Eliminación de autonomías institucionales construidas en 75 años (INTA es de 1956). Centralización del poder técnico en el Min. Economía. Pérdida de capacidad de investigación pública aplicada con criterio territorial. Argentina queda como caso atípico vs Brasil (EMBRAPA fortalecida), Chile (INIA con autonomía), Uruguay (INIA con presupuesto creciente)." });
       return dims;
     },
     compareProfiles: [
@@ -1738,6 +1734,8 @@ export const MEASURES_BASE = [
     desc: "Decreto 333/2025: arancel de importación de celulares 16% → 8% → 0% (15-ene-2026). Mismo esquema para consolas de videojuegos, televisores, monitores y aires acondicionados. Impuestos internos: 17% → 9,5% importados; 0% para fabricados en Tierra del Fuego bajo Ley 19.640. Tierra del Fuego: 190.000 habitantes, 13.000 metalúrgicos directos + 40-50k indirectos. Mirgor 760 despidos + Newsan 1.000 suspensiones + Radio Victoria 130. BGH+NewSan+Mirgor presentaron plan que arriesga 50% de los puestos. 6.000 empleos en riesgo concreto.",
     tags: ["Trabajo","Plata","Industria"],
     fuente: "Boletín Oficial — Decreto 333/2025. Infobae, ADNSUR, Beccar Varela, Fundar.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Decisión de abandonar el régimen industrial fueguino sin política de transición ni reconversión. Argentina sale del segmento de ensamblaje electrónico nacional. Brasil y México mantienen sus equivalentes; nosotros perdimos." },
     impact: function(p) {
       const dims = [];
       if (p.zona === 'patagonia' && (p.ocupacion === 'empleado_priv' || p.ocupacion === 'pyme' || p.ocupacion === 'trab_informal')) {
@@ -1772,8 +1770,6 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Salud", icon: "❤️", level: "soft",
         body: "Productos electrónicos importados sin filtro completo (combinación de eliminación SIRA/SEDI + reducción capacidad INTI + arancel cero): riesgo concreto de productos con baterías defectuosas, cargadores no homologados, materiales con compuestos no permitidos. Importaciones de marcas no consolidadas crecieron 200%+ en 2024-2025." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Decisión de abandonar el régimen industrial fueguino sin política de transición ni reconversión. Argentina sale del segmento de ensamblaje electrónico nacional. Brasil y México mantienen sus equivalentes; nosotros perdimos." });
       return dims;
     },
     compareProfiles: [
@@ -1793,6 +1789,8 @@ export const MEASURES_BASE = [
     desc: "El 14-abr-2025 el Banco Central terminó con el cepo para las personas: cayó el límite de USD 200 por mes y podés comprar dólares libremente. El dólar pasó a flotar dentro de una banda de $1.000 a $1.400 (que se mueve 1% por mes). Las empresas pueden volver a girar ganancias al exterior por los ejercicios desde 2025 y se eliminó el dólar 'blend' que beneficiaba al agro (liquidaban 20% al dólar paralelo). Todo bajo un nuevo acuerdo con el FMI por USD 20.000 millones.",
     tags: ["Plata", "Cambiario", "País"],
     fuente: "Boletín Oficial / BCRA — Comunicaciones \"A\" 8226 y \"A\" 8227 (14-abr-2025), Programa de Estabilización Fase 3. Acuerdo EFF FMI USD 20.000M. Ámbito, Infobae, BCRA.gob.ar.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El esquema descansa en los USD 20.000M del FMI y en que el dólar se quede dentro de la banda. Da previsibilidad para importar y para invertir, pero deja al Banco Central más expuesto: si hay una corrida hacia el techo, tiene que vender reservas para defender los $1.400." },
     impact: function(p) {
       const dims = [];
       const ingresoMedioAlto = p.ingreso === '1.5m_3m' || p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
@@ -1822,8 +1820,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
           body: "Tu ingreso es 100% en pesos, así que cualquier salto del dólar dentro de la banda te golpea sin colchón. La previsibilidad para importar y producir es buena para la economía, pero a vos te llega recién si baja la inflación." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El esquema descansa en los USD 20.000M del FMI y en que el dólar se quede dentro de la banda. Da previsibilidad para importar y para invertir, pero deja al Banco Central más expuesto: si hay una corrida hacia el techo, tiene que vender reservas para defender los $1.400." });
       return dims;
     },
     compareWinners: [
@@ -1896,6 +1892,8 @@ export const MEASURES_BASE = [
     desc: "El Impuesto PAÍS, que cobraba hasta 17,5% sobre importaciones y encarecía el dólar de viajes y servicios del exterior, venció el 22-dic-2024 y el Gobierno no lo prorrogó. Resultado: importar bienes salió 7,5% a 17,5% más barato; el dólar tarjeta para turismo y compras en el exterior bajó del 60% al 30% de recargo (solo quedó el 30% a cuenta de Ganancias); y servicios como Netflix o Spotify dejaron de pagar ese impuesto. Para el Estado es una pérdida grande: equivale a 1,1% del PBI (unos $5,4 billones según el Presupuesto 2025).",
     tags: ["Plata", "Impuestos", "País", "Cambiario"],
     fuente: "Boletín Oficial — Ley 27.541 (vencimiento sin prórroga, 22-dic-2024). RG ARCA 5602/2024 (eliminó pago a cuenta 95% de importaciones, 25-nov-2024). Presupuesto 2025. Infobae, Ámbito.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "El Tesoro resigna ingresos por 1,1% del PBI (unos $5,4 billones). Es una baja de impuestos real, pero implica que esa plata tiene que salir de otro lado: más ajuste de gasto o más presión sobre otros tributos." },
     impact: function(p) {
       const dims = [];
       const ingresoMedioAlto = p.ingreso === '1.5m_3m' || p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
@@ -1913,8 +1911,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
           body: "Si tu PyME fabrica algo que compite con lo importado, perdés: el producto de afuera ahora llega más barato y te aprieta el margen. La baja de costos importadores es buena para el que compra y mala para el que produce localmente." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "El Tesoro resigna ingresos por 1,1% del PBI (unos $5,4 billones). Es una baja de impuestos real, pero implica que esa plata tiene que salir de otro lado: más ajuste de gasto o más presión sobre otros tributos." });
       return dims;
     },
     compareProfiles: [
@@ -1961,6 +1957,8 @@ export const MEASURES_BASE = [
     desc: "El DNU 70/2023 derogó la Ley 26.737 (de 2011), que protegía la propiedad nacional sobre el suelo rural. Con esa derogación cayó el tope del 15% de tierras rurales que podían estar en manos extranjeras, el límite de 1.000 hectáreas continuas por persona extranjera y la prohibición de que extranjeros fueran dueños de campos con cuerpos de agua importantes. También perdió fuerza el Registro Nacional de Tierras Rurales como herramienta de control. Para las locaciones rurales en general: sin plazo mínimo obligatorio, se puede pactar en dólares y sin índice fijo de ajuste.",
     tags: ["Trabajo", "Estabilidad", "Vivienda", "País"],
     fuente: "Boletín Oficial — DNU 70/2023 (21-dic-2023), derogación de la Ley 26.737 (Régimen de Protección al Dominio Nacional sobre Tierras Rurales). También derogó la Ley 27.551 de locaciones.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Cae el control estatal sobre quién es dueño del suelo rural, incluso en zonas de frontera y con recursos hídricos estratégicos. Es una ganancia de libertad para invertir, pero una pérdida de herramientas de soberanía territorial sobre tierra y agua." },
     impact: function(p) {
       const dims = [];
       const zonaRural = p.zona === 'nea' || p.zona === 'noa' || p.zona === 'cba_int' || p.zona === 'santafe_int' || p.zona === 'pueblo' || p.zona === 'cuyo' || p.zona === 'patagonia';
@@ -1974,8 +1972,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Vivienda", icon: "🏠", level: "soft",
           body: "En el ámbito rural el alquiler de la vivienda asociada al campo también quedó sin las protecciones de la ley derogada: sin plazo mínimo garantizado y con ajuste libre." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "Cae el control estatal sobre quién es dueño del suelo rural, incluso en zonas de frontera y con recursos hídricos estratégicos. Es una ganancia de libertad para invertir, pero una pérdida de herramientas de soberanía territorial sobre tierra y agua." });
       if ((p.ingreso === '6m_15m' || p.ingreso === 'mas_15m') && (p.ocupacion === 'pyme' || p.ocupacion === 'autonomo')) {
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
           body: "Si sos gran propietario rural o inversor agro/forestal, ganás libertad: podés vender o arrendar a quien quieras, en la moneda que quieras y sin el tope de hectáreas. La tierra como activo se vuelve más líquida y revalorizable." });
@@ -1997,6 +1993,8 @@ export const MEASURES_BASE = [
     desc: "IMPSA (Industrias Metalúrgicas Pescarmona, Mendoza) fabrica turbinas hidroeléctricas y aerogeneradores: es un proveedor estratégico de energía. La Ley Bases 27.742 la puso en la lista de empresas a privatizar; el 11-feb-2025 se traspasaron las acciones al grupo estadounidense ARC Energy por unos USD 27 millones (quedó con el 84,9% de las acciones clase C). Era 21% del Estado Nacional, 21% de Mendoza y 58% de acreedores, y emplea alrededor de 650-700 personas. Fue la primera privatización concretada de la gestión Milei. El comprador se comprometió a mantener los puestos, pero queda el riesgo de reestructuración.",
     tags: ["Trabajo", "Estabilidad", "País"],
     fuente: "Boletín Oficial — Ley 27.742 (Ley Bases) art. 7° inc. b (8-jul-2024). Adjudicación y traspaso de acciones a ARC Energy (11-feb-2025), USD 27M. Infobae, Los Andes, El Economista.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado deja de controlar un fabricante estratégico de equipos de energía (turbinas para represas, aerogeneradores). El Tesoro cobra el precio de venta y se saca de encima una empresa deficitaria, pero el país resigna capacidad tecnológica soberana en un sector clave." },
     impact: function(p) {
       const dims = [];
       const enMendoza = p.zona === 'mendoza' || p.zona === 'cuyo';
@@ -2010,15 +2008,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
           body: "Mendoza pierde una palanca de desarrollo industrial propia. IMPSA daba trabajo calificado (ingeniería, metalurgia) que sostiene movilidad ascendente en la provincia. Su futuro pasa a depender de decisiones tomadas afuera." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado deja de controlar un fabricante estratégico de equipos de energía (turbinas para represas, aerogeneradores). El Tesoro cobra el precio de venta y se saca de encima una empresa deficitaria, pero el país resigna capacidad tecnológica soberana en un sector clave." });
       return dims;
     },
     compareProfiles: [
       { name: "Operario / técnico de IMPSA", sub: "Empleado priv. · Mendoza", badges: { Trabajo: "mid", Estabilidad: "mid" } },
       { name: "Proveedor metalúrgico mendocino", sub: "PyME · Mendoza", badges: { Trabajo: "mid", "Movilidad social": "soft" } },
-      { name: "Habitante de Mendoza", sub: "Empleado pub. · Mendoza", badges: { "Movilidad social": "soft" } },
-      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Habitante de Mendoza", sub: "Empleado pub. · Mendoza", badges: { "Movilidad social": "soft" } }
     ]
   },
   {
@@ -2029,6 +2024,8 @@ export const MEASURES_BASE = [
     desc: "El Decreto 696/2024 disolvió el INADI (Instituto Nacional contra la Discriminación, la Xenofobia y el Racismo). Sus funciones pasaron a la Subsecretaría de Derechos Humanos del Ministerio de Justicia, una estructura mucho más chica. Trabajaban allí cerca de 400 personas. En la práctica desaparece la vía administrativa específica y rápida para tramitar una denuncia por discriminación: ahora la víctima tiene que ir a la Justicia o a la órbita reducida de DDHH del Ministerio.",
     tags: ["Estabilidad", "País", "Salud"],
     fuente: "Boletín Oficial — Decreto 696/2024 (6-ago-2024), disolución del INADI. Chequeado, El Litoral, Argentina.gob.ar.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El ahorro fiscal es marginal (del orden de $5.000M anuales). El efecto concreto es menos capacidad estatal especializada para atender discriminación: las funciones siguen formalmente, pero con mucha menos estructura para ejecutarlas." },
     impact: function(p) {
       const dims = [];
       const tieneDiscap = p.discapacidad && p.discapacidad !== 'no';
@@ -2042,15 +2039,12 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
         body: "Para cualquiera que sufra discriminación (por origen, identidad, religión, condición de salud), se pierde el organismo que tramitaba esas denuncias de forma específica y orientaba a la víctima. Queda la Justicia o una oficina de DDHH mucho más reducida." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El ahorro fiscal es marginal (del orden de $5.000M anuales). El efecto concreto es menos capacidad estatal especializada para atender discriminación: las funciones siguen formalmente, pero con mucha menos estructura para ejecutarlas." });
       return dims;
     },
     compareProfiles: [
       { name: "Persona con discapacidad y CUD", sub: "Empleado priv. · Discap. propia", badges: { Estabilidad: "mid" } },
       { name: "Trabajador del INADI", sub: "Empleado pub. · CABA", badges: { Trabajo: "soft", Estabilidad: "soft" } },
-      { name: "Persona migrante", sub: "Trabajo informal · GBA Sur", badges: { Estabilidad: "soft" } },
-      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Persona migrante", sub: "Trabajo informal · GBA Sur", badges: { Estabilidad: "soft" } }
     ]
   },
   {
@@ -2083,8 +2077,7 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Docente de provincia pobre", sub: "Empleado pub. · NOA", badges: { Plata: "strong", Estabilidad: "strong", Trabajo: "mid" } },
       { name: "Docente de provincia rica", sub: "Empleado pub. · CABA", badges: { Plata: "strong", Trabajo: "mid" } },
-      { name: "Familia con hijos en escuela pública", sub: "Trabajo informal · ≤$700k · Hijos", badges: { Educación: "soft" } },
-      { name: "Contribuyente que mira el ajuste", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Familia con hijos en escuela pública", sub: "Trabajo informal · ≤$700k · Hijos", badges: { Educación: "soft" } }
     ]
   },
   {
@@ -2095,6 +2088,8 @@ export const MEASURES_BASE = [
     desc: "La Ley 27.743 subió fuerte los montos a partir de los cuales evadir impuestos se vuelve un delito penal (no solo una infracción administrativa). La evasión simple pasó de $1.500.000 a $100.000.000 por tributo y por año; la evasión agravada saltó a unos $1.000.000.000. Son aumentos de hasta 67 veces. En la práctica, mucha evasión que antes podía terminar en una causa penal ahora solo genera reclamo administrativo de ARCA. Beneficia a contribuyentes medianos y grandes; debilita el efecto disuasorio para el mediano plazo.",
     tags: ["Plata", "Impuestos", "Estabilidad"],
     fuente: "Boletín Oficial — Ley 27.743 Título III (Régimen Penal Tributario, 8-jul-2024), modifica la Ley 27.430 / 24.769. Reglam. Decreto 608/2024. Derecho Penal Online, UCIP.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Actualizar montos congelados desde 2017 era razonable por la inflación, pero el salto (hasta 67x) deja sin amenaza penal a una franja amplia de evasión mediana. Menos miedo a la cárcel puede traducirse en más evasión y menos recaudación con el tiempo." },
     impact: function(p) {
       const dims = [];
       const ingresoAlto = p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
@@ -2111,8 +2106,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
           body: "Si sos asalariado o monotributista chico que cumple, esto te toca indirecto: el Estado pierde una herramienta para disuadir a los grandes evasores, lo que a mediano plazo significa menos recaudación y una competencia más desleal frente al que ahora puede evadir sin riesgo penal." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Actualizar montos congelados desde 2017 era razonable por la inflación, pero el salto (hasta 67x) deja sin amenaza penal a una franja amplia de evasión mediana. Menos miedo a la cárcel puede traducirse en más evasión y menos recaudación con el tiempo." });
       return dims;
     },
     compareProfiles: [
@@ -2131,6 +2124,8 @@ export const MEASURES_BASE = [
     desc: "Sobre la segmentación de subsidios (N1 ingresos altos, N2 bajos, N3 medios), el Gobierno profundizó la quita. Los N1 pasaron a pagar el 100% del costo de la energía. A los N2 (ingresos bajos) les subsidian solo los primeros tramos de consumo y el resto va a precio pleno; a los N3 (medios) les achicaron el tope subsidiado (de 400 a 250 kWh de electricidad por mes). Con los reajustes mensuales atados a la inflación y al precio mayorista, las boletas acumularon subas reales muy fuertes en 2024-2025, sobre todo para N1 y parte de N3.",
     tags: ["Plata", "Vivienda", "Calidad de servicios"],
     fuente: "Boletín Oficial — Resoluciones Secretaría de Energía 90/2024 (electricidad) y 91/2024 (gas), jun-2024, sobre la segmentación del Decreto 332/22. Chequeado, Ámbito, EconoJournal.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El objetivo fiscal es real: los subsidios energéticos bajaron de ~2,3% a cerca de 0,5% del PBI. Eso ordena las cuentas del Estado, pero traslada el costo a las boletas de los hogares, sobre todo a la clase media urbana." },
     impact: function(p) {
       const dims = [];
       const ingresoAlto = p.ingreso === '3m_6m' || p.ingreso === '6m_15m' || p.ingreso === 'mas_15m';
@@ -2159,8 +2154,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
           body: "Muchos jubilados quedaron sin calificar como N2 por superar apenas el umbral de ingreso, y enfrentan boletas a precio cada vez más cercano al costo pleno con un haber que no acompaña. El servicio es el mismo, pero pesa mucho más en el bolsillo." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El objetivo fiscal es real: los subsidios energéticos bajaron de ~2,3% a cerca de 0,5% del PBI. Eso ordena las cuentas del Estado, pero traslada el costo a las boletas de los hogares, sobre todo a la clase media urbana." });
       return dims;
     },
     compareWinners: [
@@ -2185,6 +2178,8 @@ export const MEASURES_BASE = [
     desc: "La AFIP dejó de existir como ente y fue reemplazada por ARCA, ente autárquico en la órbita del Ministerio de Economía, con un Director Ejecutivo designado por el Presidente por 4 años, más la DGI (impositiva) y la DGA (aduana). El decreto recortó cerca del 45% de las autoridades superiores y 31% de los niveles inferiores. ARCA es la sucesora legal de la AFIP: las claves, CUIT y obligaciones de los contribuyentes siguen vigentes.",
     tags: ["Trabajo", "Impuestos", "Estabilidad"],
     fuente: "Boletín Oficial — Decreto 953/2024 (25-oct-2024). Datos de estructura: Argentina.gob.ar (resumen oficial), El Economista, Consejo Profesional de Ciencias Económicas.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El ahorro presupuestario salarial es real y el Estado se saca de encima una estructura sobredimensionada. El riesgo de corto plazo es la capacidad de fiscalizar y de controlar la aduana: menos personal jerárquico en frontera y la curva de aprendizaje del nuevo organismo pueden dejar baches mientras se reordena." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'empleado_pub') {
@@ -2197,15 +2192,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Tiempo", icon: "⏰", level: "soft",
           body: "ARCA es la sucesora legal de la AFIP: tu CUIT, tus claves y tus obligaciones siguen igual. Pero todo cambio de organismo trae demoras de transición (sistemas, nombres, ventanillas). Si tenés un trámite en curso conviene seguirlo de cerca durante el traspaso." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El ahorro presupuestario salarial es real y el Estado se saca de encima una estructura sobredimensionada. El riesgo de corto plazo es la capacidad de fiscalizar y de controlar la aduana: menos personal jerárquico en frontera y la curva de aprendizaje del nuevo organismo pueden dejar baches mientras se reordena." });
       return dims;
     },
     compareProfiles: [
       { name: "Empleado jerárquico de AFIP/ARCA", sub: "Empleado pub. · CABA", badges: { Trabajo: "mid", Estabilidad: "mid" } },
       { name: "Monotributista con trámites en curso", sub: "Monotrib. · interior", badges: { Tiempo: "soft" } },
-      { name: "PyME que opera con la aduana", sub: "Empresario PyME · CABA", badges: { Tiempo: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "PyME que opera con la aduana", sub: "Empresario PyME · CABA", badges: { Tiempo: "soft" } }
     ]
   },
 
@@ -2217,6 +2209,8 @@ export const MEASURES_BASE = [
     desc: "El DNU endurece la política migratoria: habilita expulsar a extranjeros con antecedentes penales antes de sentencia firme (delitos con pena menor a 5 años bastan para denegar ingreso o deportar), prohíbe el reingreso por 5 años (o de forma permanente en delitos graves), exige 2 años continuos de residencia sin salidas para regularizarse y habilita arancelar la salud y la educación pública para no residentes. El ingreso y egreso solo puede hacerse por pasos habilitados.",
     tags: ["Estabilidad", "Trabajo", "Salud", "País"],
     fuente: "Boletín Oficial — DNU 366/2025 (29-may-2025), modifica Ley 25.871 y Ley 346. Análisis: EY Argentina, La Causa Laboral, El Diario de San Luis.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El debate de fondo es el debido proceso: deportar antes de una condena firme, y por delitos con pena menor a 5 años, reduce garantías que la Constitución reconoce a toda persona, no solo a los ciudadanos. Es una medida con respaldo de parte de la sociedad y con objeciones serias de organismos de derechos humanos." },
     impact: function(p) {
       const dims = [];
       const frontera = ['nea', 'noa', 'cuyo'].includes(p.zona);
@@ -2234,8 +2228,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "soft",
           body: "En familias mixtas (un hijo argentino con padre o madre extranjero deportable) la expulsión antes de sentencia firme puede separar a la familia. Choca con el interés superior del niño de la Convención de los Derechos del Niño, que en Argentina tiene rango constitucional." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El debate de fondo es el debido proceso: deportar antes de una condena firme, y por delitos con pena menor a 5 años, reduce garantías que la Constitución reconoce a toda persona, no solo a los ciudadanos. Es una medida con respaldo de parte de la sociedad y con objeciones serias de organismos de derechos humanos." });
       return dims;
     },
     compareWinners: [
@@ -2244,9 +2236,9 @@ export const MEASURES_BASE = [
       "Argentinos que valoran expulsión rápida de extranjeros con antecedentes"
     ],
     compareProfiles: [
-      { name: "Ciudadano que pide más orden", sub: "Empleado priv. · CABA", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Ciudadano que pide más orden", sub: "Empleado priv. · CABA", badges: { Estabilidad: "pos_soft" } },
       { name: "Trabajador de provincia de frontera", sub: "Empleado priv. · NEA", badges: { Trabajo: "mid", Estabilidad: "pos_soft" } },
-      { name: "Familia mixta con hijo argentino", sub: "Trabajo informal · NEA · con hijos", badges: { "Vida familiar / ocio": "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Familia mixta con hijo argentino", sub: "Trabajo informal · NEA · con hijos", badges: { "Vida familiar / ocio": "soft" } },
       { name: "Paciente de hospital público de frontera", sub: "Hosp. público · NOA", badges: { Salud: "mid" } }
     ]
   },
@@ -2259,6 +2251,8 @@ export const MEASURES_BASE = [
     desc: "El decreto autorizó la privatización total de Belgrano Cargas y Logística S.A. mediante desintegración vertical: remate público del material rodante (vagones y locomotoras) y concesión de obra pública para las vías, inmuebles y talleres. La empresa opera las líneas General Belgrano, San Martín y Urquiza, mueve unos 6 millones de toneladas al año (granos y minerales del NOA hacia los puertos) y tiene alrededor de 5.000 empleados.",
     tags: ["Trabajo", "Estabilidad", "País"],
     fuente: "Boletín Oficial — Decreto 67/2025 (10-feb-2025), bajo Ley 27.742 art. 7°. Datos operativos: Abogados.com.ar, Perfil, Palabras del Derecho.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro cobra el precio de venta y deja de subsidiar una operadora deficitaria. A cambio, un insumo logístico crítico para sacar los granos del país queda en manos privadas: si la red se fragmenta entre lo rentable y lo que no lo es, el costo recae sobre las regiones que menos pesan comercialmente." },
     impact: function(p) {
       const dims = [];
       const traza = ['noa', 'nea', 'santafe_int', 'cba_int', 'rosario', 'tucuman'].includes(p.zona);
@@ -2274,15 +2268,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
           body: "Si tu actividad es agro o logística en el NOA, una operadora privada que invierta puede mejorar la eficiencia de la bajada al puerto y bajar tu costo de flete. Es un beneficio condicional: depende de que el concesionario invierta de verdad en la red y no solo la explote." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro cobra el precio de venta y deja de subsidiar una operadora deficitaria. A cambio, un insumo logístico crítico para sacar los granos del país queda en manos privadas: si la red se fragmenta entre lo rentable y lo que no lo es, el costo recae sobre las regiones que menos pesan comercialmente." });
       return dims;
     },
     compareProfiles: [
       { name: "Ferroviario del Belgrano Cargas", sub: "Empleado priv. · NOA", badges: { Trabajo: "mid", "Movilidad social": "soft" } },
       { name: "Pueblo sobre la traza ferroviaria", sub: "Trabajo informal · NOA", badges: { "Movilidad social": "soft" } },
-      { name: "Productor agro del NOA", sub: "Empresario PyME · NOA", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Productor agro del NOA", sub: "Empresario PyME · NOA", badges: { Estabilidad: "pos_soft" } }
     ]
   },
 
@@ -2294,6 +2285,8 @@ export const MEASURES_BASE = [
     desc: "El decreto autorizó vender, por concurso público nacional e internacional y sin precio base, las cuatro represas del Comahue que ENARSA y NASA reorganizaron en sociedades anónimas: Alicurá, El Chocón, Cerros Colorados y Piedra del Águila (98% ENARSA, 2% NASA). Generan cerca del 15% de la electricidad del país. El decreto reemplazó al 564/2025, anulado por defectos formales en el informe que avalaba la privatización.",
     tags: ["Plata", "Vivienda", "País", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decreto 590/2025 (19-ago-2025), deja sin efecto el Decreto 564/2025. Activos y proceso: Barreiro Abogados, Perfil, NODAL.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "El Tesoro cobra el precio de venta, pero el país resigna control sobre su generación eléctrica más eficiente. Este decreto reemplazó al 564/2025, anulado por defectos formales en el informe que avalaba la privatización: la operación arrastra cuestionamientos de procedimiento." },
     impact: function(p) {
       const dims = [];
       if (p.zona === 'patagonia') {
@@ -2304,15 +2297,12 @@ export const MEASURES_BASE = [
         body: "Las represas del Comahue generan cerca del <strong>15% de la electricidad del país</strong> y son la fuente más barata (una vez construida, el agua no se paga). El Estado las vende por concurso <em>sin base</em>, es decir sin precio mínimo. Si el privado captura esa renta barata, a mediano plazo hay menos margen para contener tu boleta de luz." });
       dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
         body: "La generación hidro es la que estabiliza el sistema en los picos de demanda. Que pase a privados no cambia tu luz mañana, pero sí quién decide cuándo y cómo se genera la energía más barata del país, algo que repercute en el precio mayorista que termina en tu factura." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "El Tesoro cobra el precio de venta, pero el país resigna control sobre su generación eléctrica más eficiente. Este decreto reemplazó al 564/2025, anulado por defectos formales en el informe que avalaba la privatización: la operación arrastra cuestionamientos de procedimiento." });
       return dims;
     },
     compareProfiles: [
       { name: "Habitante del Comahue", sub: "Empleado pub. · Patagonia", badges: { Trabajo: "mid", Plata: "soft" } },
       { name: "Usuario eléctrico común", sub: "Empleado priv. · CABA", badges: { Plata: "soft", "Calidad de servicios": "soft" } },
-      { name: "Familia que mira la boleta de luz", sub: "Trabajo informal · $700k-1,5M", badges: { Plata: "soft" } },
-      { name: "Contribuyente que mira soberanía", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "mid" } }
+      { name: "Familia que mira la boleta de luz", sub: "Trabajo informal · $700k-1,5M", badges: { Plata: "soft" } }
     ]
   },
 
@@ -2324,6 +2314,8 @@ export const MEASURES_BASE = [
     desc: "Se declaró a AySA sujeta a privatización y se lanzó la licitación pública nacional e internacional para vender el 90% del capital (primero al menos el 51% a un operador estratégico, el resto en bolsa); el 10% queda para los trabajadores vía Programa de Propiedad Participada. AySA presta agua potable y cloacas a unos 14 millones de personas en CABA y 26 partidos del GBA. La presentación de ofertas se previó hasta el 27-ago-2026.",
     tags: ["Plata", "Vivienda", "Calidad de servicios", "Salud"],
     fuente: "Boletín Oficial — Decreto 494/2025 (22-jul-2025) y Resolución Ministerio de Economía 704/2026 (15-may-2026). Esquema de venta: Ámbito, iAgua, AySA (sección Privatización).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado deja de poner subsidios y cobra el precio de venta; el 10% de las acciones queda para los trabajadores (Programa de Propiedad Participada). El punto en discusión es quién regula, y con qué fuerza, la tarifa y la calidad de un servicio esencial y monopólico como el agua." },
     impact: function(p) {
       const dims = [];
       const amba = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste'].includes(p.zona);
@@ -2337,8 +2329,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Salud", icon: "❤️", level: "mid",
           body: "En barrios populares del GBA, donde la red de agua y cloacas todavía es precaria, que el privado priorice rentabilidad puede dejar postergada la extensión de cañerías. Agua segura y cloacas son salud directa: su demora se mide en enfermedades evitables." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado deja de poner subsidios y cobra el precio de venta; el 10% de las acciones queda para los trabajadores (Programa de Propiedad Participada). El punto en discusión es quién regula, y con qué fuerza, la tarifa y la calidad de un servicio esencial y monopólico como el agua." });
       return dims;
     },
     compareWinners: [
@@ -2349,8 +2339,7 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Familia del GBA usuaria de AySA", sub: "Empleado priv. · GBA Sur", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
       { name: "Hogar de barrio popular sin cloacas", sub: "Trabajo informal · ≤$700k · GBA", badges: { Salud: "mid", Plata: "mid" } },
-      { name: "Usuario de CABA", sub: "Empleado priv. · CABA", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
-      { name: "Contribuyente que mira las cuentas", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Usuario de CABA", sub: "Empleado priv. · CABA", badges: { Plata: "mid", "Calidad de servicios": "soft" } }
     ]
   },
 
@@ -2362,6 +2351,8 @@ export const MEASURES_BASE = [
     desc: "El Congreso sancionó la Ley 27.756, que daba a los jubilados una recomposición del 8,1% para reparar el salto de inflación de comienzos de 2024 que la nueva fórmula no trasladó al haber, más un bono en el cálculo. El Poder Ejecutivo la vetó en forma total por el Decreto 782/2024 y el veto se sostuvo porque en el Congreso no se reunió la mayoría especial para insistir.",
     tags: ["Plata", "Jubilación", "Estabilidad"],
     fuente: "Boletín Oficial — Decreto 782/2024 (veto, 2-sep-2024) sobre Ley 27.756. Datos: SAIJ, La Nación, Infobae, Centro CEPA.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El objetivo fiscal es explícito: el Gobierno estimó que aplicar la ley costaba el equivalente a cerca de medio punto del PBI por año y lo usó como argumento del veto para sostener el superávit. El ahorro del Tesoro es real; lo paga el poder de compra de 7,2 millones de jubilados." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'jubilado_min') {
@@ -2382,8 +2373,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "soft",
           body: "Si tenés un adulto mayor a cargo, el 8,1% que no se recompuso es plata que sale de tu bolsillo para sostenerlo. El veto traslada parte del costo del ajuste previsional a las familias que ayudan a sus jubilados." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El objetivo fiscal es explícito: el Gobierno estimó que aplicar la ley costaba el equivalente a cerca de medio punto del PBI por año y lo usó como argumento del veto para sostener el superávit. El ahorro del Tesoro es real; lo paga el poder de compra de 7,2 millones de jubilados." });
       return dims;
     },
     compareProfiles: [
@@ -2402,6 +2391,8 @@ export const MEASURES_BASE = [
     desc: "Junto con la nueva fórmula de movilidad mensual atada a la inflación, el Gobierno fijó un bono de refuerzo de $70.000 para quienes cobran el haber mínimo y lo fue prorrogando mes a mes sin actualizarlo nunca. Desde marzo de 2024 el bono perdió cerca del 49% de su poder de compra: representaba alrededor del 30% del ingreso de un jubilado de la mínima y hoy pesa apenas un 12-13%.",
     tags: ["Plata", "Jubilación", "Vivienda", "Salud"],
     fuente: "Boletín Oficial — Decreto 274/2024 y decretos de prórroga del refuerzo previsional (440/2024, 552/2024, 783/2024, 47/2025 y sucesivos). Datos de licuación: Chequeado, Infobae, Zona Norte Hoy.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Congelar el bono en lugar de actualizarlo es una forma silenciosa de ajuste: se licúa solo con la inflación, sin necesidad de un decreto que lo recorte. El Tesoro ahorra alrededor de medio punto del PBI; lo pagan 4,5 millones de jubilados de la mínima." },
     impact: function(p) {
       const dims = [];
       const cobraBono = p.ocupacion === 'jubilado_min' || p.ocupacion === 'pensionado';
@@ -2425,8 +2416,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Carga mental", icon: "🧠", level: "soft",
           body: "Mantener el Subsidio Social PAMI exige renovar trámites; sumado a un bono que pierde valor cada mes, la planificación del gasto se vuelve un cálculo permanente de qué se puede pagar y qué no." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Congelar el bono en lugar de actualizarlo es una forma silenciosa de ajuste: se licúa solo con la inflación, sin necesidad de un decreto que lo recorte. El Tesoro ahorra alrededor de medio punto del PBI; lo pagan 4,5 millones de jubilados de la mínima." });
       return dims;
     },
     compareProfiles: [
@@ -2445,14 +2434,14 @@ export const MEASURES_BASE = [
     desc: "El DNU desreguló el sector audiovisual: cayó el tope a la cantidad de licencias que un mismo dueño puede tener a nivel nacional, se habilitó que servicios de TV paga e internet satelital (DirecTV, Claro, Starlink) operen sin las restricciones cruzadas anteriores, se reclasificó la TV por internet y los servicios satelitales bajo el marco más laxo de Argentina Digital, y cayó el piso obligatorio de contenido nacional, independiente y local en TV y radio.",
     tags: ["Trabajo", "País", "Calidad de servicios"],
     fuente: "Boletín Oficial — DNU 70/2023 (21-dic-2023), capítulo de desregulación que modifica Ley 26.522 y Ley 27.078. Concentración del mercado: informes sectoriales y gremiales (SiPreBA, FATPREN, SATSAID).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "Sin el piso de producción local y con el tope de licencias caído, la pluralidad informativa en el interior se debilita. La contracara concreta: los servicios satelitales (Starlink, DirecTV) entran sin restricciones cruzadas y pueden llevar internet a zonas rurales que no lo tenían, aunque a un costo (equipo más abono en dólares) que no es accesible para todos." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
       if (interior) {
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
           body: "Cae el tope que impedía a un mismo dueño acumular licencias en todo el país. La radio o el canal de tu zona puede ser comprado por una red nacional y pasar a emitir desde Buenos Aires: menos noticias del pueblo, menos voz local. En Argentina ya hay alta concentración: cerca de 3 grupos manejan alrededor del 80% del mercado de medios pagos." });
-        dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-          body: "Sin el piso de producción local y con el tope de licencias caído, la pluralidad informativa en el interior se debilita. La contracara concreta: los servicios satelitales (Starlink, DirecTV) entran sin restricciones cruzadas y pueden llevar internet a zonas rurales que no lo tenían, aunque a un costo (equipo más abono en dólares) que no es accesible para todos." });
       }
       if ((p.ocupacion === 'monotrib' || p.ocupacion === 'autonomo' || p.ocupacion === 'trab_informal') && interior) {
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
@@ -2468,9 +2457,9 @@ export const MEASURES_BASE = [
       return dims;
     },
     compareProfiles: [
-      { name: "Periodista o técnico de medios del interior", sub: "Monotrib. · NEA", badges: { Trabajo: "mid", "Calidad de servicios": "mid", "País / Equilibrio institucional": "mid" } },
-      { name: "Familia de pueblo chico", sub: "Trabajo informal · pueblo", badges: { "Calidad de servicios": "mid", "País / Equilibrio institucional": "mid" } },
-      { name: "Usuario rural sin internet (Starlink)", sub: "Autónomo · Patagonia", badges: { "Calidad de servicios": "mid", "País / Equilibrio institucional": "mid" } },
+      { name: "Periodista o técnico de medios del interior", sub: "Monotrib. · NEA", badges: { Trabajo: "mid", "Calidad de servicios": "mid" } },
+      { name: "Familia de pueblo chico", sub: "Trabajo informal · pueblo", badges: { "Calidad de servicios": "mid" } },
+      { name: "Usuario rural sin internet (Starlink)", sub: "Autónomo · Patagonia", badges: { "Calidad de servicios": "mid" } },
       { name: "Usuario de medios en CABA", sub: "Empleado priv. · CABA", badges: { "Calidad de servicios": "soft" } }
     ]
   },
@@ -2483,6 +2472,8 @@ export const MEASURES_BASE = [
     desc: "El DNU derogó la Ley de Góndolas, que obligaba a los supermercados a reservar el 25% del espacio para PyMEs, prohibía que un mismo grupo económico ocupara más del 30% de la góndola, garantizaba precios visibles y comparables y prohibía cobros por exhibición. Sin esas reglas, las cadenas vuelven a negociar libremente con las marcas, sin techo de espacio ni obligación de informar su estructura de costos.",
     tags: ["Plata", "Trabajo", "Calidad de servicios"],
     fuente: "Boletín Oficial — DNU 70/2023 (21-dic-2023), deroga Ley 27.545. Alcance de la ley derogada: Comercio y Justicia, WSC Legal, PAGBAM Abogados.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Gobierno deja de intervenir en cómo se ordena la góndola y las empresas no tienen que informar su estructura de costos. Ganan las grandes cadenas (Coto, Carrefour, Día, Cencosud) y las marcas líderes (Arcor, Molinos, Mastellone, Unilever); pierden las PyMEs alimenticias y la política de variedad local." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'pyme' || p.ocupacion === 'monotrib') {
@@ -2499,12 +2490,10 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
           body: "Si comprás en grandes ciudades con varias cadenas, en lo inmediato podés ver más promociones de marcas líderes (descuentos cruzados por exclusividad). Es un beneficio acotado: la contracara es menos competencia de marcas chicas que solían presionar los precios hacia abajo." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Gobierno deja de intervenir en cómo se ordena la góndola y las empresas no tienen que informar su estructura de costos. Ganan las grandes cadenas (Coto, Carrefour, Día, Cencosud) y las marcas líderes (Arcor, Molinos, Mastellone, Unilever); pierden las PyMEs alimenticias y la política de variedad local." });
       return dims;
     },
     compareProfiles: [
-      { name: "PyME alimenticia regional", sub: "Empresario PyME · interior", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "PyME alimenticia regional", sub: "Empresario PyME · interior", badges: { Trabajo: "mid" } },
       { name: "Consumidor de pueblo con una sola cadena", sub: "Trabajo informal · pueblo", badges: { "Calidad de servicios": "soft" } },
       { name: "Consumidor de gran ciudad", sub: "Empleado priv. · CABA", badges: { Plata: "pos_soft" } },
       { name: "Productor cooperativo", sub: "Monotrib. · interior", badges: { Trabajo: "mid" } }
@@ -2519,6 +2508,8 @@ export const MEASURES_BASE = [
     desc: "El decreto llevó a 0% los derechos de exportación (retenciones) para el producto de la faena de vaca (categorías A, B, C, D y E), bajó el resto de la carne vacuna al 6,75% y las menudencias al 3,75%, dentro de una reducción general del 25% a las proteínas animales; también eliminó retenciones a la cadena porcina y láctea. Al hacer más atractivo exportar, presiona el precio interno hacia arriba. El costo fiscal de toda la baja agroindustrial se estimó en unos USD 130 millones.",
     tags: ["Plata", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decreto 697/2024 (6-ago-2024). Detalle de alícuotas y costo fiscal: Valor Carne, El Rural, Infocampo, Tristán y Asociados.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro resigna recaudación (el costo fiscal de toda la baja agroindustrial se estimó en unos USD 130 millones sobre lo tributado en 2023) a cambio de competitividad exportadora y divisas. El precio de la mesa argentina queda más atado al valor internacional de la carne." },
     impact: function(p) {
       const dims = [];
       const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
@@ -2535,15 +2526,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
           body: "Si tu actividad está ligada a la ganadería o a los frigoríficos, la quita de retenciones mejora el margen por kilo exportado y se traslada en parte al precio que recibe el productor. Es un beneficio real para la cadena cárnica, sobre todo la exportadora." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro resigna recaudación (el costo fiscal de toda la baja agroindustrial se estimó en unos USD 130 millones sobre lo tributado en 2023) a cambio de competitividad exportadora y divisas. El precio de la mesa argentina queda más atado al valor internacional de la carne." });
       return dims;
     },
     compareProfiles: [
       { name: "Familia que vive del asado", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
       { name: "Hogar de ingresos altos", sub: "Empleado priv. · $6-15M", badges: { Plata: "soft" } },
-      { name: "Productor ganadero / frigorífico", sub: "Empresario PyME · interior", badges: { Estabilidad: "pos_soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Productor ganadero / frigorífico", sub: "Empresario PyME · interior", badges: { Estabilidad: "pos_soft" } }
     ]
   },
 
@@ -2555,6 +2543,8 @@ export const MEASURES_BASE = [
     desc: "El Ejecutivo prorrogó por tercera vez consecutiva la intervención de Radio y Televisión Argentina SAU (TV Pública, Radio Nacional, Encuentro, Pakapaka) y de Contenidos Artísticos e Informativos SAU, ahora desde el 2 de febrero de 2026 hasta el 1 de febrero de 2027, y ratificó como interventor a Carlos María Curci González. La intervención reemplaza al directorio independiente que preveía la ley: el interventor lo designa y responde al Poder Ejecutivo. En paralelo, la gestión busca unas 600 salidas por retiros en los medios públicos.",
     tags: ["Trabajo", "País", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decreto 79/2026 (2-feb-2026), prórroga de la intervención dispuesta originalmente por Decisión Administrativa y sostenida en el art. 48 del DNU 70/2023. Retiros y plan de salidas: El Economista, Infobae, Ámbito, BAE Negocios.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Es la <strong>tercera prórroga consecutiva</strong> sin definir el destino de los medios públicos. Un interventor designado por el Ejecutivo, en lugar de un directorio plural, concentra la línea editorial en el Gobierno de turno. Gana el control político directo y el ahorro de una estructura más chica; pierde la pluralidad informativa y la audiencia que solo llega a la TV pública por aire." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
@@ -2573,15 +2563,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "soft",
           body: "Pakapaka y Encuentro son señales públicas de contenido educativo y cultural infantil, gratuitas y sin publicidad. Cada prórroga sin definir su futuro institucional pone en riesgo esa producción: para una familia con chicos es contenido al que hoy se accede sin pagar." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Es la <strong>tercera prórroga consecutiva</strong> sin definir el destino de los medios públicos. Un interventor designado por el Ejecutivo, en lugar de un directorio plural, concentra la línea editorial en el Gobierno de turno. Gana el control político directo y el ahorro de una estructura más chica; pierde la pluralidad informativa y la audiencia que solo llega a la TV pública por aire." });
       return dims;
     },
     compareProfiles: [
-      { name: "Trabajador/a de los medios públicos", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Familia rural que ve la TV pública por aire", sub: "Trabajo informal · pueblo · con hijos", badges: { "Calidad de servicios": "mid", "Vida familiar": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Productora audiovisual independiente", sub: "Monotrib. · interior", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Audiencia urbana de noticias", sub: "Empleado priv. · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Trabajador/a de los medios públicos", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid" } },
+      { name: "Familia rural que ve la TV pública por aire", sub: "Trabajo informal · pueblo · con hijos", badges: { "Calidad de servicios": "mid", "Vida familiar": "soft" } },
+      { name: "Productora audiovisual independiente", sub: "Monotrib. · interior", badges: { Trabajo: "soft" } }
     ]
   },
 
@@ -2593,6 +2580,8 @@ export const MEASURES_BASE = [
     desc: "Sobre la baja de julio, el decreto recortó otra vez las retenciones de la cadena de granos: soja del 26% al 24% (subproductos del 24,5% al 22,5%), trigo y cebada del 9,5% al 7,5%, maíz y sorgo del 9,5% al 8,5%, y girasol del 5,5% al 4,5%. Es una reducción permanente, vigente desde su publicación, que mejora el precio que recibe el exportador. No tocó las carnes (eso fue un decreto aparte).",
     tags: ["Plata", "País", "Trabajo"],
     fuente: "Boletín Oficial — Decreto 877/2025 (12-dic-2025). Detalle de alícuotas: Ámbito, La Nación, Revista Chacra, Economis, Contadores en Red.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro resigna otra porción de recaudación de derechos de exportación a cambio de más liquidación de divisas y competitividad del agro. Ganan exportadores y productores; el costo fiscal lo absorbe el resto del presupuesto y, por la vía del precio, el consumidor de alimentos." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
@@ -2608,15 +2597,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Para un hogar de ingresos como el tuyo, donde esos productos pesan en la canasta, es una presión suave pero real hacia arriba en la góndola." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro resigna otra porción de recaudación de derechos de exportación a cambio de más liquidación de divisas y competitividad del agro. Ganan exportadores y productores; el costo fiscal lo absorbe el resto del presupuesto y, por la vía del precio, el consumidor de alimentos." });
       return dims;
     },
     compareProfiles: [
-      { name: "Productor agrícola del interior", sub: "Empresario PyME · NEA", badges: { Plata: "pos", Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Familia que compra harina, aceite y pan", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos", Trabajo: "pos_soft" } },
-      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Productor agrícola del interior", sub: "Empresario PyME · NEA", badges: { Plata: "pos", Trabajo: "pos_soft" } },
+      { name: "Familia que compra harina, aceite y pan", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft" } },
+      { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos", Trabajo: "pos_soft" } }
     ]
   },
 
@@ -2628,6 +2614,8 @@ export const MEASURES_BASE = [
     desc: "El decreto bajó a 12,6% el arancel de importación de 27 bienes de capital que antes pagaban entre 20% y 35%: máquinas de corte láser, plegadoras, prensas, depuradores de gases para la industria petrolera, ascensores, ventiladores industriales, equipos para heladería y panadería, bombas centrífugas y acumuladores de ion-litio. Abarata renovar maquinaria importada; en contrapartida, los fabricantes locales de esos mismos equipos compiten ahora contra importados más baratos.",
     tags: ["Plata", "Trabajo", "Estabilidad"],
     fuente: "Boletín Oficial — Decreto 513/2025 (29-jul-2025), modifica el Decreto 557/2023. Detalle de posiciones y alcance: CDA, CICAE, Ámbito, Cámara de Importadores (CIRA).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Hay una tensión real: abaratar la maquinaria importada ayuda a la PyME que la usa, pero golpea a la que la fabrica acá. Los bienes de capital son cerca del 20% de las importaciones argentinas y más de 14.000 empresas los importaron en 2024. Gana quien moderniza con equipo importado; pierde la cadena metalúrgica nacional y el Tesoro resigna recaudación arancelaria." },
     impact: function(p) {
       const dims = [];
       const interiorIndustrial = ['cba_int', 'santafe_int', 'mendoza', 'rosario', 'cba_cap'].includes(p.zona);
@@ -2639,15 +2627,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
           body: "Si trabajás en una metalúrgica o fábrica local de bienes de capital (turbinas, máquinas, equipos industriales), el bien importado más barato le compite directo a lo que produce tu empresa. En un sector que ya viene perdiendo empleo, abaratar el importado presiona sobre puestos y horas en los polos industriales de Córdoba, Santa Fe y Mendoza." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Hay una tensión real: abaratar la maquinaria importada ayuda a la PyME que la usa, pero golpea a la que la fabrica acá. Los bienes de capital son cerca del 20% de las importaciones argentinas y más de 14.000 empresas los importaron en 2024. Gana quien moderniza con equipo importado; pierde la cadena metalúrgica nacional y el Tesoro resigna recaudación arancelaria." });
       return dims;
     },
     compareProfiles: [
-      { name: "PyME que renueva maquinaria importada", sub: "Empresario PyME · interior", badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Operario metalúrgico de fábrica local", sub: "Empleado priv. · Córdoba interior", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Panadería o heladería que compra equipo", sub: "Monotrib. · CABA", badges: { Plata: "pos_soft" } },
-      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "PyME que renueva maquinaria importada", sub: "Empresario PyME · interior", badges: { Plata: "pos_soft" } },
+      { name: "Operario metalúrgico de fábrica local", sub: "Empleado priv. · Córdoba interior", badges: { Trabajo: "soft" } },
+      { name: "Panadería o heladería que compra equipo", sub: "Monotrib. · CABA", badges: { Plata: "pos_soft" } }
     ]
   },
 
@@ -2659,6 +2644,8 @@ export const MEASURES_BASE = [
     desc: "El decreto bajó de forma permanente las retenciones: soja del 33% al 26%, maíz y sorgo del 12% al 9,5%, girasol al 5,5% el grano (4% los derivados), y carnes bovina y aviar del 6,75% al 5%, además de recortes en trigo y cebada. Mejora el precio que recibe el exportador y al productor; en el mercado interno, cuando exportar rinde más, el precio de los alimentos derivados tiende a acompañar el valor internacional.",
     tags: ["Plata", "País"],
     fuente: "Boletín Oficial — Decreto 526/2025 (31-jul-2025), vigencia 1-ago-2025. Alícuotas y costo fiscal: Infobae, Ámbito, Agrositio, El Cronista.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro resigna recaudación (las estimaciones del paquete rondaban entre USD 800 y 1.500 millones anuales) a cambio de más liquidación de divisas y competitividad exportadora. Ganan exportadores y productores agropecuarios; el costo lo reparten el resto del presupuesto y el precio interno de los alimentos." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
@@ -2674,15 +2661,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "La baja también alcanzó la carne (del 6,75% al 5%) y los granos que terminan en harina, aceite y alimento balanceado. Cuando exportar paga más, el precio interno de esos productos tiende a acompañar el valor en dólares. Para un hogar de ingresos como el tuyo es una presión suave hacia arriba en la canasta básica." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro resigna recaudación (las estimaciones del paquete rondaban entre USD 800 y 1.500 millones anuales) a cambio de más liquidación de divisas y competitividad exportadora. Ganan exportadores y productores agropecuarios; el costo lo reparten el resto del presupuesto y el precio interno de los alimentos." });
       return dims;
     },
     compareProfiles: [
-      { name: "Productor sojero del interior", sub: "Empresario PyME · interior", badges: { Plata: "pos_strong", Trabajo: "pos", "País / Equilibrio institucional": "soft" } },
+      { name: "Productor sojero del interior", sub: "Empresario PyME · interior", badges: { Plata: "pos_strong", Trabajo: "pos" } },
       { name: "Contratista y transporte de granos", sub: "Autónomo · interior", badges: { Plata: "pos_strong", Trabajo: "pos" } },
-      { name: "Familia que compra carne y harina", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Familia que compra carne y harina", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft" } }
     ]
   },
 
@@ -2694,6 +2678,8 @@ export const MEASURES_BASE = [
     desc: "Las nuevas reglas arrancan una transición de 24 meses desde el MEM administrado por CAMMESA hacia un mercado más competitivo, con señales de precio marginal. CAMMESA deja de concentrar la compra de combustible (vuelve a las generadoras térmicas) y se habilita la transferencia gradual de contratos de compra de energía a la demanda. Mantiene su rol de despacho y de proveedor de última instancia, pero pierde peso como intermediario único.",
     tags: ["Plata", "Calidad de servicios", "País"],
     fuente: "Boletín Oficial — Resolución SE 400/2025 (21-oct-2025), que reglamenta los arts. 3 y 4 del Decreto 450/2025 (4-jul-2025). En la base de Supabase figuraba la Res 24/2025 SE (lineamientos preliminares de enero 2025), pero la norma efectiva es el Decreto 450/2025 + la Resolución SE 400/2025. Análisis: Abogados.com.ar, TRSyM, FETERA/CTA.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado se corre de administrar el mercado eléctrico y deja que generadoras y distribuidoras negocien entre sí. Ganan las grandes generadoras (mejor remuneración y libertad de contratos) y los inversores en capacidad nueva; el riesgo lo corren los usuarios cuando se debilitan los subsidios cruzados que la intermediación de CAMMESA permitía sostener." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
@@ -2709,8 +2695,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "Las distribuidoras provinciales chicas negocian peor que las grandes en un mercado liberalizado: menos volumen, menos poder de compra. Si tu cooperativa o distribuidora local consigue peores condiciones que una gran eléctrica, eso termina apareciendo en tu factura o en la calidad del suministro." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado se corre de administrar el mercado eléctrico y deja que generadoras y distribuidoras negocien entre sí. Ganan las grandes generadoras (mejor remuneración y libertad de contratos) y los inversores en capacidad nueva; el riesgo lo corren los usuarios cuando se debilitan los subsidios cruzados que la intermediación de CAMMESA permitía sostener." });
       return dims;
     },
     compareWinners: [
@@ -2720,10 +2704,9 @@ export const MEASURES_BASE = [
       "Tesoro Nacional (menos subsidios)"
     ],
     compareProfiles: [
-      { name: "Hogar de ingresos ajustados", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Usuario de cooperativa eléctrica del interior", sub: "Trabajo informal · pueblo", badges: { Plata: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Hogar de ingresos altos", sub: "Empleado priv. · $6-15M", badges: { Plata: "soft" } },
-      { name: "Ciudadano que mira el modelo energético", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Hogar de ingresos ajustados", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "mid" } },
+      { name: "Usuario de cooperativa eléctrica del interior", sub: "Trabajo informal · pueblo", badges: { Plata: "mid", "Calidad de servicios": "soft" } },
+      { name: "Hogar de ingresos altos", sub: "Empleado priv. · $6-15M", badges: { Plata: "soft" } }
     ]
   },
 
@@ -2735,6 +2718,8 @@ export const MEASURES_BASE = [
     desc: "El régimen de envíos por courier quedó así: cada compra de hasta USD 400 entra sin derecho de importación ni tasa estadística (solo paga IVA), hasta 5 envíos al año por persona; y el tope total del régimen, hasta donde se puede usar el trámite simplificado puerta a puerta, subió de USD 1.000 a USD 3.000 por envío. Abarata y simplifica comprar tecnología, indumentaria y libros en el exterior.",
     tags: ["Plata", "Trabajo", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decreto 1065/2024 y RG ARCA 5608/2024 (2-dic-2024). Aclaración: los USD 3.000 son el tope del régimen, no la franquicia; la franquicia sin aranceles es de USD 400. Fuentes: Infobae, SICEX, Mallea Abogados, Blog del Contador.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado resigna recaudación arancelaria y expone al comercio y la industria local a la competencia importada, a cambio de precios más bajos para el consumidor. Ganan los consumidores urbanos y las plataformas (Amazon, AliExpress) y couriers; pierden el comercio minorista, la industria textil y la aduana comercial." },
     impact: function(p) {
       const dims = [];
       const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza', 'tucuman'].includes(p.zona);
@@ -2751,15 +2736,13 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Calidad de servicios", icon: "🔌", level: "pos_soft",
         body: "Como contracara del comercio local, ganás acceso: productos que acá no se venden o llegan tarde, ahora se compran directo. Más opciones reales para el consumidor, sobre todo en tecnología y libros importados." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado resigna recaudación arancelaria y expone al comercio y la industria local a la competencia importada, a cambio de precios más bajos para el consumidor. Ganan los consumidores urbanos y las plataformas (Amazon, AliExpress) y couriers; pierden el comercio minorista, la industria textil y la aduana comercial." });
       return dims;
     },
     compareProfiles: [
       { name: "Consumidor urbano que compra online afuera", sub: "Empleado priv. · CABA", badges: { Plata: "pos", "Calidad de servicios": "pos_soft" } },
       { name: "Comerciante minorista de indumentaria", sub: "Monotrib. · CABA", badges: { Plata: "pos", Trabajo: "soft", "Calidad de servicios": "pos_soft" } },
       { name: "Comprador del interior", sub: "Empleado priv. · pueblo", badges: { Plata: "pos_soft", "Calidad de servicios": "pos_soft" } },
-      { name: "Trabajador/a textil nacional", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } }
+      { name: "Trabajador/a textil nacional", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft" } }
     ]
   },
 
@@ -2771,6 +2754,8 @@ export const MEASURES_BASE = [
     desc: "El decreto reformuló el Fondo Nacional de las Artes, el organismo de fomento a artistas. El uso central de los fondos pasa a ser el otorgamiento de créditos en UVA; las becas y subsidios quedan limitados a financiarse con donaciones privadas y las ganancias financieras de esos créditos. El directorio de 14 personas pasa a ser ad honorem (sin sueldo) y la planta de personal se reduce un 25%. El argumento oficial: el FNA gastaba el 72% de su presupuesto 2023 en gastos operativos.",
     tags: ["Trabajo", "Plata", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decreto 1029/2024 (22-nov-2024), vigencia plena 1-abr-2025. Contenido y declaraciones de Sturzenegger: La Nación, Ámbito, Perfil, SAIJ.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro ahorra: directorio ad honorem, 25% menos de personal y fin del fomento a fondo perdido financiado con recursos propios. El argumento (72% del presupuesto en gastos operativos) es atendible; la contracara es que el Estado se retira del fomento cultural directo y lo deja atado a donaciones privadas, que no llegan parejo a todo el país." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
@@ -2787,15 +2772,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
           body: "Si estudiás una carrera artística y contabas con una beca del FNA para sostenerte, el viraje a créditos en UVA cambia el tablero: en vez de un apoyo que no se devuelve, una deuda indexada. Para quien recién empieza y no tiene ingresos propios, ese cambio puede ser la diferencia entre seguir o dejar." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro ahorra: directorio ad honorem, 25% menos de personal y fin del fomento a fondo perdido financiado con recursos propios. El argumento (72% del presupuesto en gastos operativos) es atendible; la contracara es que el Estado se retira del fomento cultural directo y lo deja atado a donaciones privadas, que no llegan parejo a todo el país." });
       return dims;
     },
     compareProfiles: [
-      { name: "Músico o escritor/a que vivía de becas", sub: "Monotrib. · CABA", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Artista del interior", sub: "Autónomo · NOA", badges: { Trabajo: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Estudiante de carrera artística", sub: "Estudiante · interior", badges: { Trabajo: "soft", "Calidad de servicios": "soft" } },
-      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Músico o escritor/a que vivía de becas", sub: "Monotrib. · CABA", badges: { Trabajo: "mid" } },
+      { name: "Artista del interior", sub: "Autónomo · NOA", badges: { Trabajo: "mid", "Calidad de servicios": "soft" } },
+      { name: "Estudiante de carrera artística", sub: "Estudiante · interior", badges: { Trabajo: "soft", "Calidad de servicios": "soft" } }
     ]
   },
 
@@ -2807,6 +2789,8 @@ export const MEASURES_BASE = [
     desc: "El decreto intervino la Sociedad del Estado Casa de Moneda por 180 días desde el 1-nov-2024, con Pedro Cavagnaro como interventor y facultades para transferir personal, activos, marcas y licencias y revisar el convenio colectivo. En diciembre, una Asamblea Extraordinaria la transformó en Casa de Moneda SAU bajo la Ley General de Sociedades; los Decretos 295/2025 y 615/2025 ratificaron la transformación y prorrogaron la intervención. El cambio habilita asociar o vender la empresa con privados sin pasar por el Congreso.",
     tags: ["Trabajo", "Estabilidad", "País"],
     fuente: "Boletín Oficial — Decreto 964/2024 (31-oct-2024), Decreto 295/2025 (30-abr-2025) y Decreto 615/2025 (28-ago-2025). Transformación en SAU y prórrogas de la intervención: Infobae, MDZ, ADNSUR, InfoLeg.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "La Casa de Moneda imprime billetes, pasaportes y documentos de seguridad: capacidades de soberanía estatal. Transformarla en SAU y dejar abierta su venta o asociación con privados ahorra al Tesoro un déficit operativo, pero pone en discusión quién controla la impresión de moneda y documentos nacionales. Gana la narrativa del Estado más chico; pierden los trabajadores y la soberanía sobre esas capacidades." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'empleado_pub') {
@@ -2815,15 +2799,12 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
         body: "El paso de Sociedad del Estado a Sociedad Anónima Unipersonal cambia el marco legal: la empresa pasa a regirse por la Ley General de Sociedades, lo que habilita asociarla o venderla a privados sin pasar por el Congreso. Para sus trabajadores y para el servicio, es un futuro institucional más incierto." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "La Casa de Moneda imprime billetes, pasaportes y documentos de seguridad: capacidades de soberanía estatal. Transformarla en SAU y dejar abierta su venta o asociación con privados ahorra al Tesoro un déficit operativo, pero pone en discusión quién controla la impresión de moneda y documentos nacionales. Gana la narrativa del Estado más chico; pierden los trabajadores y la soberanía sobre esas capacidades." });
       return dims;
     },
     compareProfiles: [
-      { name: "Trabajador/a de la Casa de Moneda", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Gremio de artes gráficas", sub: "Empleado priv. · GBA", badges: { Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Proveedor nacional de insumos de seguridad", sub: "Empresario PyME · GBA", badges: { Estabilidad: "soft" } },
-      { name: "Ciudadano que mira la soberanía estatal", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Trabajador/a de la Casa de Moneda", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft" } },
+      { name: "Gremio de artes gráficas", sub: "Empleado priv. · GBA", badges: { Estabilidad: "soft" } },
+      { name: "Proveedor nacional de insumos de seguridad", sub: "Empresario PyME · GBA", badges: { Estabilidad: "soft" } }
     ]
   },
 
@@ -2835,6 +2816,8 @@ export const MEASURES_BASE = [
     desc: "El Congreso había sancionado la Ley 27.757, que actualizaba por inflación los gastos de funcionamiento de las universidades nacionales y recomponía los salarios docentes y no docentes. El Ejecutivo la vetó en forma total por el Decreto 879/2024, argumentando que no preveía la fuente de financiamiento. El 9 de octubre de 2024 Diputados intentó insistir pero no reunió los dos tercios: el veto quedó firme y la ley no entró en vigencia. (Distinto del veto de 2025 a la Ley 27.795, que el Congreso sí rechazó.)",
     tags: ["Plata", "Trabajo", "Estabilidad"],
     fuente: "Boletín Oficial — Decreto 879/2024 (3-oct-2024), veto total a la Ley 27.757. Insistencia fallida en Diputados (9-oct-2024): Infobae, El Cronista, SAIJ, Wikipedia (Ley de Financiamiento Universitario).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El veto se sostuvo porque en Diputados no se reunieron los dos tercios para insistir. El ahorro fiscal fue el argumento central (del orden del 0,14% del PBI); el costo lo pagaron el salario de 200.000 docentes y no docentes y la calidad del sistema que estudian 2 millones de personas, hasta que en 2025 una nueva ley reabrió la discusión." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
@@ -2852,15 +2835,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Educación", icon: "📚", level: "soft",
           body: "Las universidades del interior dependen casi por entero del presupuesto nacional, sin la base privada de las grandes ciudades. Frenar la actualización golpea más fuerte a la universidad de tu provincia, que muchas veces es la única opción de educación superior cerca." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El veto se sostuvo porque en Diputados no se reunieron los dos tercios para insistir. El ahorro fiscal fue el argumento central (del orden del 0,14% del PBI); el costo lo pagaron el salario de 200.000 docentes y no docentes y la calidad del sistema que estudian 2 millones de personas, hasta que en 2025 una nueva ley reabrió la discusión." });
       return dims;
     },
     compareProfiles: [
-      { name: "Docente universitario/a", sub: "Empleado púb. · CABA", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Estudiante de universidad pública", sub: "Estudiante · GBA", badges: { Educación: "mid", "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Familia del interior con un hijo en la universidad", sub: "Empleado priv. · NOA", badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira el déficit", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Docente universitario/a", sub: "Empleado púb. · CABA", badges: { Plata: "mid" } },
+      { name: "Estudiante de universidad pública", sub: "Estudiante · GBA", badges: { Educación: "mid", "Movilidad social": "soft" } },
+      { name: "Familia del interior con un hijo en la universidad", sub: "Empleado priv. · NOA", badges: { Educación: "soft" } }
     ]
   },
 
@@ -2872,6 +2852,8 @@ export const MEASURES_BASE = [
     desc: "El Gobierno homologó por decreto la paritaria de la administración pública nacional con un aumento del 2% en septiembre y 1% en octubre, además de componentes como viáticos y adicionales. El acuerdo lo firmó solo UPCN; ATE lo rechazó por considerarlo muy por debajo de la inflación. Cubre a todo el personal permanente y no permanente.",
     tags: ["Plata", "Trabajo", "Estabilidad"],
     fuente: "Boletín Oficial — Decreto 837/2024 (19-sep-2024), homologa el Acta Acuerdo del 30-ago-2024 de la Comisión Negociadora del Convenio Colectivo General. Posiciones sindicales y pérdida salarial: La Nación, El Cronista, Página 12, Mundo Gremial.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Cerrar la paritaria estatal por decreto, con el gremio que acompaña y sobre el rechazo del otro, le permite al Tesoro un acuerdo barato y sin conflicto formal. El ahorro es real; lo paga el salario de unos 400.000 estatales nacionales y el instituto de la paritaria libre como mecanismo de negociación." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'empleado_pub') {
@@ -2884,15 +2866,12 @@ export const MEASURES_BASE = [
             body: "Si además sos contratado o estás en los escalafones más bajos, sos el eslabón más expuesto: sin la estructura de los cargos de planta, un aumento por decreto del 1% mensual te deja corriendo de atrás a la inflación todos los meses, con la incertidumbre de la renovación del contrato encima." });
         }
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Cerrar la paritaria estatal por decreto, con el gremio que acompaña y sobre el rechazo del otro, le permite al Tesoro un acuerdo barato y sin conflicto formal. El ahorro es real; lo paga el salario de unos 400.000 estatales nacionales y el instituto de la paritaria libre como mecanismo de negociación." });
       return dims;
     },
     compareProfiles: [
       { name: "Estatal nacional de planta", sub: "Empleado púb. · ≤$1,5M · interior", badges: { Plata: "strong", Estabilidad: "mid", "Carga mental": "soft" } },
       { name: "Estatal de ingreso medio", sub: "Empleado púb. · $1,5-3M", badges: { Plata: "strong", Estabilidad: "mid" } },
-      { name: "Contratado precario del Estado", sub: "Empleado púb. · ≤$700k", badges: { Plata: "strong", Estabilidad: "mid", "Carga mental": "soft" } },
-      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Contratado precario del Estado", sub: "Empleado púb. · ≤$700k", badges: { Plata: "strong", Estabilidad: "mid", "Carga mental": "soft" } }
     ]
   },
 
@@ -2904,6 +2883,8 @@ export const MEASURES_BASE = [
     desc: "El decreto retrotrajo la alícuota del Impuesto PAÍS para la compra de divisas destinada a importar bienes y a pagar fletes y transporte de comercio exterior, del 17,5% al 7,5%. Esa alícuota del 17,5% había sido fijada por el Decreto 29/2023 al asumir el Gobierno. El argumento oficial fue contribuir a estabilizar precios. Fue el paso previo al vencimiento del Impuesto PAÍS, que caducó el 22 de diciembre de 2024.",
     tags: ["Plata", "Impuestos", "Cambiario"],
     fuente: "Boletín Oficial — Decreto 777/2024 (2-sep-2024), vigencia 3-sep-2024. Adecuación del pago a cuenta: AFIP RG 5559/2024. Alcance y efecto en precios e importaciones: Infobae, Chequeado, CIRA, Marval.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro resigna recaudación (el Impuesto PAÍS llegó a aportar más del 1% del PBI en 2024) a cambio de bajar la presión sobre los precios de los importados. Fue la antesala del fin del impuesto, que venció el 22-dic-2024. Ganan el consumidor de bienes y el importador de insumos; pierden la caja fiscal y la industria local que competía al amparo del impuesto." },
     impact: function(p) {
       const dims = [];
       const importador = ['pyme', 'autonomo', 'monotrib'].includes(p.ocupacion);
@@ -2913,15 +2894,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
           body: "El efecto depende de tu rubro. Si usás insumos importados, bajás costos: la misma importación paga diez puntos menos de impuesto. Pero si fabricás o vendés algo que compite con el importado —textil, calzado, electrónica de Tierra del Fuego, juguetes—, ahora competís contra productos que entran más baratos. Comprador de insumos gana; productor local que sustituía importaciones queda más expuesto." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro resigna recaudación (el Impuesto PAÍS llegó a aportar más del 1% del PBI en 2024) a cambio de bajar la presión sobre los precios de los importados. Fue la antesala del fin del impuesto, que venció el 22-dic-2024. Ganan el consumidor de bienes y el importador de insumos; pierden la caja fiscal y la industria local que competía al amparo del impuesto." });
       return dims;
     },
     compareProfiles: [
       { name: "Consumidor de tecnología y electrodomésticos", sub: "Empleado priv. · CABA", badges: { Plata: "pos" } },
       { name: "PyME industrial que importa insumos", sub: "PyME · CABA", badges: { Plata: "pos", Trabajo: "soft" } },
-      { name: "Comerciante que compite con el importado", sub: "Monotrib. · GBA", badges: { Plata: "pos", Trabajo: "soft" } },
-      { name: "Contribuyente que mira la caja fiscal", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Comerciante que compite con el importado", sub: "Monotrib. · GBA", badges: { Plata: "pos", Trabajo: "soft" } }
     ]
   },
 
@@ -2933,6 +2911,8 @@ export const MEASURES_BASE = [
     desc: "El decreto reglamentó la Ley 17.741 y reordenó el INCAA. Los subsidios pasan a estar topeados: no pueden exceder el 20% del Fondo de Fomento Cinematográfico ni representar más del 50% del costo total de una producción (antes podían cubrir mucho más), de modo que cada proyecto debe conseguir al menos la mitad de su financiamiento por fuera. Se cambian los criterios de asignación hacia calidad, potencial de exhibición, audiencia y recupero del fondo, \"por sobre preferencias ideológicas\" (texto del decreto), y se dispone reestructuración y reducción de personal: el organismo pasó de unos 90 agentes en 2000 a más de 900.",
     tags: ["Trabajo", "Plata", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decreto 662/2024 (BORA 24-jul-2024, firmado 23-jul). Tope de subsidios (20% del Fondo / 50% del costo), nuevos criterios y reducción de planta: Infobae, Ámbito, iProfesional, Perfil, AFIP biblioteca.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro deja de sostener un organismo que pasó de 90 a más de 900 agentes y arrastraba déficit. El argumento de eficiencia es atendible; la contracara es que el Estado se corre del fomento al cine que no se sostiene solo en taquilla. Ganan la caja pública y el cine comercial con potencial de público; pierden el documental, el cine regional, los festivales y los técnicos audiovisuales." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
@@ -2945,15 +2925,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "El INCAA financiaba cine documental, regional e independiente que no tiene salida comercial y que casi no se produce fuera de Buenos Aires. Al priorizar potencial de audiencia y recupero del fondo, el cine del NOA, NEA y la Patagonia —que necesitaba el subsidio integral para existir— es el más expuesto a desaparecer de la pantalla." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro deja de sostener un organismo que pasó de 90 a más de 900 agentes y arrastraba déficit. El argumento de eficiencia es atendible; la contracara es que el Estado se corre del fomento al cine que no se sostiene solo en taquilla. Ganan la caja pública y el cine comercial con potencial de público; pierden el documental, el cine regional, los festivales y los técnicos audiovisuales." });
       return dims;
     },
     compareProfiles: [
-      { name: "Realizador/a de cine independiente", sub: "Monotrib. · CABA", badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Documentalista del interior", sub: "Autónomo · NOA", badges: { Trabajo: "mid", "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Técnico/a audiovisual", sub: "Trabajo informal · GBA", badges: { Trabajo: "mid" } },
-      { name: "Contribuyente que mira el gasto", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Realizador/a de cine independiente", sub: "Monotrib. · CABA", badges: { Trabajo: "mid" } },
+      { name: "Documentalista del interior", sub: "Autónomo · NOA", badges: { Trabajo: "mid", "Calidad de servicios": "soft" } },
+      { name: "Técnico/a audiovisual", sub: "Trabajo informal · GBA", badges: { Trabajo: "mid" } }
     ]
   },
 
@@ -2965,6 +2942,8 @@ export const MEASURES_BASE = [
     desc: "El decreto liberalizó el sector aéreo: acceso al mercado para nuevos operadores mediante procedimientos breves, eliminación de pisos y techos tarifarios, y la posibilidad de que transportadores extranjeros hagan rutas internas (cabotaje) en condiciones de estricta reciprocidad. El objetivo declarado es promover competencia y bajar barreras que regían desde mediados del siglo pasado.",
     tags: ["Trabajo", "Movilidad social", "País"],
     fuente: "Boletín Oficial — Decreto 599/2024 (10-jul-2024), modifica el Código Aeronáutico y reglamenta el capítulo aerocomercial del DNU 70/2023. Alcance (libre acceso, tarifas libres, cabotaje extranjero por reciprocidad): Infobae, Ámbito, El Cronista, InfoLeg.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado abre el cielo a la competencia y se corre de sostener una aerolínea de bandera con subsidios. Ganan los consumidores de las rutas rentables y las low-cost; el costo lo pueden pagar las conexiones del interior que solo cerraban con subsidio cruzado y el empleo de Aerolíneas." },
     impact: function(p) {
       const dims = [];
       const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza', 'tucuman'].includes(p.zona);
@@ -2979,15 +2958,12 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
         body: "Aerolíneas Argentinas pierde rutas no rentables y compite contra low-cost extranjeras que pueden hacer cabotaje. Para sus trabajadores y para pilotos y tripulación en general, la apertura presiona salarios y condiciones a la baja. Gana el pasajero de las rutas con volumen; la presión la absorbe el empleo aeronáutico." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado abre el cielo a la competencia y se corre de sostener una aerolínea de bandera con subsidios. Ganan los consumidores de las rutas rentables y las low-cost; el costo lo pueden pagar las conexiones del interior que solo cerraban con subsidio cruzado y el empleo de Aerolíneas." });
       return dims;
     },
     compareProfiles: [
       { name: "Pasajero frecuente de rutas troncales", sub: "Empleado priv. · CABA", badges: { Plata: "pos_soft" } },
-      { name: "Habitante del interior con ruta exclusiva de Aerolíneas", sub: "Empleado priv. · Patagonia", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Trabajador/a aeronáutico", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Ciudadano que mira la aerolínea de bandera", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Habitante del interior con ruta exclusiva de Aerolíneas", sub: "Empleado priv. · Patagonia", badges: { "Calidad de servicios": "soft" } },
+      { name: "Trabajador/a aeronáutico", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft" } }
     ]
   },
 
@@ -2999,6 +2975,8 @@ export const MEASURES_BASE = [
     desc: "La Ley Bases declaró la emergencia pública en materia administrativa, económica, financiera y energética por un año, prorrogable, y delegó en el Poder Ejecutivo facultades del artículo 76 de la Constitución: reorganizar o disolver organismos descentralizados (salvo los protegidos por el art. 75 inc. 19 CN), modificar el régimen de empleo público y avanzar con reformas que normalmente requerirían leyes del Congreso. El Ejecutivo debe informar mensualmente al Congreso el uso de esas facultades.",
     tags: ["Estabilidad", "País", "Trabajo"],
     fuente: "Boletín Oficial — Ley 27.742, Capítulos I (Emergencia) y II (Facultades delegadas), BORA 8-jul-2024. Alcance de la delegación y debate constitucional sobre el art. 76 CN: InfoLeg, Argentina.gob.ar, doctrina (Abogados.com.ar).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "El núcleo del costo es institucional: el Congreso resigna durante un año el control sobre los ámbitos delegados y el Ejecutivo legisla de hecho sobre organismos, empresas y empleo público. El debate constitucional gira en torno a si la delegación excede el art. 76 CN. Gana la capacidad de reforma rápida del Gobierno; pierde el equilibrio de poderes y el control sobre cómo se ejerce." },
     impact: function(p) {
       const dims = [];
       if (p.ocupacion === 'empleado_pub') {
@@ -3009,15 +2987,13 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
         body: "Gobernar por facultades delegadas da previsibilidad de corto plazo (las reglas se cambian rápido) pero la cuelga de la decisión de una sola persona. Reglas que se fijan por decreto pueden revertirse por decreto: para quien necesita horizonte largo, es estabilidad aparente." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "El núcleo del costo es institucional: el Congreso resigna durante un año el control sobre los ámbitos delegados y el Ejecutivo legisla de hecho sobre organismos, empresas y empleo público. El debate constitucional gira en torno a si la delegación excede el art. 76 CN. Gana la capacidad de reforma rápida del Gobierno; pierde el equilibrio de poderes y el control sobre cómo se ejerce." });
       return dims;
     },
     compareProfiles: [
-      { name: "Empleado/a de un organismo descentralizado", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", Estabilidad: "mid", "País / Equilibrio institucional": "mid" } },
+      { name: "Empleado/a de un organismo descentralizado", sub: "Empleado púb. · CABA", badges: { Trabajo: "mid", Estabilidad: "mid" } },
       { name: "Empleado/a público de planta", sub: "Empleado púb. · interior", badges: { Trabajo: "mid", Estabilidad: "mid" } },
-      { name: "Ciudadano que mira el equilibrio de poderes", sub: "Autónomo · CABA", badges: { Estabilidad: "soft", "País / Equilibrio institucional": "mid" } },
-      { name: "Inversor que busca reglas estables", sub: "PyME · CABA", badges: { Estabilidad: "soft", "País / Equilibrio institucional": "mid" } }
+      { name: "Ciudadano que mira el equilibrio de poderes", sub: "Autónomo · CABA", badges: { Estabilidad: "soft" } },
+      { name: "Inversor que busca reglas estables", sub: "PyME · CABA", badges: { Estabilidad: "soft" } }
     ]
   },
 
@@ -3029,6 +3005,8 @@ export const MEASURES_BASE = [
     desc: "El artículo 7° y su anexo declararon sujetas a privatización un grupo de empresas estatales. Privatización total: Energía Argentina (ENARSA), Intercargo, Agua y Saneamientos Argentinos (AySA) y Belgrano Cargas y Logística. Privatización parcial: Nucleoeléctrica Argentina y Yacimientos Carboníferos Río Turbio. El listado original era más amplio: el Senado retiró Aerolíneas Argentinas, Banco Nación, YPF, Correo Argentino y RTA. A lo largo de 2025 el Gobierno fue iniciando los procesos (ENARSA, Intercargo, Belgrano Cargas, AySA) mediante decretos y resoluciones específicos.",
     tags: ["Trabajo", "Estabilidad", "Calidad de servicios", "País"],
     fuente: "Boletín Oficial — Ley 27.742, art. 7° y anexo, BORA 8-jul-2024. Empresas del listado e inicio de los procesos en 2025 (Decs 198/2025, 286/2025; Res 1049/2025, 1050/2025, 1067/2025): InfoLeg, Infobae, Ámbito, Allende & Brea.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro deja de subsidiar estas empresas y suma ingresos por su venta; a cambio resigna control sobre energía, agua y logística ferroviaria, sectores con peso estratégico. Ganan el fisco y los operadores privados; el costo lo cargan los trabajadores de las empresas y los usuarios de servicios cuya tarifa y cobertura pasan a depender del mercado." },
     impact: function(p) {
       const dims = [];
       const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata'].includes(p.zona);
@@ -3042,8 +3020,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "AySA da agua y cloacas a CABA y el conurbano. Privatizar un servicio esencial puede mejorar inversión, pero también suele traer aumentos de tarifa y discusión sobre cobertura en zonas no rentables. Como usuario, el precio y la calidad del agua quedan atados a quién la opere y con qué regulación." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro deja de subsidiar estas empresas y suma ingresos por su venta; a cambio resigna control sobre energía, agua y logística ferroviaria, sectores con peso estratégico. Ganan el fisco y los operadores privados; el costo lo cargan los trabajadores de las empresas y los usuarios de servicios cuya tarifa y cobertura pasan a depender del mercado." });
       return dims;
     },
     compareWinners: [
@@ -3052,10 +3028,9 @@ export const MEASURES_BASE = [
       "Sindicatos disidentes que entran al Programa de Propiedad Participada (10%)"
     ],
     compareProfiles: [
-      { name: "Trabajador/a de una empresa del listado", sub: "Empleado púb. · CABA", badges: { Trabajo: "strong", Estabilidad: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Usuario de AySA (agua y cloacas)", sub: "Empleado priv. · GBA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Habitante sobre la traza del Belgrano Cargas", sub: "Empleado priv. · NOA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira la venta de activos", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Trabajador/a de una empresa del listado", sub: "Empleado púb. · CABA", badges: { Trabajo: "strong", Estabilidad: "mid" } },
+      { name: "Usuario de AySA (agua y cloacas)", sub: "Empleado priv. · GBA", badges: { "Calidad de servicios": "soft" } },
+      { name: "Habitante sobre la traza del Belgrano Cargas", sub: "Empleado priv. · NOA", badges: { "Calidad de servicios": "soft" } }
     ]
   },
 
@@ -3067,6 +3042,8 @@ export const MEASURES_BASE = [
     desc: "Los Títulos IV y V legitimaron por ley buena parte de lo que el DNU 70/2023 había dispuesto. El período de prueba pasó de 3 a 6 meses (los convenios pueden extenderlo hasta 8 meses en empresas de 6 a 100 trabajadores y hasta 1 año en las de hasta 5). Se habilitó un fondo de cese laboral opcional vía convenio, alternativo a la indemnización del art. 245 LCT. Se derogaron las multas por trabajo no registrado de los arts. 8 a 17 y 120 inc. a) de la Ley Nacional de Empleo 24.013. Se creó la figura del trabajador independiente con hasta 5 colaboradores que no genera relación de dependencia. Rige para relaciones iniciadas desde el 9-jul-2024 y fue reglamentada por el Decreto 847/2024.",
     tags: ["Trabajo", "Estabilidad", "Plata"],
     fuente: "Boletín Oficial — Ley 27.742, Títulos IV y V, BORA 8-jul-2024; Decreto reglamentario 847/2024 (26-sep-2024). Período de prueba, fondo de cese y derogación de multas (arts. 8-17 y 120 inc. a) Ley 24.013): O'Farrell, Deloitte, CECO, Microjuris.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "La promesa fue que abaratar el despido y bajar las multas formalizaría empleo. Los datos de 2024 son ambiguos: el empleo registrado privado cayó durante buena parte del año y recién repuntó en agosto-septiembre, mejora que el Gobierno atribuye a la reforma. Ganan los empleadores en previsibilidad de costos; el trabajador resigna protecciones a cambio de una formalización que todavía no está demostrada de manera contundente." },
     impact: function(p) {
       const dims = [];
       const empleador = ['pyme', 'autonomo', 'monotrib'].includes(p.ocupacion);
@@ -3080,8 +3057,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
           body: "Como empleador o cuentapropista que contrata, el costo de despedir se vuelve más previsible (fondo de cese, multas más bajas, período de prueba largo) y aparece la figura del trabajador independiente con hasta 5 colaboradores. En teoría eso anima a formalizar empleo que antes se evitaba por miedo al juicio; el efecto real depende de que la economía traccione." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "La promesa fue que abaratar el despido y bajar las multas formalizaría empleo. Los datos de 2024 son ambiguos: el empleo registrado privado cayó durante buena parte del año y recién repuntó en agosto-septiembre, mejora que el Gobierno atribuye a la reforma. Ganan los empleadores en previsibilidad de costos; el trabajador resigna protecciones a cambio de una formalización que todavía no está demostrada de manera contundente." });
       return dims;
     },
     compareWinners: [
@@ -3090,9 +3065,9 @@ export const MEASURES_BASE = [
       "Sectores con alta rotación (gastronomía, comercio, construcción)"
     ],
     compareProfiles: [
-      { name: "Trabajador/a que busca empleo formal", sub: "Empleado priv. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajador/a que busca empleo formal", sub: "Empleado priv. · CABA", badges: { Trabajo: "mid", Estabilidad: "soft" } },
       { name: "Empleado/a en empresa que reestructura", sub: "Empleado priv. · GBA", badges: { Trabajo: "mid", Estabilidad: "soft" } },
-      { name: "PyME que duda en tomar personal", sub: "PyME · CABA", badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "PyME que duda en tomar personal", sub: "PyME · CABA", badges: { Trabajo: "pos_soft" } },
       { name: "Cuentapropista que contrata colaboradores", sub: "Monotrib. · interior", badges: { Trabajo: "pos_soft" } }
     ]
   },
@@ -3105,6 +3080,8 @@ export const MEASURES_BASE = [
     desc: "La resolución actualizó el precio mayorista del gas en el PIST —lo que las distribuidoras pagan a los productores— y dispuso trasladarlo a las boletas finales en tres tramos: abril, invierno (mayo-septiembre) y octubre-diciembre. El valor del gas para un consumo residencial promedio pasó de unos $2.074 (marzo) a unos $6.505 (desde abril), un salto cercano al 300% que se reflejó en aumentos fuertes de las facturas de hogares, comercios e industrias.",
     tags: ["Plata", "Vivienda", "Calidad de servicios"],
     fuente: "Boletín Oficial — Resolución 41/2024 Secretaría de Energía (27-mar-2024), vigencia 1-abr-2024; cuadros tarifarios de ENARGAS. Salto del PIST (~$2.074 → ~$6.505) y aumentos cercanos al 300% en tres tramos: Ámbito, ENARGAS, Estudio O'Farrell.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado reduce subsidios a la energía y traslada el precio real del gas a las boletas. Ganan los productores (mejor precio realizable) y el Tesoro (menos subsidios); el costo lo absorben los hogares —en especial los de menores ingresos— y las industrias gas-intensivas." },
     impact: function(p) {
       const dims = [];
       const bajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
@@ -3117,8 +3094,6 @@ export const MEASURES_BASE = [
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "En zonas frías (Patagonia, Cuyo, sierras) el consumo de gas para calefacción es alto varios meses al año. Ahí el aumento del PIST golpea más fuerte que en zonas templadas: misma suba porcentual sobre muchos más metros cúbicos consumidos." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado reduce subsidios a la energía y traslada el precio real del gas a las boletas. Ganan los productores (mejor precio realizable) y el Tesoro (menos subsidios); el costo lo absorben los hogares —en especial los de menores ingresos— y las industrias gas-intensivas." });
       return dims;
     },
     compareWinners: [
@@ -3142,6 +3117,8 @@ export const MEASURES_BASE = [
     desc: "La resolución aprobó la reprogramación estacional de verano del Mercado Eléctrico Mayorista y aplicó aumentos de hasta alrededor del 124% en el precio mayorista de la energía para los usuarios de Nivel 1 (altos ingresos o que no pidieron subsidio), que representan cerca del 30% de los hogares. Para los Niveles 2 (bajos ingresos) y 3 (ingresos medios) se mantuvo el subsidio. Fue la primera suba grande de la energía eléctrica de la gestión, para corregir el atraso acumulado en los precios mayoristas.",
     tags: ["Plata", "Vivienda", "Calidad de servicios"],
     fuente: "Boletín Oficial — Resolución 7/2024 Secretaría de Energía (5-feb-2024). Aumento de hasta ~124% en el mayorista para N1 (~30% de los hogares) con subsidio mantenido a N2 y N3: Ámbito, Mejor Energía, CAMMESA, Argentina.gob.ar.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado empieza a corregir veinte años de precios eléctricos atrasados quitando subsidio primero a quienes más consumen y más ganan. Ganan el Tesoro (menos subsidios) y las generadoras (mejor precio); el costo inicial lo cargan los hogares de Nivel 1, antes de que las subas se extiendan al resto." },
     impact: function(p) {
       const dims = [];
       const altoIngreso = ['3m_6m', '6m_15m', 'mas_15m'].includes(p.ingreso);
@@ -3158,15 +3135,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "mid",
           body: "El aumento de hasta 124% en el precio mayorista recayó sobre los usuarios de Nivel 1 (sin subsidio); los Niveles 2 y 3 conservaron el subsidio en esta etapa. Según en qué segmento caigas, el golpe en la boleta de verano fue fuerte o acotado." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado empieza a corregir veinte años de precios eléctricos atrasados quitando subsidio primero a quienes más consumen y más ganan. Ganan el Tesoro (menos subsidios) y las generadoras (mejor precio); el costo inicial lo cargan los hogares de Nivel 1, antes de que las subas se extiendan al resto." });
       return dims;
     },
     compareProfiles: [
-      { name: "Hogar de altos ingresos (Nivel 1)", sub: "Autónomo · CABA · $6-15M", badges: { Plata: "strong", Vivienda: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Hogar de ingresos medios (Nivel 3)", sub: "Empleado priv. · GBA · $1,5-3M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Hogar de bajos ingresos (Nivel 2)", sub: "Empleado priv. · interior · ≤$700k", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira el subsidio energético", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Hogar de altos ingresos (Nivel 1)", sub: "Autónomo · CABA · $6-15M", badges: { Plata: "strong", Vivienda: "mid" } },
+      { name: "Hogar de ingresos medios (Nivel 3)", sub: "Empleado priv. · GBA · $1,5-3M", badges: { Plata: "soft" } },
+      { name: "Hogar de bajos ingresos (Nivel 2)", sub: "Empleado priv. · interior · ≤$700k", badges: { Plata: "soft" } }
     ]
   },
 
@@ -3178,6 +3152,8 @@ export const MEASURES_BASE = [
     desc: "El Decreto 89/2024 intervino el ENACOM por 180 días en la órbita de la Secretaría de Innovación, Ciencia y Tecnología, con un interventor en lugar del directorio; el Decreto 675/2024 prorrogó la intervención. En enero de 2025, el Decreto 6/2025 disolvió el Fondo Fiduciario del Servicio Universal (el 1% de los ingresos de las TIC destinado a llevar conectividad a zonas no rentables). El mismo decreto ratificó que la política del Servicio Universal y la obligación de aporte de las licenciatarias siguen vigentes; el Decreto 312/2025 puso la recaudación y administración de esos fondos en cabeza del propio ENACOM.",
     tags: ["País", "Trabajo", "Calidad de servicios"],
     fuente: "Boletín Oficial — Decretos 89/2024 (26-ene-2024), 675/2024 (29-jul-2024) y 6/2025 (6-ene-2025); continuidad del aporte vía Res. ENACOM 3/2025 y Decreto 312/2025. Alcance de la disolución del Fondo y la política de Servicio Universal: Ámbito, ENACOM, InfoLeg.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "mid", body: "El Gobierno tomó control directo del ENACOM (que regula telecomunicaciones y medios) vía interventor y disolvió el fondo fiduciario que garantizaba conectividad en zonas no rentables. Ratificó que la política y el aporte siguen vigentes y le dio al ENACOM su recaudación: el aporte no desaparece, cambia quién lo administra. Ganan el control político del organismo y las grandes operadoras (menos estructura intermedia); el riesgo lo corren la independencia técnica del ente y las zonas que dependían del Fondo." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
@@ -3189,15 +3165,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "El Fondo del Servicio Universal (1% de los ingresos de telecomunicaciones) financiaba llevar internet y telefonía a zonas que al mercado no le conviene cubrir: parajes rurales, puna, Patagonia austral. Al disolverse el fondo fiduciario, ese mecanismo de subsidio cruzado queda en duda, aunque el decreto sostiene que la obligación de aporte sigue vigente. Si vivís lejos de las grandes ciudades, tu conectividad depende de que esa promesa se cumpla en los hechos." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "mid",
-        body: "El Gobierno tomó control directo del ENACOM (que regula telecomunicaciones y medios) vía interventor y disolvió el fondo fiduciario que garantizaba conectividad en zonas no rentables. Ratificó que la política y el aporte siguen vigentes y le dio al ENACOM su recaudación: el aporte no desaparece, cambia quién lo administra. Ganan el control político del organismo y las grandes operadoras (menos estructura intermedia); el riesgo lo corren la independencia técnica del ente y las zonas que dependían del Fondo." });
       return dims;
     },
     compareProfiles: [
-      { name: "Habitante rural sin buena conectividad", sub: "Empleado priv. · Patagonia", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "mid" } },
-      { name: "Trabajador/a del ENACOM", sub: "Empleado púb. · CABA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "mid" } },
-      { name: "Cooperativa de internet del interior", sub: "PyME · NEA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "mid" } },
-      { name: "Ciudadano que mira la independencia del ente", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "mid" } }
+      { name: "Habitante rural sin buena conectividad", sub: "Empleado priv. · Patagonia", badges: { "Calidad de servicios": "soft" } },
+      { name: "Trabajador/a del ENACOM", sub: "Empleado púb. · CABA", badges: { Trabajo: "soft" } },
+      { name: "Cooperativa de internet del interior", sub: "PyME · NEA", badges: { "Calidad de servicios": "soft" } }
     ]
   },
 
@@ -3209,6 +3182,8 @@ export const MEASURES_BASE = [
     desc: "El decreto prorrogó para 2024 el Presupuesto 2023 (calculado con valores de 2022) sin ajustarlo por inflación. Para las universidades nacionales, ejecutar esas partidas congeladas frente a una inflación interanual cercana al 270% significó una caída real superior al 70% en los gastos de funcionamiento y una fuerte pérdida salarial de docentes y no docentes. El conflicto derivó en la Marcha Federal Universitaria del 23 de abril de 2024, una de las movilizaciones más grandes en décadas (entre 430.000 y 800.000 personas solo en Buenos Aires, más cientos de miles en el resto del país).",
     tags: ["Plata", "Estabilidad", "Trabajo", "Movilidad social"],
     fuente: "Boletín Oficial — Decreto 88/2023 (27-dic-2023), prórroga del Presupuesto 2023; Decisión Administrativa 5/2024. Caída real >70% en funcionamiento y Marcha Federal Universitaria del 23-abr-2024: nexciencia (UBA), Chequeado, Infobae, Wikipedia (Conflicto universitario 2024).",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Prorrogar el presupuesto sin actualizarlo fue una forma de recortar por la vía de la licuación: el ahorro fiscal fue real (del orden del 0,3% del PBI) y lo pagaron el salario de unos 200.000 docentes y no docentes y la calidad del sistema que estudian más de 2 millones de personas. La Marcha Federal Universitaria del 23-abr-2024 mostró el costo político y social de esa decisión." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int', 'tucuman'].includes(p.zona);
@@ -3232,15 +3207,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
           body: "Si en tu familia hay alguien que estudia en la universidad pública del interior, el recorte golpea la única opción de educación superior cercana. La universidad gratuita es la principal vía de ascenso para las familias de ingresos medios y bajos: recortarla complica ese camino." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Prorrogar el presupuesto sin actualizarlo fue una forma de recortar por la vía de la licuación: el ahorro fiscal fue real (del orden del 0,3% del PBI) y lo pagaron el salario de unos 200.000 docentes y no docentes y la calidad del sistema que estudian más de 2 millones de personas. La Marcha Federal Universitaria del 23-abr-2024 mostró el costo político y social de esa decisión." });
       return dims;
     },
     compareProfiles: [
       { name: "Estudiante de universidad pública del interior", sub: "Estudiante · NOA", badges: { Plata: "strong", Estabilidad: "strong", "Movilidad social": "soft" } },
-      { name: "Docente universitario/a", sub: "Empleado púb. · CABA", badges: { Plata: "strong", Trabajo: "strong", "País / Equilibrio institucional": "soft" } },
-      { name: "Familia con un hijo en la universidad", sub: "Empleado priv. · interior", badges: { "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Contribuyente que mira el déficit", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Docente universitario/a", sub: "Empleado púb. · CABA", badges: { Plata: "strong", Trabajo: "strong" } },
+      { name: "Familia con un hijo en la universidad", sub: "Empleado priv. · interior", badges: { "Movilidad social": "soft" } }
     ]
   },
 
@@ -3252,6 +3224,8 @@ export const MEASURES_BASE = [
     desc: "El DNU 70/2023 derogó la Ley 20.680 de Abastecimiento —que desde 1974 permitía al Estado fijar precios máximos, obligar a continuar la producción y sancionar la especulación y el desabastecimiento de bienes esenciales— y la Ley 26.992, que había creado el Observatorio de Precios para monitorear precios y disponibilidad y detectar abusos. Con ellas cae también el andamiaje de información de precios y stock (SIPRE) que daba sustento a esos controles. El argumento oficial es que menos intervención libera la oferta; la contracara es que el consumidor pierde el paraguas legal frente a precios abusivos en bienes esenciales.",
     tags: ["Plata", "Calidad de servicios", "Estabilidad"],
     fuente: "Boletín Oficial — DNU 70/2023 (BORA 21-dic-2023), derogación de la Ley 20.680 de Abastecimiento y de la Ley 26.992 del Observatorio de Precios. Alcance de las facultades derogadas (precios máximos, continuidad de producción, sanción del desabastecimiento) y del monitoreo (SIPRE): Allende & Brea, Marval, Ámbito, InfoLeg.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Estado renuncia a una batería de controles de precios que en los hechos se usaba poco y de modo discrecional, pero que operaba como amenaza disuasoria. Ganan las empresas con poder de fijación de precios en alimentos, combustibles y medicamentos, y la narrativa de que menos intervención trae más oferta. Pierden el consumidor de bienes esenciales y los organismos de defensa del consumidor, que se quedan sin una herramienta procesal y sin la información para usarla." },
     impact: function(p) {
       const dims = [];
       const bajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
@@ -3264,15 +3238,13 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
         body: "Cae también el Observatorio de Precios y el sistema oficial que seguía precios y stock (SIPRE). Eran los datos con los que Defensa del Consumidor y la propia política de precios detectaban maniobras de concentración o cartelización. Sin ese monitoreo, el Estado pierde la capacidad de ver —y por lo tanto de probar— un abuso de posición dominante en bienes masivos." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Estado renuncia a una batería de controles de precios que en los hechos se usaba poco y de modo discrecional, pero que operaba como amenaza disuasoria. Ganan las empresas con poder de fijación de precios en alimentos, combustibles y medicamentos, y la narrativa de que menos intervención trae más oferta. Pierden el consumidor de bienes esenciales y los organismos de defensa del consumidor, que se quedan sin una herramienta procesal y sin la información para usarla." });
       return dims;
     },
     compareProfiles: [
       { name: "Familia con el gasto en bienes esenciales", sub: "Empleado priv. · GBA · ≤$1,5M", badges: { Plata: "mid", Estabilidad: "soft" } },
       { name: "Jubilado/a que compra alimentos y remedios", sub: "Jubilado mínima · interior", badges: { Plata: "mid", Estabilidad: "soft" } },
       { name: "Consumidor/a de ingresos medios-altos", sub: "Autónomo · CABA · $6-15M", badges: { Plata: "soft", "Calidad de servicios": "soft" } },
-      { name: "Ciudadano que mira la defensa del consumidor", sub: "Autónomo · CABA", badges: { "Calidad de servicios": "soft", "País / Equilibrio institucional": "soft" } }
+      { name: "Ciudadano que mira la defensa del consumidor", sub: "Autónomo · CABA", badges: { "Calidad de servicios": "soft" } }
     ]
   },
 
@@ -3284,6 +3256,8 @@ export const MEASURES_BASE = [
     desc: "Este es el capítulo aerocomercial del DNU 70/2023: la base legal del \"cielos abiertos\". Modificó el Código Aeronáutico (Ley 17.285) y derogó la Ley 19.030 (normas de los servicios aerocomerciales), el Decreto-Ley 12.507/56 (Política Aeronáutica Nacional) y el Decreto 1654/2002 (emergencia del transporte aéreo). Habilita que cualquier aerolínea con solvencia técnica y financiera opere rutas internas e internacionales sin exigir tratados de reciprocidad, permite el cabotaje por compañías y tripulaciones extranjeras y elimina pisos y techos tarifarios. La reglamentación operativa llegó después con el Decreto 599/2024 —que ya está en este catálogo—; esta ficha cubre la habilitación legal original.",
     tags: ["Trabajo", "Movilidad social", "País"],
     fuente: "Boletín Oficial — DNU 70/2023 (BORA 21-dic-2023), capítulo aerocomercial: modifica el Código Aeronáutico (Ley 17.285) y deroga la Ley 19.030, el Decreto-Ley 12.507/56 y el Decreto 1654/2002. Cabotaje extranjero sin reciprocidad y tarifas libres: Bruchou & Funes de Rioja, PAGBAM, Beccar Varela, Argentina.gob.ar.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Al derogar la Política Aeronáutica Nacional y la reserva de cabotaje, el Estado renuncia a regular qué se vuela y quién lo vuela, y resigna una herramienta de soberanía sobre su espacio aéreo interno. Ganan los consumidores de las rutas rentables, las low-cost y las extranjeras interesadas en el cabotaje argentino; el costo lo pueden cargar las conexiones que solo cerraban con subsidio cruzado, el empleo de Aerolíneas y la aviación general." },
     impact: function(p) {
       const dims = [];
       const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata', 'cba_cap', 'rosario', 'mendoza', 'tucuman'].includes(p.zona);
@@ -3298,15 +3272,12 @@ export const MEASURES_BASE = [
       }
       dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
         body: "La habilitación del cabotaje extranjero sin reciprocidad pone a Aerolíneas Argentinas —y sus más de 11.000 empleados— a competir contra operadoras que pueden volar barato sin las cargas de una aerolínea de bandera. Para pilotos, tripulantes y técnicos (APLA, AAA, APTA), la apertura presiona salarios y condiciones. Gana el pasajero de las rutas con volumen; la tensión la absorbe el empleo aeronáutico." });
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Al derogar la Política Aeronáutica Nacional y la reserva de cabotaje, el Estado renuncia a regular qué se vuela y quién lo vuela, y resigna una herramienta de soberanía sobre su espacio aéreo interno. Ganan los consumidores de las rutas rentables, las low-cost y las extranjeras interesadas en el cabotaje argentino; el costo lo pueden cargar las conexiones que solo cerraban con subsidio cruzado, el empleo de Aerolíneas y la aviación general." });
       return dims;
     },
     compareProfiles: [
       { name: "Pasajero frecuente de rutas troncales", sub: "Empleado priv. · CABA", badges: { Plata: "pos_soft" } },
-      { name: "Habitante del interior con ruta exclusiva de Aerolíneas", sub: "Empleado priv. · Patagonia", badges: { "Movilidad social": "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Trabajador/a aeronáutico", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Ciudadano que mira la soberanía aérea", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Habitante del interior con ruta exclusiva de Aerolíneas", sub: "Empleado priv. · Patagonia", badges: { "Movilidad social": "soft" } },
+      { name: "Trabajador/a aeronáutico", sub: "Empleado priv. · GBA", badges: { Trabajo: "soft" } }
     ]
   },
 
@@ -3350,6 +3321,8 @@ export const MEASURES_BASE = [
     desc: "El decreto elevó del 7,5% al 17,5% la alícuota del Impuesto PAÍS aplicable a la compra de divisas para importar bienes y para pagar fletes y transporte de comercio exterior —diez puntos más sobre cada importación—, con excepciones para combustibles, lubricantes, energía e insumos directos de la canasta básica alimentaria. Fue una de las primeras medidas del Gobierno, parte del paquete inicial junto con la fuerte devaluación del 13-dic-2023 (Comunicación BCRA \"A\" 7917, ya en este catálogo). Después la alícuota bajaría al 7,5% en septiembre de 2024 (Decreto 777/2024) y el impuesto terminaría venciendo el 22-dic-2024.",
     tags: ["Plata", "Impuestos", "Cambiario"],
     fuente: "Boletín Oficial — Decreto 29/2023 (BORA 13-dic-2023), suba del Impuesto PAÍS sobre importaciones de bienes y fletes del 7,5% al 17,5%, con excepciones para combustibles, energía y canasta básica. Peso fiscal (el PAÍS pasó del 0,4% del PBI en 2022 al 0,8% en 2023) y traslado a precios de durables: Infobae, El Cronista, Chequeado, EY.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "La suba apuntó a recaudar y a contener importaciones en plena emergencia cambiaria: el Impuesto PAÍS, que en 2022 valía 0,4% del PBI, trepó a alrededor del 0,8% en 2023 y siguió siendo una pata clave de la caja en 2024. Gana el Tesoro, que estabiliza cuentas en el corto plazo; pierden el importador de insumos y el consumidor de bienes durables, que pagan el impuesto vía precios mientras dura." },
     impact: function(p) {
       const dims = [];
       const importador = ['pyme', 'autonomo', 'monotrib'].includes(p.ocupacion);
@@ -3359,15 +3332,13 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
           body: "Si tu actividad usa insumos o bienes importados —electrónica, autopartes, textiles sintéticos, maquinaria—, la suba de diez puntos encarece de golpe tu costo de reposición y tu capital de trabajo. Para una PyME o un cuentapropista con cadena importada, eso aprieta el margen y obliga a trasladar a precio o absorber la pérdida: el impuesto pega antes en el costo que en la venta." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "La suba apuntó a recaudar y a contener importaciones en plena emergencia cambiaria: el Impuesto PAÍS, que en 2022 valía 0,4% del PBI, trepó a alrededor del 0,8% en 2023 y siguió siendo una pata clave de la caja en 2024. Gana el Tesoro, que estabiliza cuentas en el corto plazo; pierden el importador de insumos y el consumidor de bienes durables, que pagan el impuesto vía precios mientras dura." });
       return dims;
     },
     compareProfiles: [
-      { name: "PyME que importa insumos del interior", sub: "PyME · interior", badges: { Plata: "strong", Trabajo: "soft", "País / Equilibrio institucional": "soft" } },
+      { name: "PyME que importa insumos del interior", sub: "PyME · interior", badges: { Plata: "strong", Trabajo: "soft" } },
       { name: "Comprador/a de electrónica y electrodomésticos", sub: "Empleado priv. · CABA", badges: { Plata: "mid" } },
       { name: "Cuentapropista con cadena importada", sub: "Monotrib. · GBA", badges: { Plata: "strong", Trabajo: "soft" } },
-      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { Plata: "strong", "País / Equilibrio institucional": "soft" } }
+      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { Plata: "strong" } }
     ]
   },
 
@@ -3379,6 +3350,8 @@ export const MEASURES_BASE = [
     desc: "La Resolución 197/2024 de la Dirección Nacional de Vialidad aplicó en mayo de 2024 un aumento del 100% en todas las categorías de los peajes de los Accesos Norte (la Panamericana, concesionada a Autopistas del Sol – AUSOL) y Oeste (Grupo Concesionario del Oeste – GCO), las dos autopistas que conectan el conurbano con la Ciudad. Además abrió un mecanismo de revisión mensual desde el segundo semestre: con los ajustes que siguieron (julio, agosto, septiembre, noviembre), la tarifa acumuló alrededor del 170% en el año. El esquema penaliza cada vez más al que paga en efectivo o en cabina manual frente al TelePASE —la tarifa manual llegó a costar más del doble que la electrónica—. Para quien cruza a diario en auto para trabajar, el peaje pasó a ser un gasto fijo de varios cientos de miles de pesos al año.",
     tags: ["Plata", "Movilidad social", "Trabajo"],
     fuente: "Boletín Oficial — Resolución 197/2024 DNV (RESOL-2024-197-APN-DNV#MEC), vigencia 18-may-2024: +100% en todas las categorías de los Accesos Norte (AUSOL) y Oeste (GCO) y apertura de revisión tarifaria mensual desde el 2º semestre. Acumulado de ~170% en 2024 y brecha creciente entre TelePASE y pago manual (el efectivo llegó a costar más del doble): Argentina.gob.ar, DEUCO, La Nación, Ámbito, Infobae.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Detrás del aumento hay una recomposición tarifaria a favor de las concesionarias AUSOL y GCO, que recuperan ingresos en pesos tras años de tarifas planchadas, y un Estado que reduce el subsidio implícito al transporte por autopista. Ganan los concesionarios y, de modo indirecto, el Tesoro; pierde el usuario que cruza el AMBA todos los días y no tiene una alternativa de transporte público rápida para el mismo recorrido. La revisión mensual, además, le mete al peaje la lógica de la inflación: ajusta seguido y casi sin discusión pública." },
     impact: function(p) {
       const dims = [];
       const usaVehiculo = p.transporte === "auto" || p.transporte === "moto" || p.transporte === "mixto";
@@ -3401,15 +3374,12 @@ export const MEASURES_BASE = [
           body: "Si tu actividad mueve mercadería por estos accesos —flete, reparto, una PyME logística— el golpe se multiplica: las categorías de carga (vehículos pesados, Cat. 5 a 7) pagan varias veces la tarifa de un auto y subieron en la misma proporción. Cada viaje de distribución por la Panamericana o el Acceso Oeste carga ahora ese costo, que terminás trasladando al precio del flete o absorbiendo contra tu propio margen." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Detrás del aumento hay una recomposición tarifaria a favor de las concesionarias AUSOL y GCO, que recuperan ingresos en pesos tras años de tarifas planchadas, y un Estado que reduce el subsidio implícito al transporte por autopista. Ganan los concesionarios y, de modo indirecto, el Tesoro; pierde el usuario que cruza el AMBA todos los días y no tiene una alternativa de transporte público rápida para el mismo recorrido. La revisión mensual, además, le mete al peaje la lógica de la inflación: ajusta seguido y casi sin discusión pública." });
       return dims;
     },
     compareProfiles: [
-      { name: "Empleado del conurbano norte que cruza en auto", sub: "Empleado priv. · GBA Norte · ≤$1,5M", badges: { Plata: "strong", "Movilidad social": "mid", "País / Equilibrio institucional": "soft" } },
+      { name: "Empleado del conurbano norte que cruza en auto", sub: "Empleado priv. · GBA Norte · ≤$1,5M", badges: { Plata: "strong", "Movilidad social": "mid" } },
       { name: "Transportista / PyME logística por los Accesos", sub: "PyME · GBA Oeste", badges: { Plata: "strong", Trabajo: "mid", "Movilidad social": "mid" } },
-      { name: "Vecino/a de CABA que sale al norte en auto", sub: "Empleado priv. · CABA", badges: { Plata: "mid", "País / Equilibrio institucional": "soft" } },
-      { name: "Usuario/a de transporte público del mismo corredor", sub: "Empleado priv. · GBA Norte", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Vecino/a de CABA que sale al norte en auto", sub: "Empleado priv. · CABA", badges: { Plata: "mid" } }
     ]
   },
 
@@ -3421,6 +3391,8 @@ export const MEASURES_BASE = [
     desc: "El Decreto 698/2024 termina con el monopolio de SUBE en el pago electrónico del transporte público. Habilita que se pueda viajar pagando con tarjeta de débito, crédito, billetera digital (Mercado Pago, ModoBanco) y QR. SUBE sigue funcionando; deja de ser la única opción. La implementación es gradual y arranca por las localidades del interior antes que por el AMBA. El decreto no toca tarifas ni subsidios: cambia con qué se paga, no cuánto.",
     tags: ["Calidad de servicios", "Plata", "Movilidad social"],
     fuente: "BORA — Decreto 698/2024 (6-ago-2024, firmado por Milei, Francos y Caputo), publicado como 'Sistema Único de Boleto Electrónico'. Extiende el sistema de percepción de tarifas del Decreto 84/2009 a otros medios de pago sin contacto e interoperables; deja al Banco Nación como responsable de procesar la totalidad de las transacciones. El texto NO elimina la Red SUBE ni el Boleto Integrado, NO modifica tarifas y NO modifica subsidios.",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Decreto 698/2024 extiende el sistema de cobro de tarifas del Decreto 84/2009 a otros medios de pago sin contacto e interoperables, y deja al Banco Nación como responsable de procesar la totalidad de las transacciones —la liquidación de fondos entre colectivos, trenes, bancos y billeteras—. La implementación es por etapas: primero débito, después crédito, billeteras y QR; y por zonas: el interior antes que el AMBA. Hay además un matiz de privacidad para tener en cuenta: pagar con tarjeta o billetera asocia tu identidad a cada viaje, mientras que la SUBE cargada en efectivo era más anónima. Para quien valora ese anonimato, es un costo no monetario del cambio." },
     impact: function(p) {
       const dims = [];
       const usaPublico = ["2colectivos", "combinacion", "tren", "mixto"].includes(p.transporte);
@@ -3450,16 +3422,14 @@ export const MEASURES_BASE = [
           body: "El Decreto 698/2024 habilita pagar el transporte público con tarjeta de débito, crédito, billetera digital o QR, además de la SUBE. Si tenés alguno de esos medios, ganás comodidad: una opción más para viajar sin depender del saldo cargado. La SUBE sigue funcionando igual y la tarifa no cambia; la implementación es gradual y arranca por el interior antes que por el AMBA." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Decreto 698/2024 extiende el sistema de cobro de tarifas del Decreto 84/2009 a otros medios de pago sin contacto e interoperables, y deja al Banco Nación como responsable de procesar la totalidad de las transacciones —la liquidación de fondos entre colectivos, trenes, bancos y billeteras—. La implementación es por etapas: primero débito, después crédito, billeteras y QR; y por zonas: el interior antes que el AMBA. Hay además un matiz de privacidad para tener en cuenta: pagar con tarjeta o billetera asocia tu identidad a cada viaje, mientras que la SUBE cargada en efectivo era más anónima. Para quien valora ese anonimato, es un costo no monetario del cambio." });
       return dims;
     },
     compareProfiles: [
-      { name: "Trabajadora joven de CABA con billetera digital", sub: "Empleado priv. · CABA · usa Mercado Pago", badges: { "Calidad de servicios": "pos", Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Trabajadora joven de CABA con billetera digital", sub: "Empleado priv. · CABA · usa Mercado Pago", badges: { "Calidad de servicios": "pos", Plata: "pos_soft" } },
       { name: "Jubilada de la mínima que carga la SUBE en efectivo", sub: "Jubilado mínima · GBA Sur", badges: { "Calidad de servicios": "none", "Movilidad social": "soft" } },
-      { name: "Estudiante de una localidad del interior", sub: "Estudiante · Córdoba int.", badges: { "Calidad de servicios": "pos_soft", "País / Equilibrio institucional": "soft" } },
+      { name: "Estudiante de una localidad del interior", sub: "Estudiante · Córdoba int.", badges: { "Calidad de servicios": "pos_soft" } },
       { name: "Trabajador informal sin cuenta bancaria", sub: "Trab. informal · GBA Oeste · ≤$700k", badges: { "Calidad de servicios": "none", "Movilidad social": "soft" } },
-      { name: "PyME del rubro pagos (procesa cobros)", sub: "PyME · fintech / medios de pago", badges: { Trabajo: "pos", "País / Equilibrio institucional": "soft" } }
+      { name: "PyME del rubro pagos (procesa cobros)", sub: "PyME · fintech / medios de pago", badges: { Trabajo: "pos" } }
     ]
   },
   {
@@ -3470,6 +3440,8 @@ export const MEASURES_BASE = [
     desc: "Reforma la LCT, el régimen de convenios colectivos y el de asociaciones sindicales. Cambia el cálculo de la indemnización por despido, crea el Fondo de Asistencia Laboral (financiado por el empleador), encuadra a los trabajadores de plataformas como independientes, simplifica la registración en ARCA y digitaliza recibos y certificados.",
     tags: ["Trabajo","Estabilidad","Plata"],
     fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/339128/20260306",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Vigente y aplicándose, pero judicialmente cuestionada: la CGT obtuvo una cautelar que luego quedó sin efecto y el art. 55 fue declarado inconstitucional en casos puntuales. Reglamentada por el Decreto 407/2026." },
     impact: function(p) {
       const dims = [];
       const dependiente = ['empleado_priv','domestica_reg'].includes(p.ocupacion);
@@ -3514,8 +3486,6 @@ export const MEASURES_BASE = [
           body: "Sin efecto directo hoy; cambian las condiciones de una futura contratación (fondo de cese, cálculo de indemnización y preaviso)." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "Vigente y aplicándose, pero judicialmente cuestionada: la CGT obtuvo una cautelar que luego quedó sin efecto y el art. 55 fue declarado inconstitucional en casos puntuales. Reglamentada por el Decreto 407/2026." });
 
       return dims;
     },
@@ -3527,16 +3497,16 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Trabajador/a en relación de dependencia",
         sub: "Empleado priv. · CABA",
-        badges: { Estabilidad: "strong", Trabajo: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Estabilidad: "strong", Trabajo: "mid", Plata: "soft" } },
       { name: "Repartidor/a o conductor/a de app",
         sub: "Empleado priv. + extra plataforma · GBA",
-        badges: { Trabajo: "strong", Estabilidad: "mid", "País / Equilibrio institucional": "soft" } },
+        badges: { Trabajo: "strong", Estabilidad: "mid" } },
       { name: "PyME que emplea personal",
         sub: "PyME · interior",
-        badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Trabajo: "pos_soft" } },
       { name: "Trabajador/a no registrado/a",
         sub: "Trabajo informal · GBA",
-        badges: { Trabajo: "mid", "País / Equilibrio institucional": "soft" } }
+        badges: { Trabajo: "mid" } }
     ]
   },
   {
@@ -3547,6 +3517,8 @@ export const MEASURES_BASE = [
     desc: "Amplía el acceso de las personas humanas al mercado de cambios: elimina los límites a los adelantos en efectivo (retiros) en el exterior con tarjetas de crédito emitidas en el país, y extiende las excepciones para exportadores personas humanas de bienes y servicios (plazos y obligación de liquidar divisas).",
     tags: ["Plata"],
     fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/340665/20260413",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Continúa el desarme gradual de restricciones cambiarias. Son normas del BCRA que pueden modificarse por comunicaciones posteriores." },
     impact: function(p) {
       const dims = [];
 
@@ -3559,8 +3531,6 @@ export const MEASURES_BASE = [
       dims.push({ name: "Plata", level: "soft",
         body: "Si viajás al exterior, se <strong>eliminan los límites</strong> para extraer efectivo (adelantos) con tarjetas de crédito emitidas en el país." });
 
-      dims.push({ name: "País / Equilibrio institucional", level: "soft",
-        body: "Continúa el desarme gradual de restricciones cambiarias. Son normas del BCRA que pueden modificarse por comunicaciones posteriores." });
 
       return dims;
     },
@@ -3571,10 +3541,10 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Freelance que exporta servicios",
         sub: "Monotributista · CABA",
-        badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Plata: "pos_soft" } },
       { name: "Persona que viaja al exterior",
         sub: "Empleado priv. · CABA",
-        badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } }
+        badges: { Plata: "soft" } }
     ]
   },
   {
@@ -3585,6 +3555,8 @@ export const MEASURES_BASE = [
     desc: "Reglamenta el Régimen de Incentivo a la Formalización Laboral (RIFL) de la Ley 27.802. Las empresas que registren nuevas altas de personas desempleadas, ex monotributistas o ex empleados públicos pagan contribuciones patronales reducidas al 2% durante hasta 48 meses. Régimen transitorio: las altas se toman entre el 1-may-2026 y el 30-abr-2027.",
     tags: ["Trabajo", "Plata"],
     fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/341443/20260504",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Reglamenta la <strong>Ley 27.802</strong>. Es un régimen <strong>transitorio</strong>: las altas se computan hasta el 30-abr-2027 y la reducción rige por trabajador durante hasta 48 meses desde el alta." },
     impact: function(p) {
       const dims = [];
       const empleador = p.ocupacion === 'pyme';
@@ -3609,8 +3581,6 @@ export const MEASURES_BASE = [
           body: "Sin efecto directo sobre tu situación actual: el beneficio aplica a nuevas altas registradas de personas desempleadas o que dejan el monotributo/el empleo público." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", level: "soft",
-        body: "Reglamenta la <strong>Ley 27.802</strong>. Es un régimen <strong>transitorio</strong>: las altas se computan hasta el 30-abr-2027 y la reducción rige por trabajador durante hasta 48 meses desde el alta." });
 
       return dims;
     },
@@ -3621,13 +3591,13 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "PyME que suma personal",
         sub: "PyME · interior",
-        badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Trabajo: "pos_soft" } },
       { name: "Persona buscando empleo",
         sub: "Desempleado · GBA",
-        badges: { Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Trabajo: "pos_soft" } },
       { name: "Monotributista que busca relación de dependencia",
         sub: "Monotributista · CABA",
-        badges: { Trabajo: "soft", "País / Equilibrio institucional": "soft" } }
+        badges: { Trabajo: "soft" } }
     ]
   },
   {
@@ -3638,6 +3608,8 @@ export const MEASURES_BASE = [
     desc: "Autoriza el llamado a Licitación Pública Nacional e Internacional para vender el 90% del capital de Agua y Saneamientos Argentinos (AySA). Un operador estratégico adquiriría al menos el 51%; el resto se ofrecería en bolsas y mercados. El 10% restante queda en el Programa de Propiedad Participada de los empleados. Presentación de ofertas hasta el 27-ago-2026.",
     tags: ["Servicios", "Plata"],
     fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/341989/20260515",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Es una <strong>licitación de venta, todavía no adjudicada</strong> (ofertas hasta 27-ago-2026). La prestación seguirá bajo regulación del ente de control del servicio." },
     impact: function(p) {
       const dims = [];
       const areaAySA = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste'].includes(p.zona);
@@ -3652,8 +3624,6 @@ export const MEASURES_BASE = [
           body: "AySA presta servicio en CABA y GBA. Si vivís fuera de esa área, esta venta no te afecta directamente." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", level: "soft",
-        body: "Es una <strong>licitación de venta, todavía no adjudicada</strong> (ofertas hasta 27-ago-2026). La prestación seguirá bajo regulación del ente de control del servicio." });
 
       return dims;
     },
@@ -3664,10 +3634,10 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Usuario/a de AySA",
         sub: "CABA / GBA",
-        badges: { Servicios: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Servicios: "mid", Plata: "soft" } },
       { name: "Fuera del área AySA",
         sub: "Interior",
-        badges: { Servicios: "none", "País / Equilibrio institucional": "soft" } }
+        badges: { Servicios: "none" } }
     ]
   },
   {
@@ -3678,6 +3648,8 @@ export const MEASURES_BASE = [
     desc: "Aprueba nuevos cuadros tarifarios de gas por red que incorporan un escalón de la Revisión Quinquenal de Tarifas (RQT) 2025-2030 —implementada en 31 aumentos mensuales escalonados— más el Precio Anual Uniforme (PAU) del gas. Los usuarios residenciales de menores ingresos mantienen las bonificaciones del régimen de Subsidios Energéticos Focalizados (SEF) sobre el consumo base. Esta resolución aprueba el cuadro de Distribuidora de Gas del Centro; las demás distribuidoras se aprueban por resoluciones espejo dentro del mismo esquema.",
     tags: ["Servicios", "Plata"],
     fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/342571/20260529",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Es un acto regulatorio del ENReGE dentro de la RQT 2025-2030. El sendero de aumentos y las bonificaciones SEF pueden ajustarse por resoluciones posteriores de la Secretaría de Energía." },
     impact: function(p) {
       const dims = [];
       // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
@@ -3693,8 +3665,6 @@ export const MEASURES_BASE = [
           body: "El aumento es <strong>escalonado</strong>: se distribuye en subas mensuales previsibles a lo largo del quinquenio, no en un salto único." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", level: "soft",
-        body: "Es un acto regulatorio del ENReGE dentro de la RQT 2025-2030. El sendero de aumentos y las bonificaciones SEF pueden ajustarse por resoluciones posteriores de la Secretaría de Energía." });
 
       return dims;
     },
@@ -3705,10 +3675,10 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Hogar con tarifa social",
         sub: "Ingreso ≤$700k · con SEF",
-        badges: { Servicios: "soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Servicios: "soft" } },
       { name: "Hogar sin subsidio",
         sub: "Ingreso medio · sin SEF",
-        badges: { Servicios: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } }
+        badges: { Servicios: "mid", Plata: "soft" } }
     ]
   },
   {
@@ -3719,6 +3689,8 @@ export const MEASURES_BASE = [
     desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de junio de 2026. El monto es completo para quienes cobran hasta el haber mínimo y decrece para haberes superiores. Es no remunerativo (no se le hacen descuentos) y no modifica la fórmula de movilidad de la Ley 27.609.",
     tags: ["Plata", "Estabilidad"],
     fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/342525/20260529",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "Pago por <strong>única vez</strong> para compensar los efectos de la Ley 27.609 de movilidad; no cambia la fórmula de actualización de los haberes. Lo instrumenta ANSES." },
     impact: function(p) {
       const dims = [];
 
@@ -3751,8 +3723,6 @@ export const MEASURES_BASE = [
           body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones." });
       }
 
-      dims.push({ name: "País / Equilibrio institucional", level: "soft",
-        body: "Pago por <strong>única vez</strong> para compensar los efectos de la Ley 27.609 de movilidad; no cambia la fórmula de actualización de los haberes. Lo instrumenta ANSES." });
 
       return dims;
     },
@@ -3763,13 +3733,13 @@ export const MEASURES_BASE = [
     compareProfiles: [
       { name: "Jubilado/a de la mínima",
         sub: "Jubilado mínima · CABA",
-        badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } },
+        badges: { Plata: "pos" } },
       { name: "Jubilado/a de haber medio-alto",
         sub: "Jubilado media-alta · interior",
-        badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+        badges: { Plata: "pos_soft" } },
       { name: "Pensión no contributiva",
         sub: "Pensionado · GBA",
-        badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } }
+        badges: { Plata: "pos" } }
     ]
   },
   {
@@ -3780,6 +3750,8 @@ export const MEASURES_BASE = [
     desc: "Tras las bajas de julio y diciembre de 2025, el decreto fija un cronograma de reducción gradual de las retenciones de la cadena de granos y biocombustibles hasta diciembre de 2028. Trigo y cebada bajan de inmediato del 7,5% al 5,5%; la soja se mantiene en 24% durante 2026 y desciende desde enero de 2027 (0,25 pts/mes) hacia 21% en dic-2027 y 15% en dic-2028 (0,5 pts/mes). Incluye maíz, sorgo, girasol y biocombustibles en el mismo sendero gradual. Mejora el precio que recibe el exportador de forma escalonada.",
     tags: ["Plata", "País", "Trabajo"],
     fuente: "https://www.argentina.gob.ar/normativa/nacional/decreto-423-2026",
+    // Estado institucional/judicial de la NORMA — no es impacto personal.
+    institucional: { level: "soft", body: "El Tesoro resigna recaudación de derechos de exportación de forma escalonada a cambio de más liquidación de divisas y competitividad del agro. Ganan exportadores y productores; el costo fiscal y la eventual presión sobre el precio de los alimentos los reparten el resto del presupuesto y el consumidor." },
     impact: function(p) {
       const dims = [];
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
@@ -3795,15 +3767,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Como la baja es gradual, la presión sobre la góndola es suave y se reparte en el tiempo." });
       }
-      dims.push({ name: "País / Equilibrio institucional", icon: "🏛️", level: "soft",
-        body: "El Tesoro resigna recaudación de derechos de exportación de forma escalonada a cambio de más liquidación de divisas y competitividad del agro. Ganan exportadores y productores; el costo fiscal y la eventual presión sobre el precio de los alimentos los reparten el resto del presupuesto y el consumidor." });
       return dims;
     },
     compareProfiles: [
-      { name: "Productor agrícola del interior", sub: "Empresario PyME · NEA", badges: { Plata: "pos_soft", Trabajo: "pos_soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Familia que compra harina, aceite y pan", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
-      { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos_soft", Trabajo: "pos_soft" } },
-      { name: "Contribuyente que mira la recaudación", sub: "Autónomo · CABA", badges: { "País / Equilibrio institucional": "soft" } }
+      { name: "Productor agrícola del interior", sub: "Empresario PyME · NEA", badges: { Plata: "pos_soft", Trabajo: "pos_soft" } },
+      { name: "Familia que compra harina, aceite y pan", sub: "Empleado priv. · ≤$1,5M", badges: { Plata: "soft" } },
+      { name: "Rentista del campo (arrienda hectáreas)", sub: "Renta · interior", badges: { Plata: "pos_soft", Trabajo: "pos_soft" } }
     ]
   },
 {
@@ -3814,6 +3783,8 @@ export const MEASURES_BASE = [
   desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de agosto de 2026. El monto es completo para quienes cobran hasta el haber mínimo garantizado y decrece para haberes superiores, de modo que la suma haber + bono alcanza como tope el haber mínimo más $70.000. Es no remunerativo (no se le hacen descuentos ni se computa para ningún otro concepto) y no modifica la fórmula de movilidad de la Ley 27.609. Alcanza a prestaciones del SIPA (Ley 24.241), Pensión Universal para el Adulto Mayor y pensiones no contributivas por vejez, invalidez y madres de 7 o más hijos.",
   tags: ["Plata", "Estabilidad"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345137/20260730",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "Pago por <strong>única vez</strong> para el mes de agosto 2026 sobre haberes que sigue liquidando ANSES; no cambia la fórmula de movilidad de la Ley 27.609. Continúa la práctica de decretos mensuales (Decretos 399/2026, 686/2026, entre otros) para compensar los efectos de la fórmula vigente." },
   impact: function(p) {
     const dims = [];
 
@@ -3846,8 +3817,6 @@ export const MEASURES_BASE = [
         body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones del mes de agosto 2026." });
     }
 
-    dims.push({ name: "País / Equilibrio institucional", level: "soft",
-      body: "Pago por <strong>única vez</strong> para el mes de agosto 2026 sobre haberes que sigue liquidando ANSES; no cambia la fórmula de movilidad de la Ley 27.609. Continúa la práctica de decretos mensuales (Decretos 399/2026, 686/2026, entre otros) para compensar los efectos de la fórmula vigente." });
 
     return dims;
   },
@@ -3858,13 +3827,13 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Jubilado/a de la mínima",
       sub: "Jubilado mínima · CABA",
-      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } },
+      badges: { Plata: "pos" } },
     { name: "Jubilado/a de haber medio-alto",
       sub: "Jubilado media-alta · interior",
-      badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Plata: "pos_soft" } },
     { name: "Pensión no contributiva",
       sub: "Pensionado · GBA",
-      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } }
+      badges: { Plata: "pos" } }
   ]
 },
 {
@@ -3875,6 +3844,8 @@ export const MEASURES_BASE = [
   desc: "Modifica el Decreto 617/2025 y difiere parcialmente los incrementos del Impuesto sobre los Combustibles Líquidos (ICL) y del Impuesto al Dióxido de Carbono. Para los hechos imponibles del 1 al 31 de agosto de 2026 se aplican incrementos parciales por litro (Nafta sin plomo y nafta virgen: ICL $10,572 + CO₂ $0,648; Gasoil: ICL $9,511 + CO₂ $1,084, con diferencial Patagonia de $5,150). Los efectos completos remanentes rigen desde el 1 de septiembre de 2026. No alcanza al GNC.",
   tags: ["Plata", "Movilidad", "Impuestos"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345226/20260731",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "El decreto <strong>difiere parcialmente</strong> el ajuste previsto por el Decreto 617/2025. Es una postergación acotada: los efectos remanentes se acumulan y se aplican desde el 1 de septiembre de 2026." },
   impact: function(p) {
     const dims = [];
 
@@ -3910,8 +3881,6 @@ export const MEASURES_BASE = [
         body: "Si trabajás con moto o auto en plataformas de reparto/transporte, el combustible es tu insumo directo: el aumento impacta el costo por viaje/entrega." });
     }
 
-    dims.push({ name: "País / Equilibrio institucional", level: "soft",
-      body: "El decreto <strong>difiere parcialmente</strong> el ajuste previsto por el Decreto 617/2025. Es una postergación acotada: los efectos remanentes se acumulan y se aplican desde el 1 de septiembre de 2026." });
 
     return dims;
   },
@@ -3922,13 +3891,13 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Empleado con auto",
       sub: "Empleado privado · auto",
-      badges: { Plata: "mid", Movilidad: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Plata: "mid", Movilidad: "soft" } },
     { name: "PyME con reparto",
       sub: "PyME · combustible como insumo",
-      badges: { Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Plata: "soft" } },
     { name: "Usa colectivo",
       sub: "Empleado · 2 colectivos",
-      badges: { Movilidad: "soft", "País / Equilibrio institucional": "soft" } }
+      badges: { Movilidad: "soft" } }
   ]
 },
 {
@@ -3939,6 +3908,8 @@ export const MEASURES_BASE = [
   desc: "El ENReGE aprueba nuevos cuadros tarifarios de distribución eléctrica de EDESUR (Res. 374/2026) y EDENOR (Res. 375/2026) con vigencia desde el 1 de agosto de 2026. Incremento del Costo Propio de Distribución (CPD): base mensual del 0,36% más actualización por índices (IPIM 67% + IPC 33%) del 1,35%, total 1,71% respecto de julio 2026. Se traslada el costo del Mercado Eléctrico Mayorista (MEM) de junio ($0,307 por kWh) y se fija un Valor Agregado de Distribución (VAD) medio de $63,540. Los usuarios residenciales beneficiarios del régimen de Subsidios Energéticos Focalizados (SEF) reciben una bonificación extraordinaria adicional del 16,59% para agosto de 2026, que se suma a la bonificación general del régimen. Aplica en el área de concesión del AMBA.",
   tags: ["Servicios", "Plata"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345270/20260731",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "Es un acto regulatorio mensual del ENReGE dentro del esquema tarifario vigente. La bonificación extraordinaria del 16,59% para SEF de agosto se enmarca en un cronograma de reducción progresiva a lo largo de 2026 (tope 25% al inicio del año, decreciente)." },
   impact: function(p) {
     const dims = [];
     // p.asistencia es un ARRAY multi-select → usar (p.asistencia || []).includes(...)
@@ -3961,8 +3932,6 @@ export const MEASURES_BASE = [
         body: "Esta resolución cubre el AMBA (EDESUR y EDENOR). En otras jurisdicciones, la tarifa eléctrica la fija el regulador provincial o resoluciones espejo del ENReGE para la distribuidora local." });
     }
 
-    dims.push({ name: "País / Equilibrio institucional", level: "soft",
-      body: "Es un acto regulatorio mensual del ENReGE dentro del esquema tarifario vigente. La bonificación extraordinaria del 16,59% para SEF de agosto se enmarca en un cronograma de reducción progresiva a lo largo de 2026 (tope 25% al inicio del año, decreciente)." });
 
     return dims;
   },
@@ -3973,13 +3942,13 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Hogar SEF en AMBA",
       sub: "Ingreso ≤$700k · CABA/GBA",
-      badges: { Servicios: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Servicios: "soft" } },
     { name: "Hogar AMBA sin subsidio",
       sub: "Ingreso medio · GBA",
-      badges: { Servicios: "mid", Plata: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Servicios: "mid", Plata: "soft" } },
     { name: "Hogar del interior",
       sub: "Ingreso medio · Rosario/Córdoba",
-      badges: { Servicios: "soft", "País / Equilibrio institucional": "soft" } }
+      badges: { Servicios: "soft" } }
   ]
 },
 {
@@ -3990,14 +3959,14 @@ export const MEASURES_BASE = [
   desc: "Aprueba el procedimiento operativo para la atención de personas extranjeras en establecimientos sanitarios administrados por el Estado Nacional. Distingue tres situaciones: (a) atención de emergencia, garantizada sin restricción; (b) residentes permanentes, en igualdad con ciudadanos argentinos; (c) extranjeros sin residencia permanente, que deben presentar seguro de salud o abonar previamente la prestación no urgente. El profesional de salud es el único competente para clasificar cada caso como emergencia o atención habitual. Se establecen dos circuitos de cobro: recupero a la aseguradora (con seguro) o presupuesto y pago previo (sin seguro). Alcanza sólo a establecimientos del Estado nacional; no involucra hospitales provinciales ni municipales.",
   tags: ["Salud", "País", "Calidad de servicios"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345792/20260811",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "La resolución reglamenta el <strong>DNU 366/2025</strong>, que modificó el artículo 8° de la Ley de Migraciones 25.871. Alcanza sólo a establecimientos administrados por el Estado nacional; no fija aranceles ni obliga a provincias o municipios." },
   impact: function(p) {
     const dims = [];
 
     dims.push({ name: "Salud", level: "soft",
       body: "Si sos argentino/a o residente permanente, <strong>no cambia nada</strong>: seguís atendiéndote como antes en los hospitales nacionales." });
 
-    dims.push({ name: "País / Equilibrio institucional", level: "soft",
-      body: "La resolución reglamenta el <strong>DNU 366/2025</strong>, que modificó el artículo 8° de la Ley de Migraciones 25.871. Alcanza sólo a establecimientos administrados por el Estado nacional; no fija aranceles ni obliga a provincias o municipios." });
 
     dims.push({ name: "Calidad de servicios", level: "soft",
       body: "Se agrega un paso administrativo previo a la atención no urgente para extranjeros sin residencia permanente: acreditar seguro o presupuesto y pago. Los circuitos de facturación son responsabilidad de cada hospital nacional." });
@@ -4011,10 +3980,10 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Argentino/a con obra social",
       sub: "Empleado privado · CABA",
-      badges: { Salud: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Salud: "soft" } },
     { name: "Jubilado/a con PAMI",
       sub: "Jubilado · GBA",
-      badges: { Salud: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Salud: "soft" } },
     { name: "Familia que se atiende en hospital público",
       sub: "Trab. informal · interior",
       badges: { Salud: "soft", "Calidad de servicios": "soft" } }
@@ -4028,6 +3997,8 @@ export const MEASURES_BASE = [
   desc: "Suspende durante 2026 la aplicación de dos artículos del Reglamento General del Programa Vouchers Educativos (aprobado por Res. 205/2026): el art. 14 (certificaciones mensuales que las instituciones educativas debían realizar sobre los beneficiarios) y el art. 21 inciso e) (causal de cese de la prestación). El objetivo declarado es no interrumpir la trayectoria educativa de los beneficiarios mientras el ciclo lectivo esté en curso. El programa alcanza a familias con hijos de hasta 18 años en instituciones de gestión privada con al menos 75% de financiamiento estatal, con ingresos familiares no superiores a 7 Salarios Mínimos Vitales y Móviles (SMVM). La suspensión no modifica los requisitos de ingreso al programa ni el monto del voucher.",
   tags: ["Educación", "Plata", "Vida familiar"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345883/20260813",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "Suspende hasta fin de 2026 dos artículos del reglamento aprobado por <strong>Res. 205/2026</strong> de la misma Secretaría. No modifica la ley del programa ni el presupuesto asignado." },
   impact: function(p) {
     const dims = [];
 
@@ -4053,8 +4024,6 @@ export const MEASURES_BASE = [
         body: "Es un cambio en las reglas del programa Vouchers Educativos: alcanza sólo a familias con hijos de hasta 18 años en escuelas de gestión privada con financiamiento estatal ≥75%. Si no tenés hijos en esa condición, no cambia nada." });
     }
 
-    dims.push({ name: "País / Equilibrio institucional", level: "soft",
-      body: "Suspende hasta fin de 2026 dos artículos del reglamento aprobado por <strong>Res. 205/2026</strong> de la misma Secretaría. No modifica la ley del programa ni el presupuesto asignado." });
 
     return dims;
   },
@@ -4065,13 +4034,13 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Familia beneficiaria del voucher",
       sub: "Empleado priv. · GBA · 2 hijos",
-      badges: { Educación: "pos_soft", Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Educación: "pos_soft", Plata: "pos_soft" } },
     { name: "Familia con hijos fuera del tope de ingresos",
       sub: "Autónomo · CABA · 2 hijos",
-      badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Educación: "soft" } },
     { name: "Persona sin hijos en edad escolar",
       sub: "Empleado priv. · CABA",
-      badges: { Educación: "soft", "País / Equilibrio institucional": "soft" } }
+      badges: { Educación: "soft" } }
   ]
 },
 {
@@ -4082,6 +4051,8 @@ export const MEASURES_BASE = [
   desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de septiembre de 2026. El monto es completo para quienes cobran hasta el haber mínimo garantizado y decrece para haberes superiores, de modo que la suma haber + bono alcanza como tope el haber mínimo más $70.000. Es no remunerativo (no se le hacen descuentos ni se computa para ningún otro concepto) y no modifica la fórmula de movilidad de la Ley 27.609. Alcanza a prestaciones del SIPA (Ley 24.241), Pensión Universal para el Adulto Mayor y pensiones no contributivas por vejez, invalidez y madres de 7 o más hijos, incluyendo pensiones graciables.",
   tags: ["Plata", "Estabilidad"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/346555/20260831",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "Pago por <strong>única vez</strong> para el mes de septiembre 2026 sobre haberes que sigue liquidando ANSES; no cambia la fórmula de movilidad de la Ley 27.609. Continúa la práctica de decretos mensuales (Decretos 399/2026, 686/2026, 824/2026) para compensar los efectos de la fórmula vigente." },
   impact: function(p) {
     const dims = [];
 
@@ -4114,8 +4085,6 @@ export const MEASURES_BASE = [
         body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones del mes de septiembre 2026." });
     }
 
-    dims.push({ name: "País / Equilibrio institucional", level: "soft",
-      body: "Pago por <strong>única vez</strong> para el mes de septiembre 2026 sobre haberes que sigue liquidando ANSES; no cambia la fórmula de movilidad de la Ley 27.609. Continúa la práctica de decretos mensuales (Decretos 399/2026, 686/2026, 824/2026) para compensar los efectos de la fórmula vigente." });
 
     return dims;
   },
@@ -4126,13 +4095,13 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Jubilado/a de la mínima",
       sub: "Jubilado mínima · CABA",
-      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } },
+      badges: { Plata: "pos" } },
     { name: "Jubilado/a de haber medio-alto",
       sub: "Jubilado media-alta · interior",
-      badges: { Plata: "pos_soft", "País / Equilibrio institucional": "soft" } },
+      badges: { Plata: "pos_soft" } },
     { name: "Pensión no contributiva",
       sub: "Pensionado · GBA",
-      badges: { Plata: "pos", "País / Equilibrio institucional": "soft" } }
+      badges: { Plata: "pos" } }
   ]
 },
 {
@@ -4143,6 +4112,8 @@ export const MEASURES_BASE = [
   desc: "Establece el régimen penal aplicable a personas adolescentes desde los <strong>14 años</strong> hasta las cero horas del día en que cumplen 18, cuando fueran imputadas por un hecho tipificado como delito. Deroga la Ley 22.278 (régimen anterior). Introduce la figura del <strong>supervisor</strong> —profesional especializado que sigue al adolescente imputado—, medidas socioeducativas y penas alternativas articuladas con los sistemas de salud, educación y protección, y un régimen de tutela y asistencia especializada a víctimas. Aplica a la justicia nacional y federal; invita a provincias y CABA a adaptar su legislación local. Entró en vigencia a los 180 días de su publicación (05/09/2026); la reglamentación se aprobó por Decreto 875/2026 y crea el Registro de Supervisores, un Comité Interministerial y una Mesa Federal para articular criterios entre jurisdicciones.",
   tags: ["Familia", "País", "Estabilidad"],
   fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/339193/20260309",
+  // Estado institucional/judicial de la NORMA — no es impacto personal.
+  institucional: { level: "mid", body: "Rige en <strong>justicia nacional y federal</strong>; provincias y CABA quedan invitadas a adaptar su legislación local. La reglamentación (<strong>Decreto 875/2026</strong>) crea el Registro de Supervisores, un Comité Interministerial y una Mesa Federal para coordinar criterios entre jurisdicciones." },
   impact: function(p) {
     const dims = [];
 
@@ -4161,8 +4132,6 @@ export const MEASURES_BASE = [
         body: "Si tenés entre 14 y 18 años y estás bajo justicia nacional o federal, quedás alcanzado por el nuevo régimen ante una imputación penal. Sustituye al de la Ley 22.278." });
     }
 
-    dims.push({ name: "País / Equilibrio institucional", level: "mid",
-      body: "Rige en <strong>justicia nacional y federal</strong>; provincias y CABA quedan invitadas a adaptar su legislación local. La reglamentación (<strong>Decreto 875/2026</strong>) crea el Registro de Supervisores, un Comité Interministerial y una Mesa Federal para coordinar criterios entre jurisdicciones." });
 
     return dims;
   },
@@ -4173,13 +4142,10 @@ export const MEASURES_BASE = [
   compareProfiles: [
     { name: "Familia con hijos adolescentes",
       sub: "Empleado privado · GBA · 2 hijos",
-      badges: { "Vida familiar": "mid", "Carga mental": "soft", "País / Equilibrio institucional": "mid" } },
+      badges: { "Vida familiar": "mid", "Carga mental": "soft" } },
     { name: "Adolescente estudiante",
       sub: "Estudiante · CABA",
-      badges: { Estabilidad: "soft", "País / Equilibrio institucional": "mid" } },
-    { name: "Sin adolescentes en la familia",
-      sub: "Empleado privado · CABA · 0 hijos",
-      badges: { "País / Equilibrio institucional": "mid" } }
+      badges: { Estabilidad: "soft" } }
   ]
 }
 ];

@@ -1587,6 +1587,31 @@
   }
   .news-btn:hover { background: var(--grad-gold); color: #1a0e02; border-color: transparent; }
 
+  /* ===== v1.8 — Estado institucional de la norma ===== */
+  .inst-section { margin: 14px 0 4px; }
+  .inst-title {
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 8px; font-weight: 700;
+  }
+  .inst-card {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-left-width: 4px; border-radius: 12px; padding: 12px 14px;
+  }
+  .inst-card.i-strong { border-left-color: #EF4444; }
+  .inst-card.i-mid    { border-left-color: #F97316; }
+  .inst-card.i-soft   { border-left-color: #EAB308; }
+  .inst-card.i-pos    { border-left-color: #22C55E; }
+  .inst-estado {
+    display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .04em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 999px; margin-bottom: 8px;
+  }
+  .i-strong .inst-estado { background: rgba(239,68,68,.16);  color: #FDA4A4; }
+  .i-mid .inst-estado    { background: rgba(249,115,22,.16); color: #FDBA74; }
+  .i-soft .inst-estado   { background: rgba(234,179,8,.16);  color: #FDE68A; }
+  .i-pos .inst-estado    { background: rgba(34,197,94,.16);  color: #86EFAC; }
+  .inst-body { font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .inst-foot { font-size: 11px; color: var(--ink-mute); margin-top: 8px; line-height: 1.45; }
+
   /* ===== v1.7 — Tarjeta para compartir ===== */
   #cardBackdrop {
     position: fixed; inset: 0; z-index: 90;
@@ -1659,7 +1684,7 @@
   <section id="screen-hero" class="screen active">
     <div class="hero">
       <div id="heroResume"></div>
-      <span class="pill">v1.7 · septiembre 2026</span>
+      <span class="pill">v1.8 · septiembre 2026</span>
       <p class="pitch">Cargá un perfil mínimo y mirá cómo cada medida publicada en el Boletín Oficial te impacta — <strong>no solo en el bolsillo</strong>, también en tu tiempo, tu salud, tu vivienda y tu vida. <em>Misma regla para cualquier gobierno.</em></p>
       <button class="btn accent" onclick="show('profile')">Empezar</button>
       <div class="examples">
@@ -1945,6 +1970,7 @@
     <div class="measure-areachips" id="measureAreaChips"></div>
     <div class="impact-desc" id="measureDesc"></div>
     <div id="coberturaBox"></div>
+    <div id="institucionalBox"></div>
     <div id="constitucionBox"></div>
     <div class="impact-divider"></div>
     <div id="impactAnalysis">
@@ -2055,7 +2081,7 @@
   </section>
 
   <footer class="foot">
-    <strong>v1.7 · datos desde Supabase</strong> · septiembre 2026<br>
+    <strong>v1.8 · datos desde Supabase</strong> · septiembre 2026<br>
     Datos extraídos de BORA, ARCA, INDEC, BCRA, ANSES y fuentes citadas por medida.<br><br>
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Si querés saber si una medida<br>
     está bien o mal, eso es debate político. Esta app es un input, no un veredicto.<br><br>

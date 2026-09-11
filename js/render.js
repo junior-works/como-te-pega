@@ -207,7 +207,8 @@ const DIM_SIGLA = {
   "Servicios": "SER", "Calidad de servicios": "CAL",
   "Movilidad": "MOV", "Movilidad social": "MOS",
   "Vida familiar / ocio": "FAM", "Vida familiar": "FAM",
-  "Educación": "EDU", "País / Equilibrio institucional": "PAI",
+  "Educación": "EDU", "País / Equilibrio institucional": "PAI", // v1.8: ya no se usa como badge;
+  // el estado institucional de la norma vive en m.institucional y se muestra en la ficha.
   "Ahorro": "AHO", "Vacaciones": "VAC", "Ocio": "OCI",
   // alias cortos usados como claves de badge en los compareProfiles:
   "Familia": "FAM", "País": "PAI"
@@ -240,7 +241,6 @@ const SIGLA_GLOSSARY = [
   { sigla: "EDU", full: "Educación" },
   { sigla: "MOS", full: "Movilidad social" },
   { sigla: "CAL", full: "Calidad de servicios" },
-  { sigla: "PAI", full: "País / Equilibrio institucional" },
   { sigla: "AHO", full: "Ahorro" },
   { sigla: "VAC", full: "Vacaciones" },
   { sigla: "OCI", full: "Ocio" }
@@ -573,7 +573,8 @@ function cardProfileLine() {
   if (!ocu) return '';
   let head = 'Soy ' + ocu;
   const z = CARD_ZONA[p.zona];
-  if (z) head += ' de ' + z;
+  // "de" + "el" se contrae: "del NOA", no "de el NOA".
+  if (z) head += z.startsWith('el ') ? ' del ' + z.slice(3) : ' de ' + z;
   const bits = [];
   if (CARD_VIV[p.vivienda]) bits.push(CARD_VIV[p.vivienda]);
   if (p.hijos && p.hijos !== '0') bits.push(p.hijos === '1' ? 'con 1 hijo' : (p.hijos === '3mas' ? 'con 3 o más hijos' : 'con ' + p.hijos + ' hijos'));
@@ -1639,6 +1640,7 @@ function renderImpact() {
   }
 
   renderCobertura(m);
+  renderInstitucional(m);
   renderConstitucion(m);
 
   // Fuente. Si no hay fuenteUrl directa, fallback al buscador de argentina.gob.ar
@@ -1770,6 +1772,38 @@ function renderCobertura(m) {
     ${inner}
     <div class="cob-foot">Cobertura en portada de los 6 medios que seguimos: Clarín, La Nación, Infobae, Página 12, El Destape, C5N.</div>
   </div>`;
+}
+
+// v1.8 — Estado institucional/judicial de la NORMA.
+// Antes esto viajaba como una dimensión más dentro de impact() ("País / Equilibrio
+// institucional"). Era un error de modelado: se comprobó que el nivel es idéntico
+// para todos los perfiles (0 de 70 medidas variaba), así que no medía impacto
+// personal — describía la medida. Al sumarse al score inflaba el "en contra" de
+// todo el mundo por igual y aplastaba justo lo que la app tiene para decir, que es
+// la diferencia entre una persona y otra. Ahora es un campo propio de la medida,
+// se muestra acá y NO entra en scoreMeasure(), el balance ni la tarjeta.
+const INST_ESTADO = {
+  strong: { cls: 'i-strong', label: 'Conflicto constitucional grave' },
+  mid:    { cls: 'i-mid',    label: 'Tensión institucional' },
+  soft:   { cls: 'i-soft',   label: 'Observaciones institucionales' },
+  pos:    { cls: 'i-pos',    label: 'Refuerza el equilibrio de poderes' }
+};
+
+function renderInstitucional(m) {
+  const box = document.getElementById('institucionalBox');
+  if (!box) return;
+  const inst = m.institucional;
+  if (!inst || !inst.body) { box.innerHTML = ''; return; }
+  const e = INST_ESTADO[inst.level] || INST_ESTADO.soft;
+  box.innerHTML = `
+    <div class="inst-section">
+      <div class="inst-title">🏛️ Qué está en juego institucionalmente</div>
+      <div class="inst-card ${e.cls}">
+        <div class="inst-estado">${e.label}</div>
+        <div class="inst-body">${inst.body}</div>
+      </div>
+      <div class="inst-foot">Esto describe la norma, no tu perfil: es igual para todas las personas, por eso no se cuenta en tu balance.</div>
+    </div>`;
 }
 
 function renderConstitucion(m) {
