@@ -1475,6 +1475,13 @@ function escapeAttr(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
+// Para texto que va dentro del HTML (no en un atributo).
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // Traduce el estado de los filtros al payload que espera queryMeasures().
 function buildFilterPayload(offset, limit) {
   const f = state.filters;
@@ -1639,6 +1646,7 @@ function renderImpact() {
     else descEl.style.display = 'none';
   }
 
+  renderParametros(m);
   renderCobertura(m);
   renderInstitucional(m);
   renderConstitucion(m);
@@ -1750,6 +1758,96 @@ function renderWinnersLosers(m) {
 }
 
 // 🗞 Cobertura mediática — siempre visible (badge X/6 + medios; mensaje si 0).
+/* ===== Los números, con fuente =====
+ * Cada parámetro de una medida vive en Supabase (tabla parametros_medida)
+ * con su FUENTE y su FECHA. Son 225 valores sobre 71 medidas, todos con
+ * ambos campos cargados. Hasta la v1.8.3 no se mostraban en ningún lado:
+ * los números aparecían escritos a mano dentro de los textos de impacto,
+ * sin fuente visible y sin fecha, y envejecían en silencio.
+ * Mostrarlos es lo que hace auditable a la ficha. Ver /metodologia/. */
+
+// Abreviaturas que quedan feas al pasar de snake_case a texto.
+const PARAM_ABREV = {
+  // siglas y organismos
+  cpd: 'CPD', vad: 'VAD', mem: 'MEM', fnee: 'FNEE', cbt: 'CBT', cba: 'CBA',
+  ipc: 'IPC', ipim: 'IPIM', iva: 'IVA', icl: 'ICL', rigi: 'RIGI', usd: 'USD',
+  ars: 'ARS', amba: 'AMBA', caba: 'CABA', pyme: 'PyME', pymes: 'PyMEs',
+  sef: 'SEF', sube: 'SUBE', auh: 'AUH', cud: 'CUD', n1: 'N1', n2: 'N2', n3: 'N3',
+  // abreviaturas
+  bonif: 'bonificación', alicuota: 'alícuota', dec: 'decreto', res: 'resolución',
+  pct: 'porcentaje', prom: 'promedio', dto: 'decreto', art: 'artículo',
+  // acentos que la clave en snake_case pierde
+  minimo: 'mínimo', maximo: 'máximo', inversion: 'inversión', indices: 'índices',
+  vigencia: 'vigencia', articulos: 'artículos', aplicacion: 'aplicación',
+  duracion: 'duración', adhesion: 'adhesión', emergencia: 'emergencia',
+  concesion: 'concesión', composicion: 'composición', retencion: 'retención',
+  remuneracion: 'remuneración', jubilacion: 'jubilación', educacion: 'educación',
+  reduccion: 'reducción', asignacion: 'asignación', regimen: 'régimen',
+  numero: 'número', anos: 'años', ano: 'año', electricidad: 'electricidad'
+};
+
+function paramLabel(clave) {
+  const t = String(clave || '').split('_')
+    .map(w => PARAM_ABREV[w.toLowerCase()] || w)
+    .join(' ');
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function paramValor(p) {
+  // REGLA: el valor se muestra TAL CUAL está cargado. No se reformatea ni se
+  // localiza, porque "63.540" puede ser sesenta y tres mil quinientos cuarenta
+  // o sesenta y tres con cincuenta y cuatro según la convención de la fuente,
+  // y adivinar sería inventar un dato. Solo se agrega el símbolo de la unidad.
+  let raw = String(p.valor ?? '').trim();
+  // Solo dos transformaciones seguras, que NO cambian el valor:
+  // 1) un entero puro (sin coma ni punto) se agrupa en miles;
+  // 2) una fecha ISO se escribe en castellano.
+  if (/^\d{7,}$/.test(raw)) raw = Number(raw).toLocaleString('es-AR');
+  else if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) raw = fechaCorta(raw);
+  const v = escapeHtml(raw);
+  const u = String(p.unidad || '').trim();
+  if (!u) return v;
+  if (u === 'porcentaje') return v + '%';
+  if (u === 'pesos' || u === 'ARS') return '$' + v;
+  if (u === 'USD') return 'USD ' + v;
+  return v + ' <span class="par-unidad">' + escapeHtml(u.replace(/_/g, ' ')) + '</span>';
+}
+
+function renderParametros(m) {
+  const box = document.getElementById('parametrosBox');
+  if (!box) return;
+  const ps = (m.parametros || []).filter(p => p && p.valor != null && String(p.valor) !== '');
+  if (!ps.length) { box.innerHTML = ''; return; }
+
+  const filas = ps.map(p => `
+    <div class="par-fila">
+      <div class="par-clave">${escapeHtml(paramLabel(p.clave))}</div>
+      <div class="par-valor">${paramValor(p)}</div>
+      <div class="par-meta">
+        ${p.fecha ? `<span class="par-fecha">dato al ${escapeHtml(fechaCorta(p.fecha))}</span>` : ''}
+        ${p.fuente ? (/^https?:\/\//i.test(p.fuente)
+            ? `<a class="par-fuente" href="${escapeAttr(p.fuente)}" target="_blank" rel="noopener">fuente ↗</a>`
+            : `<span class="par-fuente-txt">${escapeHtml(p.fuente)}</span>`) : ''}
+      </div>
+    </div>`).join('');
+
+  box.innerHTML = `
+    <div class="par-section">
+      <div class="par-title">📋 Los números, con fuente</div>
+      <div class="par-lista">${filas}</div>
+      <div class="par-foot">Cada valor sale de la norma o del organismo que lo publicó, con la fecha del dato.
+      Si pasó tiempo desde esa fecha, el valor pudo haber cambiado.
+      <a href="/metodologia/">Cómo se calcula esto</a>.</div>
+    </div>`;
+}
+
+function fechaCorta(iso) {
+  if (!/^\d{4}-\d{2}-\d{2}/.test(String(iso))) return String(iso);
+  const [y, mm, d] = String(iso).slice(0, 10).split('-');
+  const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${Number(d)} ${MES[Number(mm) - 1]} ${y}`;
+}
+
 function renderCobertura(m) {
   const box = document.getElementById('coberturaBox');
   if (!box) return;
@@ -1884,7 +1982,12 @@ function renderCompare() {
 }
 
 // ============== BALANCE FEATURE ==============
-const LEVEL_WEIGHT = { pos_strong: 3, pos: 1, pos_soft: 1, none: 0, soft: -1, mid: -2, strong: -3 };
+/* Escala simétrica: a cada nivel en contra le corresponde uno a favor del
+ * mismo peso. Hasta el 20-09-2026 `pos` pesaba +1 igual que `pos_soft`,
+ * así que lo favorable tenía 2 niveles de granularidad y lo desfavorable 3:
+ * el balance quedaba sesgado hacia lo negativo. Criterio escrito en
+ * /metodologia/. */
+const LEVEL_WEIGHT = { pos_strong: 3, pos: 2, pos_soft: 1, none: 0, soft: -1, mid: -2, strong: -3 };
 
 // Niveles "a favor" del perfil. Lo usan el balance y el agregado por dimensión
 // para contar positivos vs negativos (las gradaciones pos_* cuentan como positivas).

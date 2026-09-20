@@ -146,7 +146,7 @@ function page(m) {
     <strong>No juzgamos al gobierno, medimos impacto.</strong> Las mismas reglas se aplican a
     cualquier gobierno; cuando un dato no es seguro, se dice.<br>
     Proyecto independiente de Junior Works — no afiliado al Estado argentino.<br>
-    <a href="../../">Todas las medidas</a> · <a href="../../privacy.html">Política de privacidad</a>
+    <a href="../../">Todas las medidas</a> · <a href="../../metodologia/">Cómo se calcula esto</a> · <a href="../../privacy.html">Política de privacidad</a>
   </footer>
 </div>
 </body>
@@ -170,6 +170,7 @@ const hoy = new Date().toISOString().slice(0, 10);
 const urls = [
   `  <url><loc>${SITE}/</loc><lastmod>${hoy}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
   `  <url><loc>${SITE}/instalar/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
+  `  <url><loc>${SITE}/metodologia/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
   ...medidas.map(m =>
     `  <url><loc>${SITE}/medida/${m.id}/</loc><lastmod>${m.date || hoy}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`)
 ];

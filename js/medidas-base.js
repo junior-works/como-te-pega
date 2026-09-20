@@ -299,7 +299,7 @@ export const MEASURES_BASE = [
       }
 
       if (p.discapacidad !== "no" && p.discapacidad) {
-        dims.push({ name: "Servicios", icon: "🔌", level: "soft",
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "Hogares con CUD pueden acceder a regímenes especiales tarifarios (electrodependientes con certificación, tarifa diferencial). Verificá en EDENOR/EDESUR o tu distribuidora." });
       }
 
@@ -314,7 +314,7 @@ export const MEASURES_BASE = [
       }
 
       if (p.vivienda === "ocupada") {
-        dims.push({ name: "Servicios", icon: "🔌", level: "strong",
+        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "strong",
           body: "Vivienda informal suele tener conexiones irregulares de servicios. El cambio normativo no te afecta directamente, pero si vas a regularizar te encontrás con tarifas plenas." });
       }
 
@@ -363,7 +363,7 @@ export const MEASURES_BASE = [
       }
 
       if (p.adultos === "1" || p.adultos === "2mas") {
-        dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "mid",
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "mid",
           body: "Si tenés adultos mayores a cargo, la caída real del haber mínimo + bono congelado se traduce en mayor presión económica sobre vos. Suelen aparecer ayudas extra del entorno." });
       }
 
@@ -1903,7 +1903,7 @@ export const MEASURES_BASE = [
         dims.push({ name: "Vacaciones", icon: "🏖️", level: "pos",
           body: "Viajar al exterior con tarjeta es bastante más barato: el recargo total bajó del 60% al 30%. Si planeabas un viaje o comprás afuera con tarjeta, pagás 30 puntos menos sobre el gasto en dólares." });
       }
-      dims.push({ name: "Ocio", icon: "🎭", level: "pos_soft",
+      dims.push({ name: "Vida familiar / ocio", icon: "🎭", level: "pos_soft",
         body: "Netflix, Spotify, Steam, apps y suscripciones del exterior dejaron de pagar el Impuesto PAÍS. La factura mensual de esos servicios baja sin que hagas nada." });
       if (p.ocupacion === 'pyme') {
         dims.push({ name: "Plata", icon: "💰", level: "pos",
@@ -2370,7 +2370,7 @@ export const MEASURES_BASE = [
           body: "El veto se sostuvo porque en el Congreso no se juntó la mayoría especial para insistir. Para vos significa que la recomposición no vuelve por esta vía: el haber queda atado a la fórmula del Gobierno, sin el piso que el Congreso había intentado garantizar por ley." });
       }
       if (p.adultos === '1' || p.adultos === '2mas') {
-        dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "soft",
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "soft",
           body: "Si tenés un adulto mayor a cargo, el 8,1% que no se recompuso es plata que sale de tu bolsillo para sostenerlo. El veto traslada parte del costo del ajuste previsional a las familias que ayudan a sus jubilados." });
       }
       return dims;
@@ -2560,7 +2560,7 @@ export const MEASURES_BASE = [
           body: "En pueblos y zonas rurales, Radio Nacional y la TV Pública suelen ser de las pocas señales que llegan <strong>gratis por aire</strong>, sin abono. Una estructura intervenida y achicada año tras año debilita esa cobertura: menos repetidoras, menos noticias locales y menos alternativa pública donde el privado no llega." });
       }
       if (p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas') {
-        dims.push({ name: "Vida familiar", icon: "👨‍👩‍👧", level: "soft",
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "soft",
           body: "Pakapaka y Encuentro son señales públicas de contenido educativo y cultural infantil, gratuitas y sin publicidad. Cada prórroga sin definir su futuro institucional pone en riesgo esa producción: para una familia con chicos es contenido al que hoy se accede sin pagar." });
       }
       return dims;
@@ -3615,12 +3615,12 @@ export const MEASURES_BASE = [
       const areaAySA = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste'].includes(p.zona);
 
       if (areaAySA) {
-        dims.push({ name: "Servicios", level: "mid",
+        dims.push({ name: "Calidad de servicios", level: "mid",
           body: "Si vivís en el área de AySA (CABA y GBA), cambia <strong>quién presta</strong> el agua potable y las cloacas: pasa a un operador privado (al menos 51% del capital). La gestión y las tarifas quedarán en manos privadas dentro del marco regulatorio vigente." });
         dims.push({ name: "Plata", level: "soft",
           body: "El régimen tarifario seguirá regulado por el ente correspondiente; el impacto concreto en la factura dependerá del contrato que surja de la licitación." });
       } else {
-        dims.push({ name: "Servicios", level: "none",
+        dims.push({ name: "Calidad de servicios", level: "none",
           body: "AySA presta servicio en CABA y GBA. Si vivís fuera de esa área, esta venta no te afecta directamente." });
       }
 
@@ -3656,10 +3656,10 @@ export const MEASURES_BASE = [
       const conSEF = (p.asistencia || []).includes('sef') || p.ingreso === 'hasta_700k';
 
       if (conSEF) {
-        dims.push({ name: "Servicios", level: "soft",
+        dims.push({ name: "Calidad de servicios", level: "soft",
           body: "Tu factura de gas sube por el nuevo cuadro tarifario (escalón de la Revisión Quinquenal 2025-2030 + PAU), pero mantenés la <strong>bonificación SEF</strong> sobre el consumo base, que amortigua el aumento." });
       } else {
-        dims.push({ name: "Servicios", level: "mid",
+        dims.push({ name: "Calidad de servicios", level: "mid",
           body: "El nuevo cuadro tarifario aplica el <strong>precio pleno del gas (PAU)</strong> más el escalón mensual de la Revisión Quinquenal 2025-2030. Sin bonificación SEF, la factura refleja el valor completo." });
         dims.push({ name: "Plata", level: "soft",
           body: "El aumento es <strong>escalonado</strong>: se distribuye en subas mensuales previsibles a lo largo del quinquenio, no en un salto único." });
@@ -3917,10 +3917,10 @@ export const MEASURES_BASE = [
     const enAMBA = ['caba','gba_norte','gba_sur','gba_oeste'].includes(p.zona);
 
     if (enAMBA && conSEF) {
-      dims.push({ name: "Servicios", level: "soft",
+      dims.push({ name: "Calidad de servicios", level: "soft",
         body: "Vivís en el área de EDESUR o EDENOR y estás en el régimen <strong>SEF</strong>: sobre el nuevo cuadro tarifario recibís una <strong>bonificación extraordinaria adicional del 16,59%</strong> para agosto, que se suma a la bonificación general del SEF." });
     } else if (enAMBA) {
-      dims.push({ name: "Servicios", level: "mid",
+      dims.push({ name: "Calidad de servicios", level: "mid",
         body: "Vivís en el área de EDESUR o EDENOR: la factura de agosto refleja el nuevo cuadro. El CPD sube <strong>1,71%</strong> respecto de julio y se traslada el costo del MEM de junio ($0,307 por kWh). Sin bonificación SEF, la factura absorbe el ajuste completo." });
       dims.push({ name: "Plata", level: "soft",
         body: "El ajuste es <strong>mensual y previsible</strong>: se compone de un incremento base (0,36%) más una actualización por índices IPIM+IPC (1,35%)." });
@@ -3928,7 +3928,7 @@ export const MEASURES_BASE = [
 
     // Fuera del AMBA la resolución no aplica directamente (otras distribuidoras tienen sus propias resoluciones).
     if (!enAMBA) {
-      dims.push({ name: "Servicios", level: "soft",
+      dims.push({ name: "Calidad de servicios", level: "soft",
         body: "Esta resolución cubre el AMBA (EDESUR y EDENOR). En otras jurisdicciones, la tarifa eléctrica la fija el regulador provincial o resoluciones espejo del ENReGE para la distribuidora local." });
     }
 
@@ -4120,7 +4120,7 @@ export const MEASURES_BASE = [
     const conHijos = p.hijos === '1' || p.hijos === '2' || p.hijos === '3mas';
 
     if (conHijos) {
-      dims.push({ name: "Vida familiar", level: "mid",
+      dims.push({ name: "Vida familiar / ocio", level: "mid",
         body: "Si tenés hijos o hijas <strong>entre 14 y 18 años</strong>, cambia el marco legal ante una imputación penal: hasta el 4/9/2026 rigió la Ley 22.278; desde el <strong>5/9/2026</strong> aplica el nuevo régimen con supervisor especializado, medidas socioeducativas y penas graduadas articuladas con salud, educación y protección." });
 
       dims.push({ name: "Carga mental", level: "soft",

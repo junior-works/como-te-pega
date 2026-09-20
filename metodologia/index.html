@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0c">
+<title>Metodología — Cómo Te Pega</title>
+<meta name="description" content="Cómo Cómo Te Pega calcula el impacto de cada medida: de dónde salen los datos, qué significa cada nivel, cómo se arma el balance y qué limitaciones tiene.">
+<link rel="canonical" href="https://comotepega.com/metodologia/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Metodología — Cómo Te Pega">
+<meta property="og:description" content="Cómo se calcula el impacto de cada medida, qué es dato y qué es estimación, y qué limitaciones tiene el método.">
+<meta property="og:url" content="https://comotepega.com/metodologia/">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0:#0a0a0c; --text-0:#f5f1e6; --text-1:#cfc8b8; --text-2:#8a8478;
+    --gold-1:#fbd24a; --brown-1:#c47a2c; --border-soft:#26262e;
+    --grad-gold:linear-gradient(135deg,#fbd24a 0%,#f59e0b 50%,#d4831a 100%);
+    --red:#f87171; --green:#4ade80; --grey:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Plus Jakarta Sans',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(900px 600px at 50% -260px,rgba(245,158,11,.10),transparent 70%),
+               radial-gradient(700px 520px at 12% 4%,rgba(123,63,14,.08),transparent 70%),var(--bg-0);
+    background-attachment:fixed;color:var(--text-0);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:740px;margin:0 auto;padding:26px 22px 90px}
+  .topbar{display:flex;justify-content:flex-end;margin-bottom:26px}
+  .back-pill{display:inline-flex;align-items:center;gap:6px;background:var(--grad-gold);color:#1a0e02;
+    font-weight:700;font-size:14px;text-decoration:none;padding:9px 16px;border-radius:999px;
+    box-shadow:0 6px 20px rgba(245,158,11,.32),0 1px 0 rgba(255,255,255,.18) inset}
+  h1{margin:0 0 8px;font-size:32px;font-weight:800;letter-spacing:-.8px;line-height:1.15;
+    background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold-1)}
+  .subtitle{margin:0 0 6px;color:var(--text-2);font-size:14px;font-weight:500}
+  .lede{color:var(--text-1);font-size:17px;margin:18px 0 0}
+  hr.divider{border:0;border-top:1px solid var(--border-soft);margin:26px 0 8px}
+  h2{color:var(--gold-1);font-size:21px;font-weight:700;letter-spacing:-.3px;margin:40px 0 12px}
+  h3{color:#fffdf7;font-size:16px;font-weight:700;margin:26px 0 8px}
+  p,li{color:var(--text-1)}
+  p{margin:0 0 14px}
+  ul,ol{margin:0 0 14px;padding-left:20px}
+  li{margin-bottom:8px}
+  li::marker{color:var(--brown-1)}
+  strong{color:#fffdf7;font-weight:700}
+  a{color:var(--gold-1);text-decoration:none;border-bottom:1px solid rgba(251,210,74,.35)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;
+    background:rgba(196,122,44,.14);color:var(--brown-1);padding:1px 6px;border-radius:5px;
+    border:1px solid rgba(196,122,44,.20)}
+  table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top}
+  th{color:var(--gold-1);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+  td{color:var(--text-1)}
+  td.lv{white-space:nowrap;font-weight:700}
+  .n3{color:var(--red)} .n2{color:#fca5a5} .n1{color:#fecaca}
+  .p3{color:var(--green)} .p2{color:#86efac} .p1{color:#bbf7d0}
+  .z{color:var(--grey)}
+  .box{background:rgba(255,255,255,.028);border:1px solid var(--border-soft);
+    border-radius:14px;padding:18px 20px;margin:0 0 18px}
+  .box.warn{border-color:rgba(248,113,113,.34);background:rgba(248,113,113,.06)}
+  .box h3{margin-top:0}
+  .foot-note{margin-top:44px;padding-top:18px;border-top:1px solid var(--border-soft);
+    color:var(--text-2);font-size:13px;line-height:1.7}
+  .foot-back{margin-top:26px;text-align:center}
+  .foot-back a{border-bottom:none;font-weight:600;font-size:15px}
+  @media (max-width:520px){h1{font-size:26px}h2{font-size:19px}.wrap{padding:20px 16px 70px}
+    table{font-size:13.5px}th,td{padding:8px 8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar"><a class="back-pill" href="/">← Ir a la app</a></div>
+
+  <h1>Metodología</h1>
+  <p class="subtitle">Última actualización: 20 de septiembre de 2026</p>
+
+  <p class="lede">Cómo Te Pega dice cómo te afecta a vos cada medida del Boletín Oficial.
+  Para que eso signifique algo, tenés que poder auditar cómo lo calcula. Esta página explica
+  el método completo, incluidas las partes que todavía no están donde queremos.</p>
+
+  <hr class="divider">
+
+  <h2>1. De dónde salen las medidas</h2>
+
+  <p>El catálogo tiene <strong>88 medidas</strong>. Cada una lleva el enlace a su fuente
+  primaria: el Boletín Oficial de la República Argentina, el texto de la ley, o la
+  resolución del organismo que la dictó. Ese enlace está visible en la ficha de cada medida.</p>
+
+  <p><strong>Lo que la norma dice está respaldado en el 100% de los casos.</strong> Si una
+  medida no tiene fuente verificable, no entra al catálogo.</p>
+
+  <h2>2. Qué se mide</h2>
+
+  <p>Una medida no pega en un solo lugar. Un aumento de transporte te saca plata, pero
+  también te saca tiempo si cambiás a un recorrido más barato y más largo. Por eso el
+  impacto se descompone en <strong>dimensiones de vida</strong>:</p>
+
+  <p>Plata · Trabajo · Estabilidad · Calidad de servicios · Salud · Carga mental ·
+  Movilidad social · Tiempo · Educación · Vivienda · Movilidad · Vida familiar / ocio ·
+  Vacaciones · Ahorro.</p>
+
+  <p>No todas las medidas tocan todas las dimensiones. La mayoría toca una o dos.</p>
+
+  <h2>3. La escala: qué significa cada nivel</h2>
+
+  <p>Cada dimensión afectada recibe un nivel. Este es el criterio, y es el mismo para
+  cualquier medida y cualquier gobierno:</p>
+
+  <table>
+    <thead><tr><th>Nivel</th><th>Peso</th><th>Cuándo corresponde</th></tr></thead>
+    <tbody>
+      <tr><td class="lv n3">En contra · fuerte</td><td class="lv n3">−3</td>
+        <td>Cambio estructural: se pierde un derecho o el acceso a un servicio, o el efecto
+        económico supera el <strong>10% del ingreso del hogar</strong>.</td></tr>
+      <tr><td class="lv n2">En contra · medio</td><td class="lv n2">−2</td>
+        <td>Efecto medible y sostenido, entre el <strong>3% y el 10% del ingreso</strong>, o
+        un empeoramiento claro de las condiciones sin perder el derecho.</td></tr>
+      <tr><td class="lv n1">En contra · suave</td><td class="lv n1">−1</td>
+        <td>Efecto real pero acotado: <strong>menos del 3% del ingreso</strong>, o un efecto
+        indirecto o de segundo orden.</td></tr>
+      <tr><td class="lv z">No me toca</td><td class="lv z">0</td>
+        <td>La medida existe pero no alcanza a alguien con este perfil.</td></tr>
+      <tr><td class="lv p1">A favor · suave</td><td class="lv p1">+1</td>
+        <td>Beneficio acotado: menos del 3% del ingreso, o indirecto.</td></tr>
+      <tr><td class="lv p2">A favor · medio</td><td class="lv p2">+2</td>
+        <td>Beneficio medible y sostenido, entre el 3% y el 10% del ingreso.</td></tr>
+      <tr><td class="lv p3">A favor · fuerte</td><td class="lv p3">+3</td>
+        <td>Beneficio estructural: se gana un derecho o acceso, o supera el 10% del ingreso.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box">
+    <h3>La escala es simétrica, a propósito</h3>
+    <p style="margin:0">A cada nivel en contra le corresponde uno a favor del mismo peso.
+    Hasta el 20 de septiembre de 2026 no era así: «a favor · medio» pesaba +1, igual que
+    «a favor · suave», mientras que lo desfavorable tenía tres niveles distintos. Eso
+    sesgaba el balance hacia lo negativo. Está corregido, y lo dejamos escrito acá porque
+    corresponde.</p>
+  </div>
+
+  <h2>4. Cómo se arma el balance</h2>
+
+  <p>Para cada medida se suman los pesos de todas sus dimensiones. Ese total ubica la
+  medida en uno de cinco grupos:</p>
+
+  <table>
+    <thead><tr><th>Total de la medida</th><th>Cómo se cuenta</th></tr></thead>
+    <tbody>
+      <tr><td>mayor que 0</td><td class="p3">A favor</td></tr>
+      <tr><td>igual a 0</td><td class="z">No me toca</td></tr>
+      <tr><td>−1 o −2</td><td class="n1">En contra · suave</td></tr>
+      <tr><td>−3 a −5</td><td class="n2">En contra · medio</td></tr>
+      <tr><td>−6 o menos</td><td class="n3">En contra · fuerte</td></tr>
+    </tbody>
+  </table>
+
+  <p>El balance que ves es el recuento de las 88 medidas repartidas en esos grupos según
+  <em>tu</em> perfil. No es un puntaje de gobierno ni una nota: es cuántas medidas caen de
+  cada lado para alguien en tu situación.</p>
+
+  <h2>5. Qué es dato y qué es estimación</h2>
+
+  <p>Acá está la parte que hay que decir con todas las letras, porque es donde el método es
+  más frágil y donde más fácil sería disimular.</p>
+
+  <p>La app mezcla <strong>tres cosas distintas</strong> que no tienen el mismo respaldo:</p>
+
+  <ol>
+    <li><strong>Lo que la norma dice.</strong> «Se derogó la Ley 27.551; los contratos se
+    pactan libres.» Respaldado por la fuente oficial de la medida. Sin discusión.</li>
+    <li><strong>Datos de organismos oficiales.</strong> Tarifas, topes, canastas, índices.
+    Son verificables, pero <strong>envejecen</strong>: una tarifa de agosto no sirve en
+    noviembre.</li>
+    <li><strong>Estimaciones y supuestos de cálculo.</strong> «Hacés unos 88 viajes por
+    mes.» Eso no es un dato: es un supuesto razonable (2 viajes por tramo, 2 tramos, 22
+    días hábiles). Sirve para dar una magnitud, pero <strong>no es tu caso exacto</strong>.</li>
+  </ol>
+
+  <div class="box warn">
+    <h3>Limitación abierta, a septiembre de 2026</h3>
+    <p style="margin:0 0 10px">Hoy la app <strong>no distingue visualmente</strong> esas
+    tres cosas: las tres aparecen con el mismo formato. Una auditoría interna del 20 de
+    septiembre de 2026 encontró que, de las <strong>557 afirmaciones de impacto</strong>
+    distintas que la app puede mostrar, solo <strong>25 citan una fuente concreta dentro
+    del texto</strong>.</p>
+    <p style="margin:0">Estamos marcando cada afirmación con su tipo —norma, dato o
+    estimación— y agregando la fuente donde corresponde. Mientras eso no esté terminado,
+    <strong>tratá los números de impacto como órdenes de magnitud, no como tu liquidación
+    exacta</strong>. Preferimos decirlo antes que dejar que lo descubras vos.</p>
+  </div>
+
+  <h2>6. Cómo se ubica tu hogar</h2>
+
+  <p>Para saber si una medida te pega fuerte o suave hay que saber de qué ingreso estamos
+  hablando. La forma oficial de ubicar un hogar en la Argentina no es el ingreso total sino
+  el <strong>ingreso per cápita familiar</strong>: el total del hogar dividido por la
+  cantidad de personas que viven de él. Un hogar de un millón y medio con una persona y
+  otro igual con cinco no están en el mismo lugar.</p>
+
+  <p>Usamos los deciles de ingreso per cápita familiar del INDEC, de la
+  <strong>Encuesta Permanente de Hogares</strong>:</p>
+
+  <ul>
+    <li>Informe: <em>Evolución de la distribución del ingreso (EPH)</em>, primer trimestre
+    de 2026.</li>
+    <li>Período relevado: 21 de diciembre de 2025 al 14 de marzo de 2026.</li>
+    <li>Cobertura: 31 aglomerados urbanos, 30.095 mil personas. Coeficiente de Gini: 0,442.</li>
+    <li><a href="https://www.indec.gob.ar/uploads/informesdeprensa/ingresos1trim26536C8EDD3E.pdf" target="_blank" rel="noopener">Informe completo del INDEC (PDF)</a></li>
+  </ul>
+
+  <p><strong>Limitación:</strong> la EPH cubre aglomerados <em>urbanos</em>. Si vivís en
+  zona rural, esa distribución no te representa, y la app debería decírtelo.</p>
+
+  <h2>7. Lo que la app no hace</h2>
+
+  <ul>
+    <li><strong>No predice.</strong> Mide lo que una norma vigente cambia, no lo que va a pasar.</li>
+    <li><strong>No califica gobiernos.</strong> Las mismas reglas se aplican a cualquier
+    gestión. Un balance con muchas medidas en contra describe tu situación, no un veredicto.</li>
+    <li><strong>No reemplaza a un contador ni a un abogado.</strong> Para tu liquidación
+    exacta, andá a un profesional.</li>
+    <li><strong>No te identifica.</strong> Tu perfil se guarda en tu teléfono y no se envía
+    a ningún servidor. Está en la <a href="/privacy.html">política de privacidad</a>.</li>
+  </ul>
+
+  <h2>8. Limitaciones conocidas</h2>
+
+  <p>La lista completa, sin maquillar:</p>
+
+  <ul>
+    <li>El <strong>4%</strong> de las afirmaciones de impacto cita una fuente dentro del
+    texto. El resto se apoya en la fuente de la medida, que respalda la norma pero no
+    siempre la inferencia sobre tu caso.</li>
+    <li>Precios y tarifas están escritos a mano en el código y <strong>envejecen en
+    silencio</strong>: no tienen fecha visible ni aviso de vencimiento.</li>
+    <li>Los tramos de ingreso del formulario son <strong>demasiado anchos</strong> para
+    ubicar un hogar en un decil único. Hay que pedir el ingreso exacto.</li>
+    <li>Quedan afirmaciones con lenguaje vago sin cita —«encuestas muestran», «hay
+    reportes»— que se van a citar o a eliminar.</li>
+    <li>El catálogo cubre medidas nacionales. Lo provincial y municipal no está.</li>
+    <li>La asignación de niveles la hace una persona leyendo la norma contra el criterio de
+    la sección 3. Es reproducible, pero no es automática.</li>
+  </ul>
+
+  <h2>9. Si encontrás un error</h2>
+
+  <p>Escribinos a <a href="mailto:lookatthismcfly@gmail.com">lookatthismcfly@gmail.com</a>
+  con la medida y qué está mal. Si tenés la fuente oficial que lo contradice, mejor: se
+  corrige y se deja constancia. <strong>Un error señalado y corregido vale más que un
+  catálogo que nadie revisó.</strong></p>
+
+  <p class="foot-note">
+    <strong>No juzgamos al gobierno, medimos impacto.</strong> Las mismas reglas se aplican
+    a cualquier gobierno. Cuando un dato no es seguro, se dice.<br>
+    Cómo Te Pega es un proyecto independiente y sin fines de lucro de Junior Works —
+    no afiliado al Estado argentino.
+  </p>
+
+  <div class="foot-back"><a href="/">← Ir a la app</a></div>
+
+</div>
+</body>
+</html>

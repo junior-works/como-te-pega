@@ -1587,6 +1587,28 @@
   }
   .news-btn:hover { background: var(--grad-gold); color: #1a0e02; border-color: transparent; }
 
+  /* ===== v1.8.4 — Los números, con fuente =====
+     Los parámetros verificables de cada medida (valor + fecha + fuente).
+     Viven en Supabase; hasta ahora no se mostraban en ningún lado. */
+  .par-section { margin: 22px 0 6px; }
+  .par-title { font-size: 15px; font-weight: 700; color: var(--text-0, #f5f1e6); margin: 0 0 10px; }
+  .par-lista { border: 1px solid rgba(255,255,255,.10); border-radius: 14px; overflow: hidden; }
+  .par-fila { display: grid; grid-template-columns: 1fr auto; gap: 2px 14px;
+    padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.025); }
+  .par-fila:last-child { border-bottom: 0; }
+  .par-clave { font-size: 14px; color: #cfc8b8; line-height: 1.4; }
+  .par-valor { font-size: 16px; font-weight: 800; color: #fffdf7; text-align: right; white-space: nowrap; }
+  .par-unidad { font-size: 12.5px; font-weight: 600; color: #8a8478; }
+  .par-meta { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center;
+    margin-top: 4px; font-size: 11.5px; color: #8a8478; }
+  .par-fecha { letter-spacing: .01em; }
+  .par-fuente { color: #fbd24a; text-decoration: none; font-weight: 600; }
+  .par-fuente-txt { color: #8a8478; font-style: italic; }
+  .par-foot { margin-top: 10px; font-size: 12px; color: #8a8478; line-height: 1.6; }
+  .par-foot a { color: #fbd24a; text-decoration: none; }
+  @media (max-width: 380px) { .par-valor { font-size: 15px; } }
+
   /* ===== v1.8 — Estado institucional de la norma ===== */
   .inst-section { margin: 14px 0 4px; }
   .inst-title {
@@ -1969,6 +1991,7 @@
     <p class="step-sub" id="measureMeta" style="margin-bottom:10px;"></p>
     <div class="measure-areachips" id="measureAreaChips"></div>
     <div class="impact-desc" id="measureDesc"></div>
+    <div id="parametrosBox"></div>
     <div id="coberturaBox"></div>
     <div id="institucionalBox"></div>
     <div id="constitucionBox"></div>
@@ -2088,6 +2111,7 @@
     Las mismas reglas se aplican a cualquier gobierno. Cuando un dato no es seguro, se dice.<br><br>
     <span class="foot-indep">Proyecto independiente — no afiliado al Estado argentino.</span><br>
     <span class="foot-links">
+      <a href="/metodologia/">Metodología</a> ·
       <a href="/instalar/">Instalar la app</a> ·
       <a href="privacy.html">Política de privacidad</a> ·
       <a href="#" onclick="navTo('cuenta');return false;">Tus datos</a> ·

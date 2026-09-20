@@ -23,6 +23,7 @@ const ENDPOINTS = {
   medidas:        "medidas_con_popularidad?select=id,fecha_bora,titulo,descripcion,tags,area,estado,vigente,tipo_norma,numero,fuente_url,fuente_descripcion,popularidad_medios,nivel_popularidad,created_at",
   cobertura:      "cobertura_mediatica?select=medida_id,medio_id,cubierto,fecha_cobertura,titular&cubierto=is.true",
   observaciones:  "observaciones_constitucionales?select=medida_id,articulo_numero,estado,fallo_referencia,fecha_fallo,resumen,fuente_url",
+  parametros:     "parametros_medida?select=medida_id,clave,valor,unidad,fuente,fecha_valor&order=fecha_valor.desc",
   articulos:      "articulos_constitucion?select=numero,nombre,resumen",
   medios:         "medios?select=id,nombre,posicionamiento,orden&order=orden.asc"
 };
@@ -91,6 +92,12 @@ function buildMeasures(db) {
   (db.observaciones || []).forEach(o => {
     (obsPorMedida[o.medida_id] ||= []).push(o);
   });
+  // Parámetros verificables: cada número con su fuente y su fecha.
+  // Son el respaldo duro de la ficha; ver /metodologia/.
+  const paramsPorMedida = {};
+  (db.parametros || []).forEach(x => {
+    (paramsPorMedida[x.medida_id] ||= []).push(x);
+  });
 
   const rows = db.medidas || [];
   // DB vacía → fallback al catálogo v0.5 (offline / pre-seed).
@@ -110,6 +117,14 @@ function buildMeasures(db) {
         fecha: c.fecha_cobertura || null
       }))
       .sort((a, b) => a.orden - b.orden);
+
+    const parametros = (paramsPorMedida[id] || []).map(x => ({
+      clave: x.clave,
+      valor: x.valor,
+      unidad: x.unidad || null,
+      fuente: x.fuente || null,
+      fecha: x.fecha_valor || null
+    }));
 
     const observaciones = (obsPorMedida[id] || []).map(o => ({
       articuloNumero: o.articulo_numero,
@@ -144,6 +159,8 @@ function buildMeasures(db) {
       cobertura,
       coberturaTotal: totalMedios,
       observaciones,
+      parametros,
+      institucional: base ? (base.institucional || null) : null,
       hasDb: true
     };
   });
