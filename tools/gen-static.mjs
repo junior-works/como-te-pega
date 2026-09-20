@@ -157,6 +157,7 @@ for (const m of medidas) {
 const hoy = new Date().toISOString().slice(0, 10);
 const urls = [
   `  <url><loc>${SITE}/</loc><lastmod>${hoy}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+  `  <url><loc>${SITE}/instalar/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
   ...medidas.map(m =>
     `  <url><loc>${SITE}/medida/${m.id}/</loc><lastmod>${m.date || hoy}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`)
 ];

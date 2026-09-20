@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0c">
+<title>Instalá la app — Cómo Te Pega</title>
+<meta name="description" content="Poné Cómo Te Pega en la pantalla de tu teléfono en dos toques. Gratis, sin Play Store, sin permisos y sin ocupar espacio.">
+<link rel="canonical" href="https://comotepega.com/instalar/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Instalá Cómo Te Pega en tu teléfono">
+<meta property="og:description" content="Dos toques y queda como una app más. Gratis, sin permisos, sin ocupar espacio.">
+<meta property="og:url" content="https://comotepega.com/instalar/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #0a0a0c;
+    --text-0: #f5f1e6;
+    --text-1: #cfc8b8;
+    --text-2: #8a8478;
+    --gold-1: #fbd24a;
+    --gold-2: #d4a017;
+    --brown-1: #c47a2c;
+    --border-soft: #26262e;
+    --grad-gold: linear-gradient(135deg, #fbd24a 0%, #f59e0b 50%, #d4831a 100%);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background:
+      radial-gradient(900px 600px at 50% -260px, rgba(245,158,11,.10), transparent 70%),
+      radial-gradient(700px 520px at 12% 4%, rgba(123,63,14,.08), transparent 70%),
+      var(--bg-0);
+    background-attachment: fixed;
+    color: var(--text-0);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 26px 22px 80px; }
+  .topbar { display: flex; justify-content: flex-end; margin-bottom: 26px; }
+  .back-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--grad-gold); color: #1a0e02;
+    font-weight: 700; font-size: 14px; text-decoration: none;
+    padding: 9px 16px; border-radius: 999px;
+    box-shadow: 0 6px 20px rgba(245,158,11,.32), 0 1px 0 rgba(255,255,255,.18) inset;
+  }
+  .hero-icon {
+    width: 76px; height: 76px; border-radius: 20px;
+    background: var(--grad-gold);
+    display: grid; place-items: center;
+    font-size: 38px; margin: 0 auto 18px;
+    box-shadow: 0 14px 40px rgba(245,158,11,.30);
+  }
+  h1 {
+    margin: 0 0 10px; text-align: center;
+    font-size: 30px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.15;
+    background: var(--grad-gold);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: var(--gold-1);
+  }
+  .lede { margin: 0 0 26px; text-align: center; color: var(--text-1); font-size: 16px; }
+  .cta-zone { text-align: center; margin: 0 0 30px; }
+  #bigInstall {
+    display: none;
+    width: 100%; max-width: 380px;
+    border: 0; cursor: pointer;
+    background: var(--grad-gold); color: #1a0e02;
+    font-family: inherit; font-weight: 800; font-size: 17px;
+    padding: 16px 22px; border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(245,158,11,.34), 0 1px 0 rgba(255,255,255,.18) inset;
+  }
+  #bigInstall:active { transform: translateY(1px); }
+  .cta-note { margin: 12px 0 0; color: var(--text-2); font-size: 13px; }
+  .card {
+    background: rgba(255,255,255,.028);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 20px 20px 6px;
+    margin: 0 0 16px;
+  }
+  .card.is-primary { border-color: rgba(251,210,74,.34); background: rgba(251,210,74,.05); }
+  .card h2 {
+    margin: 0 0 14px; font-size: 17px; font-weight: 700;
+    color: var(--gold-1); letter-spacing: -0.2px;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .card h2 .tag {
+    font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+    color: #1a0e02; background: var(--gold-1);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  ol.steps { margin: 0 0 14px; padding-left: 0; list-style: none; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s; position: relative;
+    padding-left: 38px; margin-bottom: 13px; color: var(--text-1);
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; left: 0; top: 1px;
+    width: 25px; height: 25px; border-radius: 50%;
+    background: rgba(196,122,44,.20); border: 1px solid rgba(251,210,74,.32);
+    color: var(--gold-1); font-size: 13px; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  .ui { color: #fffdf7; font-weight: 700; white-space: nowrap; }
+  .benefits { list-style: none; margin: 0 0 14px; padding: 0; }
+  .benefits li { color: var(--text-1); margin-bottom: 10px; padding-left: 26px; position: relative; }
+  .benefits li::before {
+    content: "✓"; position: absolute; left: 0; top: 0;
+    color: var(--gold-1); font-weight: 800;
+  }
+  p { color: var(--text-1); margin: 0 0 14px; }
+  strong { color: #fffdf7; font-weight: 700; }
+  a { color: var(--gold-1); text-decoration: none; border-bottom: 1px solid rgba(251,210,74,.35); }
+  .note {
+    margin-top: 30px; padding-top: 18px;
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-2); font-size: 13.5px; line-height: 1.65;
+  }
+  .foot-back { margin-top: 26px; text-align: center; }
+  .foot-back a { border-bottom: none; font-weight: 600; font-size: 15px; }
+  .already {
+    display: none;
+    background: rgba(251,210,74,.08);
+    border: 1px solid rgba(251,210,74,.34);
+    border-radius: 14px; padding: 16px 18px; margin: 0 0 22px;
+    text-align: center; color: var(--text-0); font-weight: 600;
+  }
+  @media (max-width: 520px) {
+    h1 { font-size: 25px; }
+    .wrap { padding: 20px 16px 70px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="back-pill" href="/">← Ir a la app</a>
+  </div>
+
+  <div class="hero-icon" aria-hidden="true">📊</div>
+  <h1>Instalá Cómo Te Pega en tu teléfono</h1>
+  <p class="lede">Queda como una app más, con su ícono en la pantalla. Es gratis, no pide ningún permiso y ocupa menos que una foto.</p>
+
+  <div class="already" id="alreadyInstalled">Ya la estás usando instalada. No hace falta nada más.</div>
+
+  <div class="cta-zone">
+    <button id="bigInstall" type="button">Instalar ahora</button>
+    <p class="cta-note" id="ctaNote"></p>
+  </div>
+
+  <!-- Android / Chrome -->
+  <div class="card" id="cardAndroid">
+    <h2>Android <span class="tag" id="tagAndroid" hidden>tu teléfono</span></h2>
+    <ol class="steps">
+      <li>Si arriba te apareció el botón <span class="ui">Instalar ahora</span>, tocalo y listo.</li>
+      <li>Si no aparece, tocá los <span class="ui">tres puntitos ⋮</span> arriba a la derecha del navegador.</li>
+      <li>Elegí <span class="ui">Instalar aplicación</span> (o <span class="ui">Agregar a pantalla principal</span>).</li>
+      <li>Confirmá. El ícono te queda entre tus apps.</li>
+    </ol>
+  </div>
+
+  <!-- iPhone / iPad -->
+  <div class="card" id="cardIOS">
+    <h2>iPhone y iPad <span class="tag" id="tagIOS" hidden>tu teléfono</span></h2>
+    <ol class="steps">
+      <li>Abrí esta página en <span class="ui">Safari</span> (desde Chrome no se puede).</li>
+      <li>Tocá el botón <span class="ui">Compartir</span> — el cuadradito con la flecha para arriba, abajo en el medio.</li>
+      <li>Bajá en la lista y elegí <span class="ui">Agregar a inicio</span>.</li>
+      <li>Tocá <span class="ui">Agregar</span>. El ícono te queda en la pantalla.</li>
+    </ol>
+  </div>
+
+  <!-- Escritorio -->
+  <div class="card" id="cardDesktop">
+    <h2>Computadora <span class="tag" id="tagDesktop" hidden>estás acá</span></h2>
+    <ol class="steps">
+      <li>En Chrome, Edge o Brave, mirá la barra de direcciones a la derecha.</li>
+      <li>Tocá el íconito de <span class="ui">instalar</span> (una pantalla con una flecha).</li>
+      <li>Confirmá <span class="ui">Instalar</span>. Se abre en su propia ventana, sin pestañas.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Qué ganás</h2>
+    <ul class="benefits">
+      <li>Abre de una, a pantalla completa, sin barra del navegador.</li>
+      <li>Lo que ya viste funciona <strong>sin conexión</strong>.</li>
+      <li>Se actualiza sola: siempre tenés la última versión.</li>
+      <li>Tu perfil queda guardado en tu teléfono y <strong>no sale de ahí</strong>.</li>
+      <li>No pide contactos, ni cámara, ni ubicación. Nada.</li>
+    </ul>
+  </div>
+
+  <p class="note">
+    <strong>¿Y la Play Store?</strong> Estamos en el trámite, que Google demora por su cuenta.
+    Pero no estás perdiéndote nada: la app de la Play Store es exactamente esta misma app adentro de un ícono.
+    Instalándola así tenés lo mismo, hoy, y encima funciona igual en iPhone — donde la Play Store no existe.
+  </p>
+
+  <p class="note">
+    Cómo Te Pega es un proyecto independiente y sin fines de lucro. No juzgamos al gobierno, medimos impacto.
+    Leé la <a href="/privacy.html">política de privacidad</a>.
+  </p>
+
+  <div class="foot-back">
+    <a href="/">← Ir a la app</a>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/.test(ua);
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  var btn = document.getElementById('bigInstall');
+  var note = document.getElementById('ctaNote');
+  var cardA = document.getElementById('cardAndroid');
+  var cardI = document.getElementById('cardIOS');
+  var cardD = document.getElementById('cardDesktop');
+  var wrap = document.querySelector('.wrap');
+
+  if (standalone) {
+    document.getElementById('alreadyInstalled').style.display = 'block';
+  }
+
+  // Ordenar: la plataforma detectada primero, con su etiqueta.
+  function promote(card, tagId) {
+    var anchor = document.querySelector('.cta-zone');
+    anchor.parentNode.insertBefore(card, anchor.nextSibling);
+    var t = document.getElementById(tagId);
+    if (t) t.hidden = false;
+    card.classList.add('is-primary');
+  }
+  if (isIOS) promote(cardI, 'tagIOS');
+  else if (isAndroid) promote(cardA, 'tagAndroid');
+  else promote(cardD, 'tagDesktop');
+
+  if (isIOS) {
+    note.textContent = 'En iPhone se instala desde el botón Compartir de Safari. Mirá los pasos acá abajo.';
+  }
+
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferred = e;
+    if (!standalone) {
+      btn.style.display = 'inline-block';
+      note.textContent = 'Un toque. No descarga nada de ninguna tienda.';
+    }
+  });
+
+  btn.addEventListener('click', async function () {
+    if (!deferred) return;
+    deferred.prompt();
+    try {
+      var r = await deferred.userChoice;
+      if (r && r.outcome === 'accepted') {
+        btn.style.display = 'none';
+        note.textContent = 'Listo. Buscá el ícono en tu pantalla.';
+      }
+    } catch (_) {}
+    deferred = null;
+  });
+
+  window.addEventListener('appinstalled', function () {
+    btn.style.display = 'none';
+    note.textContent = 'Listo. Buscá el ícono en tu pantalla.';
+    document.getElementById('alreadyInstalled').style.display = 'block';
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js').catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>
