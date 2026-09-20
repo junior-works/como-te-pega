@@ -1120,6 +1120,8 @@ function wireGlobalSearch() {
       else loadFirstPage();
       const panelSearch = document.getElementById('filterSearch');
       if (panelSearch) panelSearch.value = inp.value;
+      // Sin esto el resultado queda debajo del trending y parece que no pasó nada.
+      if (inp.value.trim()) irATodasLasMedidas();
     }, 300);
   };
   inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } };
@@ -1269,8 +1271,14 @@ function updateProfileSummary() {
   const summary = parts.join(' · ') || '—';
   let claseChip = '';
   if (p.ingreso && typeof window.calcularClaseSocial === 'function') {
-    const clase = window.calcularClaseSocial(p.ingreso);
-    if (clase) claseChip = ` <span class="clase-chip" title="Derivada del ingreso del hogar (CBT INDEC) · ${clase.aam} · ${clase.quintil}">${clase.label}</span>`;
+    // Se pasa el PERFIL COMPLETO, no solo el ingreso: la clase depende de
+    // cuántas personas viven de ese ingreso (adulto equivalente del INDEC).
+    const clase = window.calcularClaseSocial(p);
+    if (clase) {
+      const detalle = `${clase.cbts} canastas básicas para un hogar de ${clase.adultosEquiv} adultos equivalentes `
+        + `· CBT de ${clase.periodo} · ${clase.aam} · ${clase.quintil}`;
+      claseChip = ` <a class="clase-chip" href="/metodologia/" title="${escapeAttr(detalle)}">${escapeHtml(clase.label)} ⓘ</a>`;
+    }
   }
   const html = `<strong>TU PERFIL</strong>${summary}${claseChip}`;
   ['perfilSummary', 'perfilSummary2', 'perfilSummary3'].forEach(id => {
@@ -1286,45 +1294,7 @@ function renderHome() {
   renderLastMeasureBanner(); // v0.8
   const measures = getMeasures();
 
-  // --- Trending: "Lo que están discutiendo todos" ---
-  // Brief pedía cobertura ≥ 5/6, pero los datos reales topean en 4/6 (ninguna
-  // medida llega a 5). Umbral ajustado a ≥ 3/6 = la franja más cubierta.
-  const trendingEl = document.getElementById('trendingSection');
-  if (trendingEl) {
-    const trending = measures
-      .filter(m => (m.popularidad || 0) >= 3)
-      .sort((a, b) => ((b.popularidad || 0) - (a.popularidad || 0)) || String(b.date).localeCompare(String(a.date)))
-      .slice(0, 10);
-    if (!trending.length) {
-      trendingEl.innerHTML = '';
-    } else {
-      let cards = trending.map(m => {
-        const n = m.popularidad || (m.cobertura?.length || 0), tot = m.coberturaTotal || 6;
-        const medios = (m.cobertura || []).map(c => {
-          const st = medioStyle(c.medioId);
-          return `<span class="medio-badge" style="background:${st.color}" title="${c.nombre}${c.titular ? ' — ' + c.titular : ''}">${st.inicial}</span>`;
-        }).join('');
-        const tagsHtml = (m.tags || []).slice(0, 3).map(t => `<span class="measure-tag">${t}</span>`).join('');
-        return `<div class="card measure trending-card" data-id="${m.id}">
-          <div class="trending-top">
-            <span class="cobertura-badge">${n}/${tot}</span>
-            <div class="medio-badges">${medios}</div>
-          </div>
-          <h3>${m.title}</h3>
-          <div class="measure-tags">${tagsHtml}</div>
-        </div>`;
-      }).join('');
-      trendingEl.innerHTML = `
-        <div class="trending-head">
-          <h2 class="step" style="margin:0;">Lo que están discutiendo todos</h2>
-          <p class="step-sub" style="margin:4px 0 14px;">Las medidas más cubiertas por los 6 medios que seguimos. El badge muestra cuántos medios la cubrieron.</p>
-        </div>
-        ${cards}`;
-      trendingEl.querySelectorAll('.trending-card').forEach(card => {
-        card.onclick = () => openMeasure(card.dataset.id);
-      });
-    }
-  }
+  renderTrending();
 
   renderAreaTabs(); // v0.9 — tabs scrollables por área
   renderFilters();
@@ -1345,6 +1315,80 @@ function openMeasure(id) {
   show('impact');
 }
 window.openMeasure = openMeasure;
+
+
+/* El trending se dibuja aparte porque también hay que refrescarlo cuando
+ * cambian los filtros o la búsqueda, no solo al entrar a la pantalla. */
+function renderTrending() {
+  const measures = getMeasures();
+// --- Trending: "Lo que están discutiendo todos" ---
+// Brief pedía cobertura ≥ 5/6, pero los datos reales topean en 4/6 (ninguna
+// medida llega a 5). Umbral ajustado a ≥ 3/6 = la franja más cubierta.
+const trendingEl = document.getElementById('trendingSection');
+if (trendingEl) {
+  const trending = measures
+    .filter(m => (m.popularidad || 0) >= 3)
+    .sort((a, b) => ((b.popularidad || 0) - (a.popularidad || 0)) || String(b.date).localeCompare(String(a.date)))
+    .slice(0, 10);
+  // Si la persona está buscando o filtrando, lo que quiere ver es el
+  // RESULTADO. Dejar trending arriba hacía que la búsqueda pareciera rota:
+  // escribías y la pantalla no cambiaba, porque la lista estaba 10 tarjetas
+  // más abajo. Con filtro activo, trending desaparece.
+  if (activeFilterCount() > 0) {
+    trendingEl.innerHTML = '';
+  } else if (!trending.length) {
+    trendingEl.innerHTML = '';
+  } else {
+    const VISIBLES = 3;
+    const abierto = !!state.trendingOpen;
+    const lista = abierto ? trending : trending.slice(0, VISIBLES);
+    const ocultas = trending.length - lista.length;
+    let cards = lista.map(m => {
+      const n = m.popularidad || (m.cobertura?.length || 0), tot = m.coberturaTotal || 6;
+      const medios = (m.cobertura || []).map(c => {
+        const st = medioStyle(c.medioId);
+        return `<span class="medio-badge" style="background:${st.color}" title="${c.nombre}${c.titular ? ' — ' + c.titular : ''}">${st.inicial}</span>`;
+      }).join('');
+      const tagsHtml = (m.tags || []).slice(0, 3).map(t => `<span class="measure-tag">${t}</span>`).join('');
+      return `<div class="card measure trending-card" data-id="${m.id}">
+        <div class="trending-top">
+          <span class="cobertura-badge">${n}/${tot}</span>
+          <div class="medio-badges">${medios}</div>
+        </div>
+        <h3>${m.title}</h3>
+        <div class="measure-tags">${tagsHtml}</div>
+      </div>`;
+    }).join('');
+    trendingEl.innerHTML = `
+      <div class="trending-head">
+        <h2 class="step" style="margin:0;">Lo que están discutiendo todos</h2>
+        <p class="step-sub" style="margin:4px 0 14px;">Las medidas más cubiertas por los 6 medios que seguimos. El badge muestra cuántos medios la cubrieron.</p>
+      </div>
+      <button type="button" class="trending-skip" id="trendingSkip">Ir a todas las medidas ↓</button>
+      ${cards}
+      ${(ocultas > 0 || abierto) ? `<button type="button" class="trending-more" id="trendingMore">${
+          abierto ? 'Mostrar menos' : `Ver ${ocultas} más`}</button>` : ''}`;
+    trendingEl.querySelectorAll('.trending-card').forEach(card => {
+      card.onclick = () => openMeasure(card.dataset.id);
+    });
+    const more = document.getElementById('trendingMore');
+    if (more) more.onclick = () => { state.trendingOpen = !state.trendingOpen; renderHome(); };
+    const skip = document.getElementById('trendingSkip');
+    if (skip) skip.onclick = () => irATodasLasMedidas();
+  }
+}
+}
+
+// Lleva la vista al encabezado "Todas las medidas". Se usa desde el botón
+// de trending y al escribir en el buscador: si el resultado queda fuera de
+// pantalla, la búsqueda parece no hacer nada.
+function irATodasLasMedidas() {
+  const h = [...document.querySelectorAll('h2.step')]
+    .find(x => /Todas las medidas/i.test(x.textContent || ''));
+  const destino = h || document.getElementById('measureList');
+  if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+window.irATodasLasMedidas = irATodasLasMedidas;
 
 // ============== v0.7 — FILTROS COLAPSABLES ==============
 function activeFilterCount() {
@@ -1502,6 +1546,7 @@ function buildFilterPayload(offset, limit) {
 
 // ============== v0.7 — LISTADO PAGINADO ==============
 async function loadFirstPage() {
+  renderTrending(); // con filtro activo se oculta; al limpiarlo, vuelve
   state.list = { items: [], total: 0, loading: true };
   state.listLoaded = true;
   renderResultCount();

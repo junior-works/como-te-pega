@@ -10,10 +10,54 @@
  * declarado, en múltiplos de la Canasta Básica Total (CBT) del INDEC.
  * ------------------------------------------------------------------ */
 
-// Múltiplos de Canasta Básica Total (CBT) INDEC.
-// Junio 2026 estimado: CBT hogar tipo (4 personas) ~ $1.200.000
-// Estos valores deben moverse a config dinámica cuando enchufemos INDEC.
-const CBT_HOGAR_JUN_2026 = 1200000;
+/* ------------------------------------------------------------------
+ * LA CANASTA, CON FUENTE Y FECHA
+ *
+ * Hasta el 20-09-2026 este archivo usaba $1.200.000 con el comentario
+ * "junio 2026 estimado". Era un número a ojo, desactualizado, y encima se
+ * comparaba contra la canasta de una FAMILIA TIPO sin importar cuántas
+ * personas vivían en el hogar: una persona sola que gana $1,1M quedaba
+ * medida contra la canasta de cuatro.
+ *
+ * Ahora se usa el dato oficial, y se divide por adulto equivalente como
+ * hace el INDEC.
+ * ------------------------------------------------------------------ */
+export const CBT_INDEC = {
+  // Canasta Básica Total de la familia tipo (hogar 2 de referencia).
+  familiaTipo: 1605497,
+  // Ese hogar equivale a 3,09 adultos equivalentes:
+  // varón 35 (1,00) + mujer 31 (0,77) + hijo 6 (0,64) + hija 8 (0,68).
+  adultosEquivalentesFamiliaTipo: 3.09,
+  periodo: 'agosto de 2026',
+  publicado: '2026-09-10',
+  fuente: 'INDEC · Valorización mensual de la canasta básica alimentaria y total',
+  url: 'https://www.indec.gob.ar/indec/web/Nivel3-Tema-4-43'
+};
+
+// CBT por adulto equivalente = canasta de la familia tipo / 3,09.
+export const CBT_POR_ADULTO_EQUIV =
+  CBT_INDEC.familiaTipo / CBT_INDEC.adultosEquivalentesFamiliaTipo;
+
+/* Coeficientes de adulto equivalente (INDEC).
+ * El formulario no pregunta edad ni sexo, así que se usan valores
+ * REPRESENTATIVOS y se dice que lo son:
+ *  - primera persona adulta: 1,00 (varón 30-60, unidad de referencia)
+ *  - segunda persona adulta: 0,77 (mujer 30-45)
+ *  - cada hijo/a: 0,66 (promedio de los dos niños de la familia tipo del
+ *    INDEC: 0,64 y 0,68)
+ * Fuente de los coeficientes: INDEC, "Canasta básica alimentaria y total —
+ * preguntas frecuentes".
+ * https://www.indec.gob.ar/ftp/cuadros/sociedad/preguntas_frecuentes_cba_cbt.pdf */
+const AE_PRIMER_ADULTO = 1.00;
+const AE_OTRO_ADULTO   = 0.77;
+const AE_HIJO          = 0.66;
+
+export function adultosEquivalentes(perfil) {
+  const HIJOS = { '0': 0, '1': 1, '2': 2, '3mas': 3 };
+  const hijos = HIJOS[perfil?.hijos] ?? 0;
+  const otrosAdultos = Number(perfil?.adultos) || 0;
+  return AE_PRIMER_ADULTO + otrosAdultos * AE_OTRO_ADULTO + hijos * AE_HIJO;
+}
 
 export const CLASES_SOCIALES = [
   { id: "baja",        label: "Clase baja",        umbralMin: 0,  umbralMax: 1,  aam: "D2 / E",     quintil: "Q1" },
@@ -24,7 +68,8 @@ export const CLASES_SOCIALES = [
   { id: "muy_alta",    label: "Clase muy alta",    umbralMin: 15, umbralMax: Infinity, aam: "ABC1 top", quintil: "Q5 top / D10" }
 ];
 
-// Mapeo del bucket de ingreso del formulario actual al valor central en pesos.
+// Valor central de cada tramo del formulario. Es una APROXIMACIÓN: el
+// formulario pregunta por tramos, no por el número exacto.
 const INGRESO_PROXY = {
   "hasta_700k":   500000,
   "700k_1.5m":   1100000,
@@ -35,11 +80,34 @@ const INGRESO_PROXY = {
   "mas_15m":    25000000
 };
 
-export function calcularClaseSocial(ingresoBucket) {
-  const ingreso = INGRESO_PROXY[ingresoBucket];
+/* Acepta el perfil completo (recomendado) o, por compatibilidad, el bucket
+ * de ingreso suelto — en ese caso asume un hogar de familia tipo y lo avisa
+ * en el resultado. */
+export function calcularClaseSocial(perfilOBucket) {
+  const esPerfil = perfilOBucket && typeof perfilOBucket === 'object';
+  const bucket = esPerfil ? perfilOBucket.ingreso : perfilOBucket;
+  const ingreso = INGRESO_PROXY[bucket];
   if (!ingreso) return null;
-  const cbts = ingreso / CBT_HOGAR_JUN_2026;
-  return CLASES_SOCIALES.find(c => cbts >= c.umbralMin && cbts < c.umbralMax) || CLASES_SOCIALES[0];
+
+  const ae = esPerfil
+    ? adultosEquivalentes(perfilOBucket)
+    : CBT_INDEC.adultosEquivalentesFamiliaTipo;
+  const cbtHogar = ae * CBT_POR_ADULTO_EQUIV;
+  const cbts = ingreso / cbtHogar;
+
+  const clase = CLASES_SOCIALES.find(c => cbts >= c.umbralMin && cbts < c.umbralMax)
+    || CLASES_SOCIALES[0];
+
+  return {
+    ...clase,
+    cbts: Math.round(cbts * 100) / 100,
+    adultosEquiv: Math.round(ae * 100) / 100,
+    cbtHogar: Math.round(cbtHogar),
+    periodo: CBT_INDEC.periodo,
+    fuente: CBT_INDEC.fuente,
+    url: CBT_INDEC.url,
+    aproximado: !esPerfil
+  };
 }
 
 /* Perfiles arquetípicos por clase social.
