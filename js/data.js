@@ -64,6 +64,16 @@ function isFresh(parsed) {
 }
 
 // "comercio_exterior" → "Comercio Exterior"; para mostrar el área lindo.
+/* Alias de área: la columna `area` de la base trae algún valor histórico que
+ * no coincide con las claves del filtro. Sin esto, esas medidas quedan fuera
+ * de TODOS los filtros por área (no se pueden seleccionar nunca).
+ * Detectado el 20-09-2026: "agro" (1 medida) vs "agroindustria" (4). */
+const AREA_ALIAS = { agro: "agroindustria" };
+export function areaCanonica(a) {
+  const k = String(a || "otros").toLowerCase();
+  return AREA_ALIAS[k] || k;
+}
+
 function capitalizeArea(a) {
   if (!a) return "Otras";
   return String(a).split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
@@ -146,7 +156,7 @@ function buildMeasures(db) {
       desc: row.descripcion ?? (base ? base.desc : ""),
       tags: (Array.isArray(row.tags) && row.tags.length) ? row.tags : (base ? base.tags : []),
       area: capitalizeArea(row.area),
-      areaRaw: row.area || "otros", // valor crudo para filtrar (la DB guarda snake_case)
+      areaRaw: areaCanonica(row.area), // canónico: unifica alias como agro→agroindustria
       estado: row.estado || "vigente",
       fuente: row.fuente_descripcion || (base ? base.fuente : null),
       fuenteUrl: row.fuente_url || null,
@@ -174,7 +184,7 @@ function buildMeasures(db) {
 function buildFallback() {
   const measures = MEASURES_BASE.map(m => ({
     ...m,
-    areaRaw: String(m.area || "otros").toLowerCase(), // best-effort offline (las 6 del base mapean 1:1)
+    areaRaw: areaCanonica(m.area), // best-effort offline (las 6 del base mapean 1:1)
     hasRules: typeof m.impact === "function",
     fuenteUrl: null,
     popularidad: null,
@@ -278,8 +288,15 @@ function buildQueryUrl(f) {
               "tipo_norma,numero,fuente_url,fuente_descripcion,popularidad_medios," +
               "nivel_popularidad,created_at";
   const parts = [sel, "order=fecha_bora.desc"];
-  if (f.areas && f.areas.length)
-    parts.push(`area=in.(${f.areas.map(encodeURIComponent).join(",")})`);
+  if (f.areas && f.areas.length) {
+    // Se piden también los alias, si no la medida guardada como "agro" nunca
+    // aparece al filtrar por Agroindustria.
+    const conAlias = new Set(f.areas);
+    Object.entries(AREA_ALIAS).forEach(([viejo, nuevo]) => {
+      if (conAlias.has(nuevo)) conAlias.add(viejo);
+    });
+    parts.push(`area=in.(${[...conAlias].map(encodeURIComponent).join(",")})`);
+  }
   if (f.estados && f.estados.length)
     parts.push(`estado=in.(${f.estados.map(encodeURIComponent).join(",")})`);
   if (f.popularidades && f.popularidades.length)

@@ -101,7 +101,7 @@ const AREA_LABELS = {
   previsional: "Previsional", laboral: "Laboral", salud: "Salud", educacion: "Educación",
   comercio_exterior: "Comercio Exterior", plataformas: "Plataformas",
   privatizaciones: "Privatizaciones", comunicaciones: "Comunicaciones",
-  agroindustria: "Agroindustria", otros: "Otros"
+  agroindustria: "Agroindustria", cambiario: "Cambiario", otros: "Otros"
 };
 const AREA_KEYS = Object.keys(AREA_LABELS);
 
@@ -703,9 +703,9 @@ function drawCardMedida(ctx) {
     ctx.fillStyle = '#FFFFFF';
     ctx.font = '700 52px ' + CARD_FONT;
     const lines = wrapLines(ctx, cardState.measure.title, CARD_W - M * 2, 3);
-    y += 42;
+    y += 40;
     lines.forEach(l => { ctx.fillText(l, M, y); y += 62; });
-    y += 14;
+    y += 8;
   } else {
     y += 30;
   }
@@ -716,7 +716,10 @@ function drawCardMedida(ctx) {
   const blockH = picked.length * rowH + Math.max(0, picked.length - 1) * gap;
   const zoneTop = y;
   const zoneBottom = CARD_H - 150 - 110;
-  y = Math.max(zoneTop, zoneTop + (zoneBottom - zoneTop - blockH) / 2);
+  // Se centra en el espacio libre, pero con tope: si no, con 2 o 3
+  // dimensiones queda un hueco grande justo debajo del título.
+  const libre = Math.max(0, zoneBottom - zoneTop - blockH);
+  y = zoneTop + Math.min(28, libre / 2);
   picked.forEach(d => {
     const cfg = CARD_LEVEL[d.level] || CARD_LEVEL.none;
     ctx.fillStyle = 'rgba(255,255,255,.05)';
