@@ -20,6 +20,7 @@ import { writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MEASURES_BASE } from '../js/medidas-base.js';
+import { SEO_MEDIDAS } from '../js/seo-medidas.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://comotepega.com';
@@ -46,13 +47,19 @@ function fechaLarga(iso) {
 
 function page(m) {
   const url = `${SITE}/medida/${m.id}/`;
-  const title = `${plain(m.title)} — cómo te pega`;
-  const desc = clip(plain(m.desc), 158);
+  // La gente busca CUÁNTO ES, no CÓMO TE PEGA. Ver js/seo-medidas.js.
+  const seo = SEO_MEDIDAS[m.id] || null;
+  const h1 = seo ? seo.h : plain(m.title);
+  const title = seo ? seo.h : `${plain(m.title)} — qué cambió y a quién le pega`;
+  // La meta description arranca con el número: es lo que promete el
+  // resultado de Google y lo que decide si hacen clic.
+  const desc = clip(seo ? `${seo.num} Mirá cómo te pega a vos según tu situación.`
+                        : plain(m.desc), 158);
   const tags = (m.tags || []).map(t => `<li>${esc(t)}</li>`).join('');
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: plain(m.title),
+    headline: h1,
     description: plain(m.desc),
     datePublished: m.date,
     inLanguage: 'es-AR',
@@ -99,9 +106,13 @@ function page(m) {
             letter-spacing: .04em; color: #0E1B2C; background: #F6B40E; border-radius: 999px; padding: 3px 10px; }
   .meta { color: #93A7BD; font-size: 13.5px; margin: 12px 0 22px; }
   .desc { font-size: 17px; color: #D5E2F0; }
+  /* La respuesta concreta, arriba de todo: es lo que la persona vino a buscar. */
+  .numero { font-size: 19px; line-height: 1.5; font-weight: 600; color: #fff;
+            background: #16293F; border-left: 4px solid #F6B40E;
+            border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 0 0 22px; }
   .card { background: #16293F; border: 1px solid #26405C; border-radius: 16px; padding: 18px 20px; margin: 24px 0; }
   .card h2 { font-size: 15px; margin: 0 0 8px; }
-  .card p { margin: 0; color: #93A7BD; font-size: 14px; }
+  .card p { margin: 0; color: #93A7BD; font-size: 14px; overflow-wrap: anywhere; }
   ul.tags { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; padding: 0; margin: 18px 0 0; }
   ul.tags li { font-size: 12.5px; color: #D5E2F0; background: #1E344E; border: 1px solid #26405C; border-radius: 999px; padding: 4px 11px; }
   .cta { display: block; text-align: center; text-decoration: none; font-weight: 700; color: #0E1B2C;
@@ -117,8 +128,9 @@ function page(m) {
   <a class="top" href="../../"><span class="dot"></span><b>¿Cómo te pega?</b></a>
 
   <span class="estado">${esc(ESTADO_LABEL[m.estado] || m.estado || 'Vigente')}</span>
-  <h1>${esc(plain(m.title))}</h1>
+  <h1>${esc(h1)}</h1>
   <p class="meta">${esc(plain(m.meta))}${m.date ? ` · publicada el ${fechaLarga(m.date)}` : ''}</p>
+  ${seo ? `<p class="numero">${esc(seo.num)}</p>` : ''}
   <p class="desc">${m.desc}</p>
   ${tags ? `<ul class="tags">${tags}</ul>` : ''}
 
