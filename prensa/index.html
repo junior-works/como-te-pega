@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0c">
+<title>Para periodistas y medios — Cómo Te Pega</title>
+<meta name="description" content="Datos abiertos sobre 88 medidas del Boletín Oficial: qué cambió, a quién le pega y con qué fuente. Libre para usar y citar.">
+<link rel="canonical" href="https://comotepega.com/prensa/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Para periodistas y medios — Cómo Te Pega">
+<meta property="og:description" content="88 medidas del Boletín Oficial con fuente oficial, y un motor que calcula a quién le pega cada una. Libre para usar y citar.">
+<meta property="og:url" content="https://comotepega.com/prensa/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg-0:#0a0a0c;--text-0:#f5f1e6;--text-1:#cfc8b8;--text-2:#8a8478;
+    --gold-1:#fbd24a;--brown-1:#c47a2c;--border-soft:#26262e;
+    --grad-gold:linear-gradient(135deg,#fbd24a 0%,#f59e0b 50%,#d4831a 100%);
+    --red:#f87171;--green:#4ade80;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Plus Jakarta Sans',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(900px 600px at 50% -260px,rgba(245,158,11,.10),transparent 70%),
+               radial-gradient(700px 520px at 12% 4%,rgba(123,63,14,.08),transparent 70%),var(--bg-0);
+    background-attachment:fixed;color:var(--text-0);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:740px;margin:0 auto;padding:26px 22px 90px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:26px}
+  .marca{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text-0);font-weight:800;font-size:15px}
+  .marca .dot{width:24px;height:24px;border-radius:50%;background:var(--grad-gold);flex:none}
+  .back-pill{display:inline-flex;align-items:center;gap:6px;background:var(--grad-gold);color:#1a0e02;
+    font-weight:700;font-size:13.5px;text-decoration:none;padding:8px 15px;border-radius:999px;white-space:nowrap}
+  h1{margin:0 0 10px;font-size:32px;font-weight:800;letter-spacing:-.8px;line-height:1.15;
+    background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold-1)}
+  .lede{color:var(--text-1);font-size:17.5px;margin:16px 0 0}
+  h2{color:var(--gold-1);font-size:21px;font-weight:700;letter-spacing:-.3px;margin:42px 0 12px}
+  h3{color:#fffdf7;font-size:16px;font-weight:700;margin:24px 0 8px}
+  p,li{color:var(--text-1)}
+  p{margin:0 0 14px}
+  ul,ol{margin:0 0 14px;padding-left:20px}
+  li{margin-bottom:8px}
+  li::marker{color:var(--brown-1)}
+  strong{color:#fffdf7;font-weight:700}
+  a{color:var(--gold-1);text-decoration:none;border-bottom:1px solid rgba(251,210,74,.35)}
+  hr.divider{border:0;border-top:1px solid var(--border-soft);margin:26px 0 8px}
+  .cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 20px}
+  .cifra{background:rgba(255,255,255,.028);border:1px solid var(--border-soft);
+    border-radius:14px;padding:16px 18px}
+  .cifra b{display:block;font-size:28px;font-weight:800;color:var(--gold-1);line-height:1.1}
+  .cifra span{display:block;font-size:13px;color:var(--text-2);margin-top:5px;line-height:1.45}
+  .box{background:rgba(255,255,255,.028);border:1px solid var(--border-soft);
+    border-radius:16px;padding:20px;margin:0 0 18px}
+  .box.gold{border-color:rgba(251,210,74,.34);background:rgba(251,210,74,.05)}
+  .box h3{margin-top:0}
+  table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top}
+  th{color:var(--gold-1);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+  td{color:var(--text-1)}
+  td.num{text-align:right;font-weight:800;color:#fffdf7;white-space:nowrap}
+  .neg{color:var(--red);font-weight:800}
+  .pos{color:var(--green);font-weight:800}
+  .cita{border-left:4px solid var(--gold-1);background:rgba(255,255,255,.03);
+    border-radius:0 12px 12px 0;padding:14px 18px;margin:0 0 16px;color:#fffdf7;font-size:15.5px}
+  .foot-note{margin-top:44px;padding-top:18px;border-top:1px solid var(--border-soft);
+    color:var(--text-2);font-size:13px;line-height:1.7}
+  @media(max-width:520px){h1{font-size:26px}h2{font-size:19px}.wrap{padding:20px 16px 70px}
+    table{font-size:13.5px}th,td{padding:8px 8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="marca" href="/"><span class="dot"></span>¿Cómo te pega?</a>
+    <a class="back-pill" href="/">Ver la app →</a>
+  </div>
+
+  <h1>Para periodistas y medios</h1>
+  <p class="lede">Todo lo que hay acá es <strong>libre para usar, citar y reproducir</strong>,
+  con mención de la fuente. No pedimos nada a cambio y no hay embargo ni exclusividad.</p>
+
+  <hr class="divider">
+
+  <h2>Qué es Cómo Te Pega</h2>
+
+  <div class="cita">Una base de datos de medidas del Boletín Oficial con un motor que
+  calcula <strong>a quién le pega cada una</strong>, según la situación concreta de la
+  persona: ocupación, zona, ingreso del hogar, vivienda, transporte, cobertura de salud,
+  hijos.</div>
+
+  <p>La diferencia con una cobertura normal no es la noticia: es la pregunta.
+  Los medios cuentan <em>qué se publicó</em>. Esto responde <em>a quién le cambia la vida
+  y cuánto</em>. Son dos cosas distintas y la segunda casi nadie la hace.</p>
+
+  <div class="cifras">
+    <div class="cifra"><b>88</b><span>medidas analizadas, todas con enlace a su fuente oficial</span></div>
+    <div class="cifra"><b>225</b><span>parámetros numéricos, el 100% con fuente y fecha del dato</span></div>
+    <div class="cifra"><b>14</b><span>dimensiones de vida: plata, trabajo, salud, tiempo, vivienda…</span></div>
+    <div class="cifra"><b>6</b><span>medios cuya cobertura de cada medida se registra</span></div>
+  </div>
+
+  <h2>El dato que casi no se publica</h2>
+
+  <p>La misma medida no le pega igual a todo el mundo, y eso es medible. Estas son las
+  medidas que <strong>más dividen</strong> del catálogo: la diferencia es la distancia entre
+  el perfil más perjudicado y el más beneficiado.</p>
+
+  <table>
+    <thead><tr><th>Medida</th><th style="text-align:right">Diferencia</th></tr></thead>
+    <tbody>
+      <tr><td>DNU 70 — Reforma Laboral (Título IV)</td><td class="num">18</td></tr>
+      <tr><td>Cayó la Ley de Alquileres</td><td class="num">12</td></tr>
+      <tr><td>Nueva movilidad jubilatoria</td><td class="num">10</td></tr>
+      <tr><td>Ley de Emergencia Pediátrica — veto rechazado</td><td class="num">9</td></tr>
+      <tr><td>Se levantó el cepo al dólar (Fase 3)</td><td class="num">9</td></tr>
+      <tr><td>Banco Nación → Sociedad Anónima</td><td class="num">9</td></tr>
+      <tr><td>Subió fuerte la SUBE</td><td class="num">9</td></tr>
+      <tr><td>Protocolo antipiquetes</td><td class="num">9</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box">
+    <h3>Cómo se lee, con un ejemplo</h3>
+    <p>El <strong>DNU 70, Título IV</strong> (reforma laboral) sobre cinco perfiles de
+    referencia:</p>
+    <table style="margin:0">
+      <tbody>
+        <tr><td>Dueño de una PyME</td><td class="num pos">+7</td><td>a favor</td></tr>
+        <tr><td>Empleado en blanco</td><td class="num neg">−11</td><td>en contra, sobre todo en Trabajo</td></tr>
+        <tr><td>Monotributista</td><td class="num neg">−11</td><td>en contra, sobre todo en Trabajo</td></tr>
+        <tr><td>Trabajador informal</td><td class="num neg">−4</td><td>en contra</td></tr>
+        <tr><td>Jubilado con la mínima</td><td class="num">0</td><td>no lo toca</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:12px 0 0">Ese contraste —la misma norma, un perfil arriba y otro
+    abajo— es el material que normalmente se pierde en la cobertura.</p>
+  </div>
+
+  <h2>Qué podés usar</h2>
+
+  <ul>
+    <li><strong>Las fichas por medida</strong>, cada una con su URL propia y el enlace al
+    Boletín Oficial: <code>comotepega.com/medida/&lt;id&gt;/</code></li>
+    <li><strong>Los parámetros con fuente y fecha</strong> de cada medida: montos, alícuotas,
+    plazos, vigencias. Están a la vista en cada ficha.</li>
+    <li><strong>Las tarjetas para compartir</strong> que genera la app, en formato 1080×1350,
+    listas para redes.</li>
+    <li><strong>El resumen semanal</strong> de lo que se publicó: <a href="/semanal/">comotepega.com/semanal</a></li>
+    <li><strong>Cortes a medida.</strong> Si necesitás el impacto de una norma sobre un
+    perfil que no está, o un cruce que no ves, pedilo. Se calcula y se pasa con las fuentes.</li>
+  </ul>
+
+  <h2>Cómo verificamos, y qué no podemos garantizar</h2>
+
+  <p>Esto es lo que nos parece que hay que leer antes de citarnos. Está todo en la
+  <a href="/metodologia/">página de metodología</a>, sin maquillar:</p>
+
+  <ul>
+    <li><strong>Lo que la norma dice está respaldado al 100%</strong>: las 88 medidas llevan
+    enlace a su fuente primaria.</li>
+    <li><strong>El cruce con el perfil es un modelo propio</strong>, con criterios escritos y
+    públicos: el nivel de impacto se ancla en el porcentaje del ingreso del hogar.</li>
+    <li><strong>Lo que estimamos está marcado como estimación</strong> dentro de la app. Si
+    una afirmación no dice lo que la norma dice textualmente, lleva la etiqueta.</li>
+    <li><strong>Los precios tienen fecha de vigencia visible.</strong> Si pasó tiempo desde
+    esa fecha, el número pudo haber cambiado y hay que chequearlo.</li>
+    <li><strong>El nivel de impacto lo asigna una persona</strong> leyendo la norma contra el
+    criterio publicado. Es reproducible, pero no automático.</li>
+    <li><strong>Los deciles de ingreso salen de la EPH del INDEC</strong>, que cubre
+    aglomerados urbanos: un hogar rural no está representado.</li>
+  </ul>
+
+  <div class="box gold">
+    <h3>Qué no hacemos, a propósito</h3>
+    <ul style="margin:0">
+      <li><strong>No opinamos</strong> sobre si una medida está bien o mal.</li>
+      <li><strong>No calificamos gobiernos.</strong> Las mismas reglas se aplican a cualquier
+      gestión. Un balance con muchas medidas en contra describe una situación, no un veredicto.</li>
+      <li><strong>No predecimos.</strong> Se mide lo que una norma vigente cambia.</li>
+      <li><strong>No guardamos datos de nadie.</strong> El perfil queda en el teléfono de la
+      persona y no se envía a ningún servidor.</li>
+    </ul>
+  </div>
+
+  <h2>Cómo citarnos</h2>
+
+  <div class="cita">Según Cómo Te Pega (comotepega.com), un proyecto independiente que analiza
+  el impacto de las medidas del Boletín Oficial por perfil…</div>
+
+  <p>Si el dato es una estimación del modelo y no lo que dice la norma, te agradecemos que lo
+  digas así. Nosotros lo hacemos.</p>
+
+  <h2>Contacto</h2>
+
+  <p>Escribinos a <a href="mailto:lookatthismcfly@gmail.com">lookatthismcfly@gmail.com</a>.
+  Respondemos pedidos de datos, cortes por perfil y verificaciones. Si encontrás un error,
+  con más razón: se corrige y se deja constancia.</p>
+
+  <p class="foot-note">
+    <strong>No juzgamos al gobierno, medimos impacto.</strong> Las mismas reglas se aplican
+    a cualquier gobierno; cuando un dato no es seguro, se dice.<br>
+    <a href="/metodologia/">Metodología</a> · <a href="/semanal/">Resumen semanal</a> ·
+    <a href="/">La app</a> · <a href="/privacy.html">Privacidad</a><br>
+    Cómo Te Pega es un proyecto independiente y sin fines de lucro de Junior Works —
+    no afiliado al Estado argentino.
+  </p>
+
+</div>
+</body>
+</html>

@@ -39,8 +39,8 @@ Las empresas que tomen personal desempleado, ex monotributista o ex empleado pú
 
 ---
 
-👉 Mirá cómo te pega a vos: junior-works.github.io/como-te-pega
-¿Te lo reenviaron? Suscribite acá: [LINK DE SUSCRIPCIÓN]
+👉 Mirá cómo te pega a vos: comotepega.com
+¿Te lo reenviaron? Suscribite acá: comotepega.com/semanal
 Este resumen no opina: informa.
 El equipo de Cómo Te Pega
 
@@ -68,7 +68,7 @@ No hubo medidas nuevas que te toquen directo en estos días. Aprovechamos para r
 
 ---
 
-👉 Mirá cómo te pega a vos: junior-works.github.io/como-te-pega
-¿Te lo reenviaron? Suscribite acá: [LINK DE SUSCRIPCIÓN]
+👉 Mirá cómo te pega a vos: comotepega.com
+¿Te lo reenviaron? Suscribite acá: comotepega.com/semanal
 Este resumen no opina: informa.
 El equipo de Cómo Te Pega

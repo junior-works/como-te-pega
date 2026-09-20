@@ -16,7 +16,7 @@
  * Escribe: medida/<id>/index.html, sitemap.xml, robots.txt
  * Correlo cada vez que se agregan medidas al catálogo.
  * ------------------------------------------------------------------ */
-import { writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync, rmSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MEASURES_BASE } from '../js/medidas-base.js';
@@ -166,11 +166,25 @@ for (const m of medidas) {
   writeFileSync(join(dir, 'index.html'), page(m), 'utf8');
 }
 
+// Las ediciones del resumen semanal también van al sitemap: una página por
+// semana, cada una con las medidas de esos días.
+function edicionesSemanales() {
+  const dir = join(ROOT, 'semanal');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d))
+    .sort().reverse()
+    .map(d => `  <url><loc>${SITE}/semanal/${d}/</loc><lastmod>${d}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`);
+}
+
 const hoy = new Date().toISOString().slice(0, 10);
 const urls = [
   `  <url><loc>${SITE}/</loc><lastmod>${hoy}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
   `  <url><loc>${SITE}/instalar/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
   `  <url><loc>${SITE}/metodologia/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
+  `  <url><loc>${SITE}/prensa/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`,
+  `  <url><loc>${SITE}/semanal/</loc><lastmod>${hoy}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`,
+  ...edicionesSemanales(),
   ...medidas.map(m =>
     `  <url><loc>${SITE}/medida/${m.id}/</loc><lastmod>${m.date || hoy}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`)
 ];
