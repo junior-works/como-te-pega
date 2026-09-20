@@ -1733,9 +1733,14 @@ function renderImpact() {
         const card = document.createElement('div');
         card.className = 'dim-card hit-' + d.level;
         const tagText = { strong: "EN CONTRA FUERTE", mid: "EN CONTRA MEDIO", soft: "EN CONTRA LEVE", none: "NEUTRA", pos_soft: "A FAVOR LEVE", pos: "A FAVOR MEDIO", pos_strong: "A FAVOR FUERTE" }[d.level];
+        // Marca de tipo: distingue lo que la norma DICE de lo que estimamos.
+        // Ver /metodologia/, sección 5.
+        const tipo = d.tipo === 'estimacion'
+          ? `<span class="dim-tipo" title="Efecto esperado, calculado a partir de tu perfil. No es un dato medido de tu caso.">estimación</span>`
+          : '';
         card.innerHTML = `
           <div class="dim-head">
-            <div class="dim-name"><span class="dim-icon">${dimIcon(d)}</span>${d.name}</div>
+            <div class="dim-name"><span class="dim-icon">${dimIcon(d)}</span>${d.name}${tipo}</div>
             <div class="dim-tag tag-${d.level}">${tagText}</div>
           </div>
           <div class="dim-body">${d.body}</div>

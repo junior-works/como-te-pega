@@ -51,6 +51,8 @@ export const DIM_ICONS = {
   "Ocio": "🎭"
 };
 
+import { PRECIOS, SUPUESTOS, fechaLegible } from "./precios.js";
+
 export const MEASURES_BASE = [
   {
     id: "alquileres",
@@ -96,8 +98,8 @@ export const MEASURES_BASE = [
         if (p.ingreso === "hasta_700k") porc = "más del 60%";
         else if (p.ingreso === "700k_1.5m") porc = "40-55%";
         else if (p.ingreso === "6m_15m" || p.ingreso === "mas_15m") porc = "10-20%";
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: `El alquiler se come <strong>${porc}</strong> de un ingreso del hogar como el tuyo en zona urbana. Sin tope, el ajuste tiende a ir más rápido que las paritarias.` });
+        dims.push({ name: "Plata", icon: "💰", level: "strong", tipo: "estimacion",
+          body: `En zona urbana, un alquiler típico se lleva del orden de <strong>${porc}</strong> de un ingreso del hogar como el tuyo. Es una estimación por tramo de ingreso, no tu contrato. Sin tope legal, el ajuste puede ir más rápido que las paritarias.` });
       }
 
       if (isInquilino) {
@@ -150,17 +152,25 @@ export const MEASURES_BASE = [
       const tieneTarifaSocial = (p.asistencia || []).includes("tarifa_sube");
 
       if (inAMBA && (p.transporte === "2colectivos" || p.transporte === "combinacion")) {
-        const viajes = p.transporte === "combinacion" ? 88 : 44;
-        const tarifaUnit = tieneTarifaSocial ? 328 : 728;
-        const tarifaAntes = tieneTarifaSocial ? 35 : 76;
+        // Tarifas con fuente y fecha en js/precios.js. Los viajes/mes son un
+        // SUPUESTO (2 por día hábil), por eso la dimensión va como estimación.
+        const viajes = p.transporte === "combinacion" ? SUPUESTOS.viajesMes_2tramos : SUPUESTOS.viajesMes_1tramo;
+        const desc = 1 - PRECIOS.descuentoTarifaSocial.valor / 100;
+        const tarifaUnit = tieneTarifaSocial
+          ? PRECIOS.colectivoAMBA.valor * desc
+          : PRECIOS.colectivoAMBA.valor;
+        const tarifaAntes = tieneTarifaSocial
+          ? PRECIOS.colectivoAMBA_dic2023.valor * desc
+          : PRECIOS.colectivoAMBA_dic2023.valor;
+        const pesos = n => Math.round(n).toLocaleString('es-AR');
         const gastoHoy = viajes * tarifaUnit;
         const gastoAntes = viajes * tarifaAntes;
         const dif = gastoHoy - gastoAntes;
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: `Hacés ~${viajes} viajes/mes. ${tieneTarifaSocial ? "<em>Con Tarifa Social SUBE</em>, " : ""}gastás <strong>$${gastoHoy.toLocaleString('es-AR')}</strong> vs <strong>$${gastoAntes.toLocaleString('es-AR')}</strong> en dic-23. Diferencia: <strong>+$${dif.toLocaleString('es-AR')}/mes</strong>.` });
+        dims.push({ name: "Plata", icon: "💰", level: "strong", tipo: "estimacion",
+          body: `Con <strong>${viajes} viajes al mes</strong> (2 por día hábil) ${tieneTarifaSocial ? "y <em>Tarifa Social SUBE</em>, " : ""}gastarías <strong>$${pesos(gastoHoy)}</strong> contra <strong>$${pesos(gastoAntes)}</strong> en diciembre de 2023. Diferencia: <strong>+$${pesos(dif)} por mes</strong>.<br><span class="dim-fuente">Tarifa mínima de $${PRECIOS.colectivoAMBA.valor.toLocaleString('es-AR')} vigente desde ${fechaLegible(PRECIOS.colectivoAMBA.vigenteDesde)} · <a href="${PRECIOS.colectivoAMBA.url}" target="_blank" rel="noopener">${PRECIOS.colectivoAMBA.fuente} ↗</a></span>` });
       } else if (inAMBA && p.transporte === "tren") {
         dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Tren AMBA SUBE registrada ~$379. Subió respecto de 2023 pero menos que el colectivo." });
+          body: "El tren del AMBA también aumentó desde 2023, pero menos que el colectivo: si viajás solo en tren, el golpe en el bolsillo es más chico." });
       } else if (inAMBA && p.transporte === "auto") {
         dims.push({ name: "Plata", icon: "💰", level: "soft",
           body: "Sin SUBE, pero el combustible también subió por quita de subsidios y devaluación. Peajes urbanos también ajustaron." });
@@ -176,7 +186,7 @@ export const MEASURES_BASE = [
 
       if (inAMBA && (p.transporte === "2colectivos" || p.transporte === "combinacion")) {
         dims.push({ name: "Tiempo", icon: "⏰", level: "mid",
-          body: "Encuestas 2024-25: muchos usuarios cambiaron a recorridos más largos pero más baratos (1 colectivo en vez de 2). Suma <strong>20-40 min/día</strong> = ~10 hs/mes." });
+          tipo: "estimacion", body: "Si para ahorrar cambiás a un recorrido más largo pero más barato —un colectivo en vez de dos—, el viaje te come más tiempo. Del orden de <strong>20 a 40 minutos más por día</strong>, unas 10 horas al mes. Es una estimación de magnitud, no un dato medido." });
       }
 
       if (p.extra === "plataforma") {
@@ -191,7 +201,7 @@ export const MEASURES_BASE = [
 
       if (inAMBA && (p.ocupacion === "jubilado_min" || p.ocupacion === "pensionado") && (p.transporte === "2colectivos" || p.transporte === "combinacion")) {
         dims.push({ name: "Salud", icon: "❤️", level: "mid",
-          body: "Hay reportes de adultos mayores postergando turnos médicos por el costo del viaje. Si tenés Tarifa Social SUBE el golpe es menor, pero igual subió de imperceptible a 3-4% del haber." });
+          tipo: "estimacion", body: "Con la mínima, ir al médico pasó de costar casi nada a pesar en el haber. Si tenés Tarifa Social SUBE el golpe es menor. Del orden del <strong>3 a 4% del haber</strong> según cuántos turnos tengas al mes: es una estimación, depende de tu caso." });
       }
 
       if (p.discapacidad === "propia_cud" || p.discapacidad === "familiar_cud") {
@@ -310,7 +320,7 @@ export const MEASURES_BASE = [
 
       if ((p.hijos === "2" || p.hijos === "3mas") && (p.ingreso === "hasta_700k" || p.ingreso === "700k_1.5m")) {
         dims.push({ name: "Carga mental", icon: "🧠", level: "soft",
-          body: "Hogares con muchos hijos consumen más luz / gas. Aún con SEF, el excedente sobre el consumo cubierto pega fuerte en invierno." });
+          tipo: "estimacion", body: "Hogares con muchos hijos consumen más luz / gas. Aún con SEF, el excedente sobre el consumo cubierto pega fuerte en invierno." });
       }
 
       if (p.vivienda === "ocupada") {
@@ -895,12 +905,12 @@ export const MEASURES_BASE = [
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
           body: "Las multas derogadas eran lo que hacía que conviniera al empleador formalizarte. Sin ellas, no hay incentivo económico para blanquearte. Tu empleador puede mantenerte en negro indefinidamente con muy poco riesgo. Si te despiden y vas a juicio, lo que vas a cobrar bajó significativamente." });
         dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Tu margen de negociación en un eventual juicio cayó. Antes podías reclamar 4-6 salarios extra por irregularidad; ahora muchos menos." });
+          body: "El DNU recortó lo que se puede reclamar por irregularidades en el registro del empleo. Un juicio laboral rinde menos que antes, así que tu margen de negociación frente al empleador cayó." });
       }
       // Empresario PyME / Gran empresario
       if (p.ocupacion === 'pyme') {
         dims.push({ name: "Plata", icon: "💰", level: "pos_strong",
-          body: "Las multas derogadas representaban hasta 4-6 salarios brutos en costo evitable por irregularidad. Si tenés trabajadores en negro o registrados mal, el costo de 'que te denuncien' cayó dramáticamente. Si demorás indemnizaciones ya no pagás el 50% extra. Si no das certificado de trabajo, ya no son 3 salarios de multa." });
+          body: "Las multas derogadas representaban hasta 4-6 salarios brutos en costo evitable por irregularidad. Si tenés trabajadores en negro o registrados mal, el costo de 'que te denuncien' cayó fuerte. Si demorás indemnizaciones ya no pagás el 50% extra. Si no das certificado de trabajo, ya no son 3 salarios de multa." });
         dims.push({ name: "Trabajo", icon: "🛠️", level: "pos",
           body: "Período de prueba de 8 meses + sin multas por trabajo no registrado = combo que reduce significativamente el costo de mantener una plantilla flexible." });
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos",
@@ -1291,7 +1301,7 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "strong",
           body: "Si en una ciudad como Rosario tomás 2 colectivos al día x 22 días = 44 viajes/mes. Antes (ene-2024): 44 × $252 = $11.088. Hoy (jun-2026): 44 × $1.720 = $75.680/mes. Diferencia: $64.592 más por mes en transporte sobre un sueldo del interior. Para ingresos ≤$1,5M, eso es 4-7% del sueldo solo en transporte al trabajo." });
         dims.push({ name: "Movilidad", icon: "🛤️", level: "strong",
-          body: "Tu acceso a la ciudad se encareció dramáticamente. Trámites, estudios, visitar familia, salir a comer ahora exige cálculo." });
+          body: "Tu acceso a la ciudad se encareció. Trámites, estudios, visitar familia o salir a comer ahora exigen hacer la cuenta del viaje." });
         dims.push({ name: "Tiempo", icon: "⏰", level: "mid",
           body: "Muchas líneas redujeron frecuencias. Algunas rutas se eliminaron." });
       }
@@ -1307,17 +1317,17 @@ export const MEASURES_BASE = [
         dims.push({ name: "Educación", icon: "📚", level: "mid",
           body: "Asistencia a clase se ve afectada por el costo. UNL, UNR, UNC reportan aumento de 'abandono por costo de transporte' en 2024-2025." });
         dims.push({ name: "Movilidad social", icon: "🛤️", level: "mid",
-          body: "Barrera de acceso a estudios superiores creció si vivís lejos de la facultad." });
+          tipo: "estimacion", body: "Barrera de acceso a estudios superiores creció si vivís lejos de la facultad." });
       }
       if (enInterior && (p.ocupacion === 'trab_informal' || p.ocupacion === 'ama_casa')) {
         dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: "Si tu jornal es $20-30k y el transporte para llegar al trabajo cuesta $3.500-5.500 ida y vuelta, perdés 15-25% del jornal. Algunos trabajos ya no son rentables por costo de viajar." });
+          tipo: "estimacion", body: "Si trabajás por jornal, el viaje de ida y vuelta se lleva una parte grande del día: del orden del <strong>15 al 25%</strong>, según la distancia y el precio del boleto en tu zona. Es una estimación de magnitud. Con esa cuenta, hay changas lejos que dejan de convenir." });
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
           body: "Menos margen para aceptar trabajos lejos. Reducción de búsquedas a 'lo que esté cerca'." });
       }
       if (enInterior && p.ocupacion === 'pyme') {
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-          body: "Tus empleados gastan más en llegar. Algunos rechazan trabajos lejos. Si tu negocio depende de clientes que se mueven en transporte público, tu afluencia cae." });
+          tipo: "estimacion", body: "Tus empleados gastan más en llegar. Algunos rechazan trabajos lejos. Si tu negocio depende de clientes que se mueven en transporte público, tu afluencia cae." });
       }
       const noEsEmpleadoPub = p.ocupacion !== 'empleado_pub';
       if (noEsEmpleadoPub) {
@@ -1351,7 +1361,7 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "strong",
           body: "Cuota se duplicó o triplicó en términos reales contra inflación. Si gastabas $80k/mes en cobertura familiar, ahora es $250-350k. Si tu sueldo no creció en la misma proporción, perdiste poder de compra de muchas otras cosas para sostener la cobertura." });
         dims.push({ name: "Salud", icon: "❤️", level: "mid",
-          body: "Para sostener la cuota, mucha gente migra a planes inferiores con peor cobertura (más coseguros, menor cartilla, copagos en estudios). Menor calidad efectiva por la misma plata." });
+          tipo: "estimacion", body: "Para sostener la cuota, mucha gente migra a planes inferiores con peor cobertura (más coseguros, menor cartilla, copagos en estudios). Menor calidad efectiva por la misma plata." });
       }
       if (p.salud === 'prepaga_aporte') {
         dims.push({ name: "Plata", icon: "💰", level: "mid",
@@ -1936,7 +1946,7 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
           body: "Si estás bajo convenio pero no estás afiliado, dejaron de poder descontarte automáticamente la cuota solidaria. Eso te devuelve entre 1% y 3% del básico por mes (lo que antes se iba al sindicato sin que lo hayas autorizado)." });
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-          body: "El otro lado de la moneda: tu sindicato se queda con menos recursos. Algunos gremios reportan caídas de 40% a 70% de los aportes. Eso debilita la capacidad de negociar paritarias, sostener la obra social sindical y bancar conflictos. Si dependés de esa obra social o de la fuerza del gremio, te afecta indirectamente." });
+          body: "El otro lado de la moneda: al dejar de ser automático el descuento, tu sindicato se queda con menos recursos. Eso debilita su capacidad de negociar paritarias, sostener la obra social sindical y bancar conflictos. Si dependés de esa obra social o de la fuerza del gremio, te afecta indirectamente." });
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "soft",
           body: "La situación es jurídicamente incierta: hay fallos que declararon inconstitucionales los artículos. Según tu provincia y tu convenio, te pueden seguir descontando o no. Conviene revisar el recibo de sueldo." });
       }
@@ -2062,7 +2072,7 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "strong",
           body: "Si sos docente, perdés el FONID: en promedio cae cerca del 10% de tu sueldo de bolsillo (la cifra exacta varía por provincia). Es plata que recibías todos los meses y que la Nación dejó de mandar. Para que no la pierdas, tu provincia tiene que ponerla de su bolsillo." });
         dims.push({ name: "Trabajo", icon: "🛠️", level: "mid",
-          body: "Afecta a más de 1,2 millones de docentes en todo el país. El reclamo se trasladó a las provincias, que en muchos casos no tienen plata para reemplazarlo, lo que alimenta conflictos salariales y paros." });
+          body: "Alcanza a docentes de todo el país: el FONID era un complemento que pagaba la Nación por encima del sueldo provincial. Al cortarse, el reclamo se trasladó a las provincias, y donde no hay plata para reemplazarlo alimenta conflictos salariales y paros." });
         if (p.zona === 'nea' || p.zona === 'noa') {
           dims.push({ name: "Estabilidad", icon: "🛡️", level: "strong",
             body: "En el NEA y el NOA el golpe es mayor: son provincias con menos recursos propios, que no pueden absorber el FONID. Ahí la pérdida del incentivo se siente entera en el sueldo y deja el salario docente expuesto a la inflación sin colchón nacional." });
@@ -2152,7 +2162,7 @@ export const MEASURES_BASE = [
       }
       if (p.ocupacion === 'jubilado_min' || p.ocupacion === 'jubilado_med' || p.ocupacion === 'pensionado') {
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "mid",
-          body: "Muchos jubilados quedaron sin calificar como N2 por superar apenas el umbral de ingreso, y enfrentan boletas a precio cada vez más cercano al costo pleno con un haber que no acompaña. El servicio es el mismo, pero pesa mucho más en el bolsillo." });
+          tipo: "estimacion", body: "Muchos jubilados quedaron sin calificar como N2 por superar apenas el umbral de ingreso, y enfrentan boletas a precio cada vez más cercano al costo pleno con un haber que no acompaña. El servicio es el mismo, pero pesa mucho más en el bolsillo." });
       }
       return dims;
     },
@@ -2323,7 +2333,7 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "mid",
           body: "AySA da agua potable y cloacas a <strong>14 millones de personas</strong> en CABA y 26 partidos del GBA. Se privatiza el 90% (primero el 51% a un operador estratégico). La referencia histórica preocupa: con la concesión anterior (Aguas Argentinas/Suez, 1993-2006) la tarifa real se multiplicó varias veces antes de la rescisión. Tu boleta de agua probablemente sube." });
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
-          body: "Una operadora privada puede mejorar el servicio si invierte, pero también tiende a priorizar las zonas más rentables. Si vivís en un barrio con red en buen estado el cambio se nota menos; si la red de tu zona es vieja, la inversión puede tardar en llegar." });
+          tipo: "estimacion", body: "Una operadora privada puede mejorar el servicio si invierte, pero también tiende a priorizar las zonas más rentables. Si vivís en un barrio con red en buen estado el cambio se nota menos; si la red de tu zona es vieja, la inversión puede tardar en llegar." });
       }
       if (amba && (p.ingreso === 'hasta_700k' || p.ingreso === '700k_1.5m')) {
         dims.push({ name: "Salud", icon: "❤️", level: "mid",
@@ -2515,12 +2525,12 @@ export const MEASURES_BASE = [
       const ingresoBajoMedio = ['hasta_700k', '700k_1.5m', '1.5m_3m'].includes(p.ingreso);
       if (ingresoBajoMedio) {
         dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "El decreto llevó a 0% las retenciones a la carne de vaca (categorías A a E) y bajó el resto de la carne vacuna al 6,75%. Cuando exportar rinde más, parte de la producción se va afuera y eso presiona el precio interno hacia arriba. Para un hogar de ingresos como el tuyo, donde la carne es central en la dieta, el costo del asado y de los cortes de consumo masivo siente esa suba (estimaciones de +5 a +12%)." });
+          tipo: "estimacion", body: "El decreto llevó a 0% las retenciones a la carne de vaca (categorías A a E) y bajó el resto de la carne vacuna al 6,75%. Cuando exportar rinde más, parte de la producción se va afuera y eso presiona el precio interno hacia arriba. Para un hogar de ingresos como el tuyo, donde la carne es central en la dieta, el costo del asado y de los cortes de consumo masivo siente esa suba." });
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
           body: "No es que falte carne: es que la misma carne compite ahora con un mercado externo que paga en dólares. Tu poder de compra de proteína animal cae aunque el sueldo no cambie." });
       } else {
         dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "La eliminación de retenciones a la carne de vaca (a 0%) y la baja del resto al 6,75% tiende a empujar el precio interno al alza porque mejora el atractivo de exportar. Con ingresos más altos lo absorbés mejor, pero igual lo ves en la carnicería." });
+          tipo: "estimacion", body: "La eliminación de retenciones a la carne de vaca (a 0%) y la baja del resto al 6,75% tiende a empujar el precio interno al alza porque mejora el atractivo de exportar. Con ingresos más altos lo absorbés mejor, pero igual lo ves en la carnicería." });
       }
       if ((p.ocupacion === 'pyme' || p.extra === 'renta') && ['noa', 'nea', 'cba_int', 'santafe_int', 'pueblo', 'patagonia'].includes(p.zona)) {
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "pos_soft",
@@ -2591,11 +2601,11 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "pos",
           body: "Si vivís de la producción agrícola, este segundo recorte suma al de julio: la soja queda en <strong>24%</strong> (venía del 26%) y el resto de los granos baja 1 a 2 puntos más. Cada punto de retención que se saca es plata que vuelve al precio que cobrás por tu cosecha; el efecto es menor que la primera baja, pero va en la misma dirección." });
         dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
-          body: "Mejor margen exportador tiende a sostener la actividad de la cadena agroindustrial (acopio, transporte, servicios rurales, plantas aceiteras), de la que dependen muchos puestos en el interior productivo." });
+          tipo: "estimacion", body: "Mejor margen exportador tiende a sostener la actividad de la cadena agroindustrial (acopio, transporte, servicios rurales, plantas aceiteras), de la que dependen muchos puestos en el interior productivo." });
       }
       if (ingresoBajoMedio && !esAgro) {
         dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Para un hogar de ingresos como el tuyo, donde esos productos pesan en la canasta, es una presión suave pero real hacia arriba en la góndola." });
+          tipo: "estimacion", body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Para un hogar de ingresos como el tuyo, donde esos productos pesan en la canasta, es una presión suave pero real hacia arriba en la góndola." });
       }
       return dims;
     },
@@ -2659,7 +2669,7 @@ export const MEASURES_BASE = [
       }
       if (ingresoBajoMedio && !esAgro) {
         dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "La baja también alcanzó la carne (del 6,75% al 5%) y los granos que terminan en harina, aceite y alimento balanceado. Cuando exportar paga más, el precio interno de esos productos tiende a acompañar el valor en dólares. Para un hogar de ingresos como el tuyo es una presión suave hacia arriba en la canasta básica." });
+          tipo: "estimacion", body: "La baja también alcanzó la carne (del 6,75% al 5%) y los granos que terminan en harina, aceite y alimento balanceado. Cuando exportar paga más, el precio interno de esos productos tiende a acompañar el valor en dólares. Para un hogar de ingresos como el tuyo es una presión suave hacia arriba en la canasta básica." });
       }
       return dims;
     },
@@ -2957,7 +2967,7 @@ export const MEASURES_BASE = [
           body: "El riesgo está en las rutas poco rentables que hoy cubre casi en exclusiva Aerolíneas Argentinas (capitales del sur, conexiones del interior profundo). Con tarifas libres y operadores que eligen dónde volar, las rutas que no dan ganancia pueden quedar con menos frecuencias o sin servicio. Si dependés del avión para moverte desde el interior, la desregulación puede dejarte con menos vuelos, no más." });
       }
       dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
-        body: "Aerolíneas Argentinas pierde rutas no rentables y compite contra low-cost extranjeras que pueden hacer cabotaje. Para sus trabajadores y para pilotos y tripulación en general, la apertura presiona salarios y condiciones a la baja. Gana el pasajero de las rutas con volumen; la presión la absorbe el empleo aeronáutico." });
+        tipo: "estimacion", body: "Aerolíneas Argentinas pierde rutas no rentables y compite contra low-cost extranjeras que pueden hacer cabotaje. Para sus trabajadores y para pilotos y tripulación en general, la apertura presiona salarios y condiciones a la baja. Gana el pasajero de las rutas con volumen; la presión la absorbe el empleo aeronáutico." });
       return dims;
     },
     compareProfiles: [
@@ -3012,13 +3022,13 @@ export const MEASURES_BASE = [
       const granUrbano = ['caba', 'gba_norte', 'gba_sur', 'gba_oeste', 'laplata'].includes(p.zona);
       if (p.ocupacion === 'empleado_pub') {
         dims.push({ name: "Trabajo", icon: "🛠️", level: "strong",
-          body: "Si trabajás en ENARSA, Intercargo, AySA, Belgrano Cargas, Nucleoeléctrica o Río Turbio, tu empresa está en la lista de privatización. Para el conjunto de empresas listadas hablamos de decenas de miles de empleos directos. La privatización suele venir con revisión de planta, retiros y cambios de convenio: es la mayor fuente de riesgo concreto sobre tu puesto." });
+          tipo: "estimacion", body: "Si trabajás en ENARSA, Intercargo, AySA, Belgrano Cargas, Nucleoeléctrica o Río Turbio, tu empresa está en la lista de privatización. Para el conjunto de empresas listadas hablamos de decenas de miles de empleos directos. La privatización suele venir con revisión de planta, retiros y cambios de convenio: es la mayor fuente de riesgo concreto sobre tu puesto." });
         dims.push({ name: "Estabilidad", icon: "🛡️", level: "mid",
           body: "El paso a manos privadas cambia las reglas de tu relación laboral y la continuidad del servicio. La Ley prevé Programas de Propiedad Participada (hasta 10% para el personal), pero la incertidumbre sobre quién será el dueño y bajo qué condiciones es alta." });
       }
       if (granUrbano) {
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
-          body: "AySA da agua y cloacas a CABA y el conurbano. Privatizar un servicio esencial puede mejorar inversión, pero también suele traer aumentos de tarifa y discusión sobre cobertura en zonas no rentables. Como usuario, el precio y la calidad del agua quedan atados a quién la opere y con qué regulación." });
+          tipo: "estimacion", body: "AySA da agua y cloacas a CABA y el conurbano. Privatizar un servicio esencial puede mejorar inversión, pero también suele traer aumentos de tarifa y discusión sobre cobertura en zonas no rentables. Como usuario, el precio y la calidad del agua quedan atados a quién la opere y con qué regulación." });
       }
       return dims;
     },
@@ -3092,7 +3102,7 @@ export const MEASURES_BASE = [
         body: "El gas es un costo fijo del hogar que no se puede esquivar en invierno. Con aumentos del orden del 300%, la boleta empieza a competir con el alquiler o las expensas dentro del gasto de vivienda. En hogares de ingresos bajos y medios el golpe es mayor: la tarifa pesa mucho más sobre un presupuesto chico." });
       if (fria) {
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
-          body: "En zonas frías (Patagonia, Cuyo, sierras) el consumo de gas para calefacción es alto varios meses al año. Ahí el aumento del PIST golpea más fuerte que en zonas templadas: misma suba porcentual sobre muchos más metros cúbicos consumidos." });
+          tipo: "estimacion", body: "En zonas frías (Patagonia, Cuyo, sierras) el consumo de gas para calefacción es alto varios meses al año. Ahí el aumento del PIST golpea más fuerte que en zonas templadas: misma suba porcentual sobre muchos más metros cúbicos consumidos." });
       }
       return dims;
     },
@@ -3159,7 +3169,7 @@ export const MEASURES_BASE = [
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
       if (p.ocupacion === 'empleado_pub') {
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
-          body: "El ENACOM pasó a estar conducido por un interventor con amplias facultades en lugar de su directorio. Para quien trabaja en el organismo, una intervención prolongada suele venir con reestructuración y revisión de la planta: incertidumbre sobre el puesto mientras dura." });
+          tipo: "estimacion", body: "El ENACOM pasó a estar conducido por un interventor con amplias facultades en lugar de su directorio. Para quien trabaja en el organismo, una intervención prolongada suele venir con reestructuración y revisión de la planta: incertidumbre sobre el puesto mientras dura." });
       }
       if (interior) {
         dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
@@ -3264,7 +3274,7 @@ export const MEASURES_BASE = [
       const interior = ['nea', 'noa', 'cuyo', 'patagonia', 'pueblo', 'cba_int', 'santafe_int'].includes(p.zona);
       if (granUrbano) {
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
-          body: "La ley habilita más aerolíneas y tarifas sin pisos ni techos. En las rutas troncales con mucha demanda que salen de las grandes ciudades, esa apertura tiende a abaratar el pasaje: más competencia entre low-cost, más promociones. Si volás seguido desde un gran centro urbano, la habilitación legal del cielos abiertos juega a tu favor." });
+          tipo: "estimacion", body: "La ley habilita más aerolíneas y tarifas sin pisos ni techos. En las rutas troncales con mucha demanda que salen de las grandes ciudades, esa apertura tiende a abaratar el pasaje: más competencia entre low-cost, más promociones. Si volás seguido desde un gran centro urbano, la habilitación legal del cielos abiertos juega a tu favor." });
       }
       if (interior) {
         dims.push({ name: "Movilidad social", icon: "🛤️", level: "soft",
@@ -3296,7 +3306,7 @@ export const MEASURES_BASE = [
       dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
         body: "Como viajero, la desregulación amplía la oferta de alojamiento: además de hoteles aparecen con menos trabas departamentos temporarios, hospedajes y figuras informales, y las tarifas quedan libres. Para quien arma una escapada con presupuesto ajustado, más opciones suelen significar precios más peleados. La contracara es que la clasificación por estrellas deja de ser obligatoria: el precio ya no garantiza una categoría verificada." });
       dims.push({ name: "Vivienda", icon: "🏠", level: ciudadTuristica ? "mid" : "soft",
-        body: "El efecto más fuerte no es para el turista sino para el que vive en una ciudad turística. Al liberarse los contratos y la actividad de alojamiento, muchos propietarios pasaron sus departamentos al alquiler temporario: en CABA hay más de <strong>15.000 unidades</strong> en ese régimen (eran 9.338 en 2019, un 62% más). Eso quita oferta del alquiler residencial y empuja los precios: los alquileres llegaron a subir cerca del 125% interanual. Si alquilás para vivir en un barrio turístico, competís contra la renta temporaria." });
+        tipo: "estimacion", body: "El efecto más fuerte no es para el turista sino para el que vive en una ciudad turística. Al liberarse los contratos y la actividad de alojamiento, a muchos propietarios les conviene más el alquiler temporario que el residencial. Eso quita oferta del alquiler para vivir y empuja los precios hacia arriba. Si alquilás en un barrio turístico, competís contra la renta temporaria." });
       if (hosteleria) {
         dims.push({ name: "Trabajo", icon: "🛠️", level: "soft",
           body: "La hotelería formal y las agencias de viaje con personal en convenio (UTHGRA) ahora compiten contra alojamientos informales y operadores sin registro ni cargas. Para el empleo del sector, esa competencia desregulada presiona condiciones y formalidad. Gana el propietario que pone su departamento en alquiler temporario; la tensión la absorbe el trabajador de hotelería y turismo tradicional." });
@@ -3761,11 +3771,11 @@ export const MEASURES_BASE = [
         dims.push({ name: "Plata", icon: "💰", level: "pos_soft",
           body: "Si vivís de la producción agrícola, este tercer recorte llega en cuotas: <strong>trigo y cebada bajan ya del 7,5% al 5,5%</strong>, pero la soja se mantiene en 24% durante 2026 y recién empieza a ceder desde enero de 2027 (hacia 21% en dic-2027 y 15% en dic-2028). El alivio de margen es real, aunque para el grueso de tu facturación (la soja) llega diferido y escalonado." });
         dims.push({ name: "Trabajo", icon: "🛠️", level: "pos_soft",
-          body: "Un sendero de menores retenciones tiende a sostener la actividad de la cadena agroindustrial (acopio, transporte de granos, servicios rurales, plantas aceiteras), de la que dependen muchos puestos en el interior productivo." });
+          tipo: "estimacion", body: "Un sendero de menores retenciones tiende a sostener la actividad de la cadena agroindustrial (acopio, transporte de granos, servicios rurales, plantas aceiteras), de la que dependen muchos puestos en el interior productivo." });
       }
       if (ingresoBajoMedio && !esAgro) {
         dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Como la baja es gradual, la presión sobre la góndola es suave y se reparte en el tiempo." });
+          tipo: "estimacion", body: "Cuando exportar rinde más, el precio interno de lo que sale de esos granos (harina, aceite, fideos, pan, alimento para animales) tiende a acompañar el valor internacional. Como la baja es gradual, la presión sobre la góndola es suave y se reparte en el tiempo." });
       }
       return dims;
     },
