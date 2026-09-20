@@ -182,6 +182,7 @@ const urls = [
   `  <url><loc>${SITE}/</loc><lastmod>${hoy}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
   `  <url><loc>${SITE}/instalar/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
   `  <url><loc>${SITE}/metodologia/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>`,
+  `  <url><loc>${SITE}/profesionales/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`,
   `  <url><loc>${SITE}/prensa/</loc><lastmod>${hoy}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`,
   `  <url><loc>${SITE}/semanal/</loc><lastmod>${hoy}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`,
   ...edicionesSemanales(),
