@@ -18,7 +18,8 @@ El commit `5ff4dfd` completó dos activos que este plan daba por pendientes:
 | `/prensa/` | Terminado | Credibilidad, citas y distribución ganada |
 | Sitemap de ambas secciones | Terminado | Facilitar el descubrimiento por buscadores |
 | Lista y formulario de correo | **Pendiente** | Convertir lectores anónimos en audiencia propia |
-| Oferta y muestra profesional | Preparada en `/profesionales/` | Convertir interés en una conversación de venta; falta publicar |
+| Oferta y muestra profesional | Publicada en `/profesionales/` | Convertir interés en una conversación de venta |
+| Lista inicial de prospectos | Preparada en `docs/prospectos-piloto-contadores.md` | Iniciar 30 contactos personalizados y medir pagos |
 | Medición agregada | **Pendiente** | Saber qué canal y llamada convierten |
 
 La v1.8.8 **no completa todavía la captación**. Los botones de `/semanal/` llevan a `/#newsletter`, pero el bloque no se renderiza mientras `NEWSLETTER.url` siga vacío. Para el lector, hoy esa llamada termina en un callejón sin salida.
@@ -123,14 +124,14 @@ Durante esta prueba no se mezcla el mensaje con sindicatos, cámaras, consultora
 3. Sustituir el actual callejón `/#newsletter` por un formulario o destino que funcione incluso si el JavaScript de la app falla.
 4. ~~Preparar una muestra gratuita de **CTP Alerta Profesional** a partir de una medida vigente y relevante para monotributistas o PyMEs.~~ Preparada con el Decreto 315/2026 (RIFL).
 5. ~~Crear una página sencilla de la oferta, con muestra, alcance, precio del piloto, cinco cupos y un único llamado a conversar o reservar.~~ Preparada en `/profesionales/`, con pilotos de $25.000 y $50.000 ARS.
-6. Publicar y comprobar `/profesionales/` en el dominio.
+6. ~~Publicar y comprobar `/profesionales/` en el dominio.~~ Publicada y verificada el 21/09/2026.
 7. Definir el medio de cobro argentino y el comprobante correspondiente antes de enviar la primera propuesta.
 
 Ya están terminados y no se repiten: el archivo de cinco ediciones, la corrección del dominio, las páginas indexables, el sitemap y la página de prensa.
 
 ### Días 4 a 10 — conseguir conversaciones
 
-- Armar una lista manual de 30 prospectos reales.
+- ~~Armar una lista manual de 30 prospectos reales.~~ Primera lista preparada; falta validar el canal y la actividad inmediatamente antes de cada contacto.
 - Contactar **cinco por día**, de forma personalizada; no enviar mensajes masivos idénticos.
 - Priorizar perfiles con evidencia de que comunican novedades a clientes: publicaciones propias, newsletter, WhatsApp empresarial o una sección de novedades.
 - Enviar la muestra en el primer contacto o cuando responden; no pedir una reunión sin mostrar valor.
