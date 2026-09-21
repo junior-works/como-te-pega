@@ -68,7 +68,7 @@ export const APOYO = {
  * respuestas personales de nadie. Vacío = el bloque no se muestra.
  * ================================================================== */
 export const NEWSLETTER = {
-  url: "",
+  url: "https://8d4dc995.sibforms.com/serve/MUIFAKBG3qrAf1OqfnxMr5xq1G6KhbstiST6kwdu2iwoI_3z-neyMxkBcCFIH-fr_6hNAo3HibA96xKy5HXBtGvQYcaW3uvgllR_s_L8ifPnXyiq4QjmmFUGMB2VUEvDnS_hCXmxbt03Ap3tmGq88AGauae9e4cCYcMs3nV7LVAkqDYt4xT3eT50cljG2x6fG5PL9yBJTHX864O4Zw==",
   titulo: "El resumen semanal",
   bajada: "Una vez por semana, qué se publicó en el Boletín Oficial y a quién le pega. Gratis. Tu mail no se cruza nunca con tu perfil."
 };

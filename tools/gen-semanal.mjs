@@ -15,6 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { NEWSLETTER } from '../config.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC  = join(ROOT, 'pendientes', 'newsletter');
@@ -201,7 +202,7 @@ eds.forEach((ed, i) => {
     <h3>Te llega todos los domingos</h3>
     <p>Una vez por semana, qué se publicó en el Boletín Oficial y a quién le pega. Es gratis,
     y tu mail nunca se cruza con tu perfil de la app.</p>
-    <p><a href="/#newsletter">Suscribirme al resumen semanal →</a></p>
+    <p><a href="${esc(NEWSLETTER.url)}" target="_blank" rel="noopener">Suscribirme al resumen semanal →</a></p>
   </div>
   <div class="nav-ed">
     <span>${ant ? `<a href="/semanal/${ant.fecha}/">← ${fechaLarga(ant.fecha)}</a>` : ''}</span>
@@ -228,7 +229,7 @@ writeFileSync(join(OUT, 'index.html'), pagina({
   <div class="card gold">
     <h3>Recibilo por mail</h3>
     <p>Es gratis y tu correo nunca se cruza con tu perfil de la app: son dos cosas separadas.</p>
-    <p><a href="/#newsletter">Suscribirme →</a></p>
+    <p><a href="${esc(NEWSLETTER.url)}" target="_blank" rel="noopener">Suscribirme →</a></p>
   </div>
   <hr class="ed-sep">
   <ul class="eds">
