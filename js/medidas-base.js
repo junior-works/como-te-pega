@@ -3848,14 +3848,14 @@ export const MEASURES_BASE = [
 },
 {
   id: "decreto_combustibles_impuesto_693",
-  date: "2026-07-31",
-  title: "Impuestos a los combustibles: aumento parcial en agosto, resto en septiembre",
-  meta: "Decreto 693/2026 · BORA 31-jul-2026 · vigente · aplica desde 1-ago-2026",
-  desc: "Modifica el Decreto 617/2025 y difiere parcialmente los incrementos del Impuesto sobre los Combustibles Líquidos (ICL) y del Impuesto al Dióxido de Carbono. Para los hechos imponibles del 1 al 31 de agosto de 2026 se aplican incrementos parciales por litro (Nafta sin plomo y nafta virgen: ICL $10,572 + CO₂ $0,648; Gasoil: ICL $9,511 + CO₂ $1,084, con diferencial Patagonia de $5,150). Los efectos completos remanentes rigen desde el 1 de septiembre de 2026. No alcanza al GNC.",
+  date: "2026-08-31",
+  title: "Impuestos a los combustibles: aumento parcial hasta septiembre",
+  meta: "Decretos 693/2026 y 829/2026 · BORA 31-ago-2026 · vigente · tramo parcial hasta 30-sep-2026",
+  desc: "El Decreto 829/2026 modifica el cronograma del Decreto 617/2025 y extiende hasta el 30 de septiembre de 2026 los incrementos parciales del Impuesto sobre los Combustibles Líquidos (ICL) y del Impuesto al Dióxido de Carbono fijados por el Decreto 693/2026. Para los hechos imponibles del 1 de agosto al 30 de septiembre de 2026 se aplican estos incrementos por litro: naftas, ICL $10,572 + CO₂ $0,648; gasoil, ICL $9,511 + CO₂ $1,084, con diferencial Patagonia de $5,150. El remanente acumulado quedó previsto desde el 1 de octubre de 2026. No alcanza al GNC.",
   tags: ["Plata", "Movilidad", "Impuestos"],
-  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/345226/20260731",
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/346556/20260831",
   // Estado institucional/judicial de la NORMA — no es impacto personal.
-  institucional: { level: "soft", body: "El decreto <strong>difiere parcialmente</strong> el ajuste previsto por el Decreto 617/2025. Es una postergación acotada: los efectos remanentes se acumulan y se aplican desde el 1 de septiembre de 2026." },
+  institucional: { level: "soft", body: "El Decreto 829/2026 <strong>extendió hasta el 30 de septiembre de 2026</strong> el tramo parcial fijado por el Decreto 693/2026. El remanente acumulado quedó previsto desde el 1 de octubre de 2026." },
   impact: function(p) {
     const dims = [];
 
@@ -3864,7 +3864,7 @@ export const MEASURES_BASE = [
 
     if (autoMoto) {
       dims.push({ name: "Plata", level: "mid",
-        body: "Cargás combustible: el aumento del ICL y del impuesto al CO₂ se traslada al precio del surtidor. En agosto el ajuste es <strong>parcial</strong>; el tramo remanente se aplica desde <strong>septiembre 2026</strong>." });
+        body: "Cargás combustible: el aumento del ICL y del impuesto al CO₂ puede trasladarse al precio del surtidor. El tramo vigente hasta el <strong>30 de septiembre de 2026</strong> es parcial; el Decreto 829/2026 difirió el remanente." });
       dims.push({ name: "Movilidad", level: "soft",
         body: "Uso intensivo del vehículo: la suba impositiva encarece cada carga. En Patagonia opera el diferencial de gasoil (más bajo que el general)." });
     } else if (mixtoConAuto) {
@@ -3882,7 +3882,7 @@ export const MEASURES_BASE = [
     // PyME que use combustible como insumo (fletes, reparto).
     if (p.ocupacion === 'pyme') {
       dims.push({ name: "Plata", level: "soft",
-        body: "Si tu actividad usa combustible como insumo (flete, reparto, generación), el ICL y el impuesto al CO₂ se trasladan al costo operativo desde agosto (parcial) y desde septiembre (completo)." });
+        body: "Si tu actividad usa combustible como insumo (flete, reparto, generación), el tramo parcial vigente hasta el 30 de septiembre puede trasladarse al costo operativo." });
     }
 
     // Trabajadores de plataformas de reparto / apps que usan moto/auto.
@@ -3895,7 +3895,7 @@ export const MEASURES_BASE = [
     return dims;
   },
   compareWinners: [
-    "Quienes no cargan combustible (impacto directo bajo o nulo en agosto)",
+    "Quienes no cargan combustible (impacto directo bajo o nulo)",
     "Usuarios de gasoil en Patagonia (aplica diferencial más bajo)"
   ],
   compareProfiles: [
@@ -4107,6 +4107,64 @@ export const MEASURES_BASE = [
       sub: "Jubilado mínima · CABA",
       badges: { Plata: "pos" } },
     { name: "Jubilado/a de haber medio-alto",
+      sub: "Jubilado media-alta · interior",
+      badges: { Plata: "pos_soft" } },
+    { name: "Pensión no contributiva",
+      sub: "Pensionado · GBA",
+      badges: { Plata: "pos" } }
+  ]
+},
+{
+  id: "decreto_bono_previsional_octubre_1108",
+  date: "2026-09-28",
+  title: "Bono extraordinario para jubilados y pensionados (octubre 2026)",
+  meta: "Decreto 1108/2026 · BORA 28-sep-2026 · vigente · pago de octubre 2026 (por única vez)",
+  desc: "Otorga un bono extraordinario previsional de hasta $70.000 en el haber de octubre de 2026. El monto es completo para quienes cobran hasta el haber mínimo garantizado y decrece para haberes superiores, de modo que la suma de todas las prestaciones más el bono alcanza como tope el haber mínimo más $70.000. Es no remunerativo, no tiene descuentos y no se computa para ningún otro concepto. Alcanza a prestaciones contributivas de ANSES incluidas por el decreto, a la Pensión Universal para el Adulto Mayor y a pensiones no contributivas por vejez, invalidez, madres de 7 o más hijos, otras pensiones no contributivas y pensiones graciables.",
+  tags: ["Plata", "Estabilidad"],
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/348024/20260928",
+  // Estado institucional de la NORMA — no es impacto personal.
+  institucional: { level: "soft", body: "Pago por <strong>única vez</strong> para octubre de 2026, liquidado por ANSES. No modifica la fórmula de movilidad previsional." },
+  impact: function(p) {
+    const dims = [];
+
+    if (p.ocupacion === 'jubilado_min') {
+      dims.push({ name: "Plata", level: "pos",
+        body: "Cobrás el <strong>bono completo de hasta $70.000</strong> junto con el haber de octubre de 2026. Es no remunerativo y no tiene descuentos." });
+    }
+
+    if (p.ocupacion === 'jubilado_med') {
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "El bono <strong>decrece</strong> si la suma de tus prestaciones supera el haber mínimo: completa hasta el tope de haber mínimo + $70.000. Por encima de ese tope, el bono es $0." });
+    }
+
+    if (p.ocupacion === 'pensionado') {
+      dims.push({ name: "Plata", level: "pos",
+        body: "El decreto incluye la PUAM, pensiones no contributivas y pensiones graciables: bono completo para prestaciones de hasta el haber mínimo y decreciente por encima." });
+    }
+
+    const pnc = ['pnc_vejez','pnc_discap','pnc_madre'].some(a => (p.asistencia || []).includes(a));
+    if (pnc && !['jubilado_min','jubilado_med','pensionado'].includes(p.ocupacion)) {
+      dims.push({ name: "Plata", level: "pos_soft",
+        body: "Si cobrás una pensión no contributiva, el bono de octubre de 2026 también puede alcanzarte según el monto total de tus prestaciones." });
+    }
+
+    if (['empleado_priv','empleado_pub','monotrib','autonomo','pyme','trab_informal','desempleado','estudiante','ama_casa'].includes(p.ocupacion)
+        && !pnc) {
+      dims.push({ name: "Plata", level: "soft",
+        body: "Sin efecto directo hoy: es un refuerzo puntual para jubilaciones y pensiones que se paga en octubre de 2026." });
+    }
+
+    return dims;
+  },
+  compareWinners: [
+    "Jubilados y pensionados en el haber mínimo (bono completo)",
+    "Beneficiarios de PUAM y pensiones no contributivas en el mínimo"
+  ],
+  compareProfiles: [
+    { name: "Jubilado/a de la mínima",
+      sub: "Jubilado mínima · CABA",
+      badges: { Plata: "pos" } },
+    { name: "Jubilado/a con haber superior",
       sub: "Jubilado media-alta · interior",
       badges: { Plata: "pos_soft" } },
     { name: "Pensión no contributiva",

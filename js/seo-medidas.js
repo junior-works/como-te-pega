@@ -44,6 +44,11 @@ export const SEO_MEDIDAS = {
     num: "Bono extraordinario de hasta $70.000 en el haber de septiembre de 2026, completo para quienes cobran hasta el haber mínimo garantizado."
   },
 
+  decreto_bono_previsional_octubre_1108: {
+    h: "Bono para jubilados octubre 2026: de cuánto es y quién lo cobra",
+    num: "Bono extraordinario de hasta $70.000 en el haber de octubre de 2026, completo para quienes cobran hasta el haber mínimo garantizado."
+  },
+
   decreto_bono_previsional_agosto_686: {
     h: "Bono para jubilados agosto 2026: de cuánto es y quién lo cobra",
     num: "Bono extraordinario de hasta $70.000 en el haber de agosto de 2026, completo para quienes cobran hasta el haber mínimo garantizado."
@@ -71,7 +76,7 @@ export const SEO_MEDIDAS = {
 
   decreto_combustibles_impuesto_693: {
     h: "Impuesto a los combustibles 2026: cuándo aumenta la nafta",
-    num: "El Decreto 693/2026 difiere parte de los aumentos del impuesto a los combustibles y al dióxido de carbono: una porción rige desde el 1 de agosto de 2026 y el resto desde septiembre."
+    num: "Los Decretos 693/2026 y 829/2026 fijan un tramo parcial del impuesto a los combustibles hasta el 30 de septiembre de 2026 y difieren el remanente."
   },
 
   dnu70_prepagas: {
