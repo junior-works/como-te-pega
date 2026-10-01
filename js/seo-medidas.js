@@ -76,7 +76,7 @@ export const SEO_MEDIDAS = {
 
   decreto_combustibles_impuesto_693: {
     h: "Impuesto a los combustibles 2026: cuándo aumenta la nafta",
-    num: "Los Decretos 693/2026 y 829/2026 fijan un tramo parcial del impuesto a los combustibles hasta el 30 de septiembre de 2026 y difieren el remanente."
+    num: "Los Decretos 693/2026, 829/2026 y 1126/2026 fijan un tramo parcial del impuesto a los combustibles hasta el 31 de octubre de 2026 y difieren el remanente al 1 de noviembre."
   },
 
   dnu70_prepagas: {
@@ -85,8 +85,8 @@ export const SEO_MEDIDAS = {
   },
 
   jubilaciones: {
-    h: "Movilidad jubilatoria: cómo se actualizan las jubilaciones hoy",
-    num: "Las jubilaciones se ajustan todos los meses por el IPC del INDEC. El bono de $70.000 sigue congelado desde que se creó."
+    h: "Jubilaciones en octubre de 2026: movilidad, haber mínimo y bono",
+    num: "La movilidad de octubre es 1,66%. El haber mínimo es $435.748,51, la PUAM $348.598,81 y el bono extraordinario alcanza hasta $70.000."
   },
 
   ganancias: {
@@ -95,8 +95,8 @@ export const SEO_MEDIDAS = {
   },
 
   subsidios_energeticos: {
-    h: "Subsidio de luz y gas: quién lo cobra y hasta qué ingreso",
-    num: "Se reemplazó el sistema N1/N2/N3: el subsidio se asigna por ingreso del hogar bajo un umbral de alrededor de $3,77 millones, actualizable. Por encima del umbral, tarifa plena."
+    h: "Subsidios de luz y gas en octubre de 2026: qué bonificaciones rigen",
+    num: "Para hogares beneficiarios del SEF: electricidad con 25% adicional sobre un bloque de 200 kWh mensuales; gas por redes con 50% general más 24,25% adicional sobre el consumo alcanzado."
   },
 
   bono_jubilatorio_congelado_70000: {

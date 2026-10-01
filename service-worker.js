@@ -16,7 +16,7 @@
  * con path relativo (`./service-worker.js`), el scope se deriva solo.
  */
 
-const CACHE_NAME = "ctp-shell-v1.8.11";
+const CACHE_NAME = "ctp-shell-v1.8.12";
 
 const SHELL_FILES = [
     "./",

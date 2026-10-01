@@ -287,81 +287,57 @@ export const MEASURES_BASE = [
 
   {
     id: "subsidios_energeticos",
-    date: "2025-10-15",
-    title: "Cambió el subsidio a la luz y el gas",
-    meta: "Decreto 943/2025 · Subsidio Energético Focalizado · vigente",
-    desc: "Reemplazó el sistema N1/N2/N3. Ahora el subsidio se asigna por ingreso del hogar bajo un umbral (~$3,77M actualizable). Sobre el umbral, tarifa plena.",
+    date: "2026-10-01",
+    title: "Subsidios de luz y gas en octubre de 2026",
+    meta: "Resolución 272/2026 · Subsidios Energéticos Focalizados · vigente desde 1-oct-2026",
+    desc: "Para octubre de 2026, los hogares beneficiarios del régimen SEF tienen un consumo base de electricidad de 200 kWh mensuales. Sobre ese bloque se aplica una bonificación adicional del 25%. En gas natural y gas propano por redes, la bonificación general es del 50% y se suma una bonificación adicional extraordinaria del 24,25% sobre el consumo alcanzado.",
     tags: ["Plata", "Servicios"],
     area: "Servicios",
     estado: "vigente",
-    fuente: "Boletín Oficial — Decreto 943/2025. ENRE / ENARGAS cuadros tarifarios 2025-2026. Padrón RASE.",
+    fuente: "Boletín Oficial — Resolución 272/2026 de la Secretaría de Energía, publicada el 1-oct-2026.",
     impact: function(p) {
       const dims = [];
       const tieneSEF = (p.asistencia || []).includes("sef");
-      const umbralIngreso = ["hasta_700k","700k_1.5m","1.5m_3m"].includes(p.ingreso);
 
-      if (tieneSEF || umbralIngreso) {
-        dims.push({ name: "Plata", icon: "💰", level: "soft",
-          body: "Por ingresos, probablemente mantengás el SEF (factura subsidiada). El subsidio cubre los primeros consumos esenciales — el excedente paga tarifa plena. Estimar tu factura completa según consumo mensual." });
-      } else {
-        dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: "Por nivel de ingresos quedás fuera del SEF. La factura plena de luz puede ser <strong>2-4x mayor</strong> que con N1/N2 anterior. Gas natural: ajustes ENARGAS." });
-      }
-
-      if (p.discapacidad !== "no" && p.discapacidad) {
-        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "soft",
-          body: "Hogares con CUD pueden acceder a regímenes especiales tarifarios (electrodependientes con certificación, tarifa diferencial). Verificá en EDENOR/EDESUR o tu distribuidora." });
-      }
-
-      if (p.ocupacion === "jubilado_min" || p.ocupacion === "pensionado") {
+      if (tieneSEF) {
         dims.push({ name: "Plata", icon: "💰", level: "pos",
-          body: "Jubilación mínima y pensiones quedan bajo el umbral de SEF — mantenés el subsidio. Aplica también si tu hogar suma poco más allá del haber." });
-      }
-
-      if ((p.hijos === "2" || p.hijos === "3mas") && (p.ingreso === "hasta_700k" || p.ingreso === "700k_1.5m")) {
-        dims.push({ name: "Carga mental", icon: "🧠", level: "soft",
-          tipo: "estimacion", body: "Hogares con muchos hijos consumen más luz / gas. Aún con SEF, el excedente sobre el consumo cubierto pega fuerte en invierno." });
-      }
-
-      if (p.vivienda === "ocupada") {
-        dims.push({ name: "Calidad de servicios", icon: "🔌", level: "strong",
-          body: "Vivienda informal suele tener conexiones irregulares de servicios. El cambio normativo no te afecta directamente, pero si vas a regularizar te encontrás con tarifas plenas." });
+          body: "Marcaste que tu hogar recibe el SEF. En octubre, la electricidad tiene una <strong>bonificación adicional del 25%</strong> sobre un bloque de <strong>200 kWh mensuales</strong>. Para gas por redes, la bonificación general es del <strong>50%</strong> y se suma una bonificación adicional del <strong>24,25%</strong> sobre el consumo alcanzado." });
+      } else {
+        dims.push({ name: "Plata", icon: "💰", level: "soft",
+          body: "No marcaste el SEF en tu perfil. Esta resolución fija bonificaciones para los hogares que ya son beneficiarios; con los datos disponibles no corresponde atribuirte esa bonificación." });
       }
 
       return dims;
     },
     compareProfiles: [
-      { name: "Familia clase media CABA, $4M, sin SEF", sub: "Empleados, hijos, propia", badges: { Plata: "strong", Servicios: "soft", "Carga mental": "soft" } },
-      { name: "Jubilada mínima CABA con SEF", sub: "Jubilada mínima, propia", badges: { Plata: "pos", Servicios: "none", "Carga mental": "none" } },
-      { name: "Familia GBA con AUH y SEF", sub: "Cuidadora hogar, 2 hijos, $1M", badges: { Plata: "soft", Servicios: "soft", "Carga mental": "soft" } },
-      { name: "Empresario PyME, sin SEF", sub: "PyME, ingreso alto", badges: { Plata: "mid", Servicios: "soft", "Carga mental": "none" } },
-      { name: "Hogar con electrodependiente (CUD)", sub: "Familia, hijo con discapacidad", badges: { Plata: "soft", Servicios: "pos", "Carga mental": "mid" } }
+      { name: "Hogar con SEF", sub: "SEF marcado en el perfil", badges: { Plata: "pos", Servicios: "none" } },
+      { name: "Hogar sin SEF informado", sub: "SEF no marcado en el perfil", badges: { Plata: "soft", Servicios: "none" } }
     ]
   },
 
   {
     id: "jubilaciones",
-    date: "2024-03-22",
-    title: "Nueva movilidad jubilatoria",
-    meta: "Decreto 274/2024 + Ley 27.756 vetada · vigente",
-    desc: "Fórmula de movilidad ahora se ajusta mensualmente por IPC del INDEC. Se mantiene un bono de $70.000 congelado desde su creación (sin actualización en 28 meses).",
+    date: "2026-09-23",
+    title: "Movilidad jubilatoria e importes de octubre de 2026",
+    meta: "DNU 274/2024 + Res. ANSES 284/2026 + Decreto 1108/2026 · vigente",
+    desc: "La movilidad se ajusta mensualmente por el IPC del INDEC con dos meses de rezago. Para octubre de 2026, ANSES fijó una movilidad del 1,66%, un haber mínimo de $435.748,51 y una PUAM de $348.598,81. El bono extraordinario de octubre es de hasta $70.000.",
     tags: ["Plata", "Salud", "Carga mental"],
     area: "Jubilaciones",
     estado: "vigente",
-    fuente: "Boletín Oficial — DNU 274/2024. Ley 27.756 vetada por el PEN. ANSES — Haber mínimo jun-2026: $403.318 + bono $70.000 = $473.318.",
+    fuente: "Boletín Oficial — DNU 274/2024; Resolución ANSES 284/2026 (23-sep-2026); Decreto 1108/2026 (28-sep-2026).",
     impact: function(p) {
       const dims = [];
 
       if (p.ocupacion === "jubilado_min") {
         dims.push({ name: "Plata", icon: "💰", level: "strong",
-          body: `<strong>Haber jun-2026: $403.318 + bono congelado $70.000 = $473.318</strong>. El bono no se actualiza desde su creación (28 meses): perdió ~70% de poder de compra. La movilidad mensual sigue el IPC pero <em>siempre con un mes de delay</em>.` });
+          body: `<strong>Haber mínimo de octubre de 2026: $435.748,51 + bono de hasta $70.000 = $505.748,51</strong>. La movilidad del mes es 1,66% y toma como referencia el IPC de agosto de 2026.` });
         dims.push({ name: "Salud", icon: "❤️", level: "strong",
           body: "PAMI con vademécum reducido (restitución parcial vía amparo mar-2026). Adherencia a medicamentos cae cuando el copago supera el 4% del haber." });
         dims.push({ name: "Carga mental", icon: "🧠", level: "mid",
           body: "Defensoría 2025: <strong>14% de jubilados</strong> no completaron trámites por dificultades digitales (renovación Subsidio Social PAMI, etc.)." });
       } else if (p.ocupacion === "jubilado_med") {
         dims.push({ name: "Plata", icon: "💰", level: "mid",
-          body: "Haberes medios-altos: ajuste IPC mensual mantiene poder de compra mejor que el haber mínimo, pero el bono sigue siendo cero (sin bono para haberes por encima del mínimo)." });
+          body: "Los haberes se actualizan 1,66% en octubre de 2026. El bono decrece para quienes superan el haber mínimo y llega a cero cuando la suma de prestaciones alcanza el haber mínimo más $70.000." });
       } else if (p.ocupacion === "pensionado") {
         dims.push({ name: "Plata", icon: "💰", level: "strong",
           body: "Las pensiones no contributivas siguen el régimen pero <em>quedan más rezagadas</em> en revalorización efectiva. Suelen sufrir más cuando se demoran las altas (auditoría de padrones 2024-25)." });
@@ -373,8 +349,8 @@ export const MEASURES_BASE = [
       }
 
       if (p.adultos === "1" || p.adultos === "2mas") {
-        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "mid",
-          body: "Si tenés adultos mayores a cargo, la caída real del haber mínimo + bono congelado se traduce en mayor presión económica sobre vos. Suelen aparecer ayudas extra del entorno." });
+        dims.push({ name: "Vida familiar / ocio", icon: "👨‍👩‍👧", level: "mid", tipo: "estimacion",
+          body: "Si sostenés a una persona jubilada o pensionada, el efecto sobre tu hogar depende de sus gastos y de cuánto cubra su prestación. Es una estimación: la norma solo fija los montos y la movilidad." });
       }
 
       return dims;
@@ -3848,14 +3824,14 @@ export const MEASURES_BASE = [
 },
 {
   id: "decreto_combustibles_impuesto_693",
-  date: "2026-08-31",
-  title: "Impuestos a los combustibles: aumento parcial hasta septiembre",
-  meta: "Decretos 693/2026 y 829/2026 · BORA 31-ago-2026 · vigente · tramo parcial hasta 30-sep-2026",
-  desc: "El Decreto 829/2026 modifica el cronograma del Decreto 617/2025 y extiende hasta el 30 de septiembre de 2026 los incrementos parciales del Impuesto sobre los Combustibles Líquidos (ICL) y del Impuesto al Dióxido de Carbono fijados por el Decreto 693/2026. Para los hechos imponibles del 1 de agosto al 30 de septiembre de 2026 se aplican estos incrementos por litro: naftas, ICL $10,572 + CO₂ $0,648; gasoil, ICL $9,511 + CO₂ $1,084, con diferencial Patagonia de $5,150. El remanente acumulado quedó previsto desde el 1 de octubre de 2026. No alcanza al GNC.",
+  date: "2026-09-30",
+  title: "Impuestos a los combustibles: aumento parcial hasta octubre",
+  meta: "Decretos 693/2026, 829/2026 y 1126/2026 · BORA 30-sep-2026 · vigente · tramo parcial hasta 31-oct-2026",
+  desc: "El Decreto 1126/2026 modifica el cronograma del Decreto 617/2025 y extiende hasta el 31 de octubre de 2026 los incrementos parciales del Impuesto sobre los Combustibles Líquidos (ICL) y del Impuesto al Dióxido de Carbono fijados por el Decreto 693/2026. Para los hechos imponibles del 1 de agosto al 31 de octubre de 2026 se aplican estos incrementos por litro: naftas, ICL $10,572 + CO₂ $0,648; gasoil, ICL $9,511 + CO₂ $1,084, con diferencial Patagonia de $5,150. El remanente acumulado quedó previsto desde el 1 de noviembre de 2026. No alcanza al GNC.",
   tags: ["Plata", "Movilidad", "Impuestos"],
-  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/346556/20260831",
+  fuente: "https://www.boletinoficial.gob.ar/detalleAviso/primera/348227/20260930",
   // Estado institucional/judicial de la NORMA — no es impacto personal.
-  institucional: { level: "soft", body: "El Decreto 829/2026 <strong>extendió hasta el 30 de septiembre de 2026</strong> el tramo parcial fijado por el Decreto 693/2026. El remanente acumulado quedó previsto desde el 1 de octubre de 2026." },
+  institucional: { level: "soft", body: "El Decreto 1126/2026 <strong>extendió hasta el 31 de octubre de 2026</strong> el tramo parcial fijado por el Decreto 693/2026. El remanente acumulado quedó previsto desde el 1 de noviembre de 2026." },
   impact: function(p) {
     const dims = [];
 
@@ -3864,7 +3840,7 @@ export const MEASURES_BASE = [
 
     if (autoMoto) {
       dims.push({ name: "Plata", level: "mid",
-        body: "Cargás combustible: el aumento del ICL y del impuesto al CO₂ puede trasladarse al precio del surtidor. El tramo vigente hasta el <strong>30 de septiembre de 2026</strong> es parcial; el Decreto 829/2026 difirió el remanente." });
+        body: "Cargás combustible: el aumento del ICL y del impuesto al CO₂ puede trasladarse al precio del surtidor. El tramo vigente hasta el <strong>31 de octubre de 2026</strong> es parcial; el Decreto 1126/2026 difirió el remanente." });
       dims.push({ name: "Movilidad", level: "soft",
         body: "Uso intensivo del vehículo: la suba impositiva encarece cada carga. En Patagonia opera el diferencial de gasoil (más bajo que el general)." });
     } else if (mixtoConAuto) {
@@ -3882,7 +3858,7 @@ export const MEASURES_BASE = [
     // PyME que use combustible como insumo (fletes, reparto).
     if (p.ocupacion === 'pyme') {
       dims.push({ name: "Plata", level: "soft",
-        body: "Si tu actividad usa combustible como insumo (flete, reparto, generación), el tramo parcial vigente hasta el 30 de septiembre puede trasladarse al costo operativo." });
+        body: "Si tu actividad usa combustible como insumo (flete, reparto, generación), el tramo parcial vigente hasta el 31 de octubre puede trasladarse al costo operativo." });
     }
 
     // Trabajadores de plataformas de reparto / apps que usan moto/auto.
