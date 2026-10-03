@@ -2,7 +2,7 @@
 
 **Preparado:** 21 de septiembre de 2026  
 **Canales y afinidad revisados:** 3 de octubre de 2026
-**Estado:** borradores; no enviados.  
+**Estado:** tres primeros mensajes enviados el 3 de octubre de 2026; Ortega y Piacentini continúan en borrador.
 **Remitente previsto:** `Cómo Te Pega <hola@comotepega.com>`
 **Oferta enlazada:** <https://comotepega.com/profesionales/>
 
