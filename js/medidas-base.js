@@ -3558,12 +3558,12 @@ export const MEASURES_BASE = [
       }
 
       if (p.ocupacion === 'monotrib') {
-        dims.push({ name: "Trabajo", level: "soft",
+        dims.push({ name: "Trabajo", level: "none",
           body: "Si pasás de monotributo a relación de dependencia, tu empleador puede tomarte dentro del régimen. Mientras sigas facturando como monotributista, tu situación no cambia." });
       }
 
       if (['empleado_priv','empleado_pub','autonomo','trab_informal','domestica_reg','domestica_no_reg','jubilado_min','jubilado_med','pensionado','estudiante','ama_casa'].includes(p.ocupacion)) {
-        dims.push({ name: "Trabajo", level: "soft",
+        dims.push({ name: "Trabajo", level: "none",
           body: "Sin efecto directo sobre tu situación actual: el beneficio aplica a nuevas altas registradas de personas desempleadas o que dejan el monotributo/el empleo público." });
       }
 
@@ -3583,7 +3583,7 @@ export const MEASURES_BASE = [
         badges: { Trabajo: "pos_soft" } },
       { name: "Monotributista que busca relación de dependencia",
         sub: "Monotributista · CABA",
-        badges: { Trabajo: "soft" } }
+        badges: { Trabajo: "none" } }
     ]
   },
   {

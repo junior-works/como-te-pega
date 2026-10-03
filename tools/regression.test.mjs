@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { MEASURES_BASE } from '../js/medidas-base.js';
 
 const source = readFileSync(new URL('../js/render.js', import.meta.url), 'utf8');
 function section(start, end) {
@@ -141,4 +142,15 @@ test('valid routes and profile-required guards still work', () => {
   context.applyRoute({ screen: 'balance' }, { silent: true });
   assert.equal(writes.at(-1)[1], 'profile');
   assert.equal(context.routeUrl('impact', 'medida-prueba'), '/?v=medida&m=medida-prueba');
+});
+
+test('RIFL does not count unaffected current situations as negative impact', () => {
+  const rifl = MEASURES_BASE.find(measure => measure.id === 'decreto_formalizacion_laboral_315');
+  assert.ok(rifl, 'RIFL measure must exist');
+  for (const ocupacion of ['monotrib', 'empleado_priv', 'jubilado_min']) {
+    const dims = rifl.impact({ ocupacion });
+    assert.deepEqual(dims.map(dim => dim.level), ['none']);
+  }
+  assert.deepEqual(rifl.impact({ ocupacion: 'pyme' }).map(dim => dim.level), ['pos_soft']);
+  assert.deepEqual(rifl.impact({ ocupacion: 'desempleado' }).map(dim => dim.level), ['pos_soft']);
 });

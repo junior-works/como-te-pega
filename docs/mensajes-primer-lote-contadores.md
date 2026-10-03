@@ -1,10 +1,12 @@
 # Primer lote de contacto — borradores personalizados
 
 **Preparado:** 21 de septiembre de 2026  
+**Canales y afinidad revisados:** 3 de octubre de 2026
 **Estado:** borradores; no enviados.  
+**Remitente previsto:** `Cómo Te Pega <hola@comotepega.com>`
 **Oferta enlazada:** <https://comotepega.com/profesionales/>
 
-Estos mensajes no presentan a CTP como asesor contable. Ofrecen un insumo editorial basado en normas vigentes y fuentes oficiales para que cada profesional lo revise antes de reenviarlo.
+Estos mensajes no presentan a CTP como asesor contable. Ofrecen un insumo editorial basado en normas vigentes, fuentes oficiales y perfiles DEMO calculados con campos reales de la app, para que cada profesional lo revise antes de reenviarlo.
 
 ## 1. Estudio Contable Dillon
 
@@ -24,7 +26,7 @@ Estos mensajes no presentan a CTP como asesor contable. Ofrecen un insumo editor
 
 **Asunto:** Complemento semanal para la comunicación del estudio
 
-> Hola, equipo de Estudio Rizzo. Vi que no solo publican guías prácticas: también segmentan su newsletter según persona, PyME o empresa. Estoy probando CTP Alerta Profesional para resolver justamente esa adaptación: una medida vigente, su fuente oficial y versiones breves según los clientes del estudio, listas para revisar y reenviar con su marca. No damos asesoramiento contable ni reemplazamos la revisión profesional. Acá pueden ver una muestra y el piloto de cuatro semanas: https://comotepega.com/profesionales/?utm_source=outreach&utm_medium=email&utm_campaign=piloto_contadores&utm_content=rizzo ¿Tiene sentido como complemento entre sus publicaciones más extensas?
+> Hola, equipo de Estudio Rizzo. Vi que no solo publican guías prácticas: también segmentan su newsletter según persona, PyME o empresa. Estoy probando CTP Alerta Profesional para resolver justamente esa adaptación: una medida vigente, su fuente oficial y perfiles DEMO calculados por la app, con versiones breves listas para revisar y reenviar con su marca. No damos asesoramiento contable ni reemplazamos la revisión profesional. Acá pueden ver una muestra y el piloto de cuatro semanas: https://comotepega.com/profesionales/?utm_source=outreach&utm_medium=email&utm_campaign=piloto_contadores&utm_content=rizzo ¿Tiene sentido como complemento entre sus publicaciones más extensas?
 
 ## 3. Bertora Brown Estudio Contable
 
@@ -34,7 +36,7 @@ Estos mensajes no presentan a CTP como asesor contable. Ofrecen un insumo editor
 
 **Asunto:** Alertas breves para complementar el blog del estudio
 
-> Hola, equipo de Bertora Brown. Vi que publican guías quincenales para entender ARCA sin vueltas y que ofrecen acompañamiento continuo con las novedades que impactan a cada cliente. Estoy probando CTP Alerta Profesional: durante cuatro semanas entregamos una selección de medidas vigentes, con fuente oficial, segmentos afectados y un texto breve para que el estudio lo revise y lo reenvíe con su marca. Podría complementar el blog con una comunicación semanal más corta. La muestra está acá: https://comotepega.com/profesionales/?utm_source=outreach&utm_medium=email&utm_campaign=piloto_contadores&utm_content=bertora_brown ¿Les serviría verlo adaptado a monotributistas, empleadores o PyMEs?
+> Hola, equipo de Bertora Brown. Vi que publican guías quincenales para entender ARCA sin vueltas y que ofrecen acompañamiento continuo con las novedades que impactan a cada cliente. Estoy probando CTP Alerta Profesional: durante cuatro semanas entregamos una selección de medidas vigentes, con fuente oficial, perfiles DEMO calculados y un texto breve para que el estudio lo revise y lo reenvíe con su marca. Podría complementar el blog con una comunicación semanal más corta. La muestra está acá: https://comotepega.com/profesionales/?utm_source=outreach&utm_medium=email&utm_campaign=piloto_contadores&utm_content=bertora_brown ¿Les serviría verlo aplicado a monotributistas, empleadores o PyMEs?
 
 ## 4. Estudio Contable Ortega
 

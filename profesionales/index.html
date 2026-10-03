@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0c">
 <title>CTP para estudios contables — medidas claras para tus clientes</title>
-<meta name="description" content="Un resumen semanal de medidas vigentes, con fuente oficial y una versión clara para reenviar a los clientes de tu estudio contable.">
+<meta name="description" content="Monitoreo semanal de medidas vigentes para estudios contables, con fuentes oficiales, perfiles comparables y textos claros para sus clientes.">
 <link rel="canonical" href="https://comotepega.com/profesionales/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="CTP para estudios contables">
-<meta property="og:description" content="Qué cambió, a qué clientes puede afectar y una explicación lista para reenviar. Siempre con fuente oficial.">
+<meta property="og:description" content="Qué cambió, qué perfiles alcanza y cómo explicarlo. Con fuente oficial, fecha, método y límites visibles.">
 <meta property="og:url" content="https://comotepega.com/profesionales/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cómo Te Pega">
@@ -67,6 +67,20 @@
   .forward{border-left:4px solid var(--gold);background:rgba(10,10,12,.72);border-radius:0 13px 13px 0;padding:15px 17px;margin-top:16px}
   .forward b{display:block;color:var(--gold);font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px}
   .forward p{margin:0;color:var(--text);font-size:14.5px}
+  .method{margin-top:22px}
+  .method-row{display:grid;grid-template-columns:42px 1fr;gap:13px;padding:17px 0;border-top:1px solid var(--border)}
+  .method-row:last-child{border-bottom:1px solid var(--border)}
+  .method-row .step{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;
+    background:rgba(251,210,74,.1);color:var(--gold);font-size:13px;font-weight:800}
+  .method-row h3{margin:1px 0 5px}
+  .method-row p{font-size:14px;margin:0}
+  .profiles{margin-top:17px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .profile{display:grid;grid-template-columns:1.45fr .8fr .7fr;gap:10px;align-items:center;padding:13px 15px;border-top:1px solid var(--border)}
+  .profile:first-child{border-top:0}
+  .profile strong{font-size:13px}
+  .profile span{color:var(--quiet);font-size:12.5px}
+  .profile .result{justify-self:end;font-weight:800;color:var(--text)}
+  .profile .result.positive{color:var(--green)}
   .plans{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
   .plan{position:relative;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:23px}
   .plan.featured{border-color:rgba(251,210,74,.5)}
@@ -87,6 +101,7 @@
   footer{margin-top:50px;padding-top:20px;border-top:1px solid var(--border);color:var(--quiet);font-size:12.5px;line-height:1.7}
   footer a{color:var(--muted)}
   @media(max-width:690px){.grid,.proof{grid-template-columns:1fr}.plans,.sample-grid{grid-template-columns:1fr}
+    .profile{grid-template-columns:1fr auto}.profile span{grid-column:1}.profile .result{grid-column:2;grid-row:1 / span 2}
     .wrap{padding:20px 16px 70px}.topbar{margin-bottom:38px}.proof b{font-size:23px}}
 </style>
 </head>
@@ -94,37 +109,49 @@
 <main class="wrap">
   <div class="topbar">
     <a class="marca" href="/"><span class="dot"></span>¿Cómo te pega?</a>
-    <a class="btn secondary" href="/metodologia/">Cómo verificamos</a>
+    <a class="btn secondary" href="/metodologia/">Método y límites</a>
   </div>
 
   <span class="pill">Piloto para Argentina · 5 cupos</span>
-  <h1>Explicales qué cambió<br><span class="grad">sin empezar de cero.</span></h1>
-  <p class="lede">Cada semana recibís las medidas vigentes que pueden afectar a tus clientes, con fuente oficial y una explicación clara que podés reenviar con el nombre de tu estudio.</p>
+  <h1>Convertí normas vigentes<br><span class="grad">en información útil.</span></h1>
+  <p class="lede">Cada semana recibís una selección de medidas que pueden alcanzar a tus clientes, con fuente oficial, fecha de vigencia, perfiles comparables y una explicación clara para reenviar con el nombre de tu estudio.</p>
   <div class="actions">
-    <a class="btn primary" href="mailto:lookatthismcfly@gmail.com?subject=Quiero%20probar%20CTP%20Alerta%20Profesional&amp;body=Hola%2C%20quiero%20ver%20si%20el%20piloto%20sirve%20para%20mi%20estudio.%0A%0ANombre%3A%0AEstudio%3A%0ATipo%20de%20clientes%3A">Consultar un cupo →</a>
+    <a class="btn primary" href="mailto:hola@comotepega.com?subject=Quiero%20probar%20CTP%20Alerta%20Profesional&amp;body=Hola%2C%20quiero%20ver%20si%20el%20piloto%20sirve%20para%20mi%20estudio.%0A%0ANombre%3A%0AEstudio%3A%0ATipo%20de%20clientes%3A">Consultar un cupo →</a>
     <a class="btn secondary" href="#muestra">Ver una muestra</a>
   </div>
   <p class="micro">Cuatro entregas. Precio único en pesos. Sin permanencia ni renovación automática.</p>
 
   <section class="proof" aria-label="Prueba del trabajo existente">
-    <div><b>88</b><span>medidas documentadas</span></div>
-    <div><b>225</b><span>parámetros con fuente y fecha</span></div>
+    <div><b>89</b><span>medidas documentadas</span></div>
+    <div><b>231</b><span>parámetros con fuente y fecha</span></div>
     <div><b>5</b><span>ediciones semanales públicas</span></div>
   </section>
 
   <section>
     <h2>Lo que recibe tu estudio</h2>
-    <p>No más texto técnico copiado sin contexto. Cada entrega responde tres preguntas concretas.</p>
+    <p>Cada entrega separa lo que dice la norma de la interpretación sobre un perfil y responde tres preguntas concretas.</p>
     <div class="grid">
       <article class="card"><span class="num">1</span><h3>¿Qué cambió?</h3><p>La norma, su vigencia y el dato central, enlazados a la fuente oficial.</p></article>
-      <article class="card"><span class="num">2</span><h3>¿A quién afecta?</h3><p>Los segmentos de clientes que deberían prestarle atención y los que no.</p></article>
-      <article class="card"><span class="num">3</span><h3>¿Cómo lo explico?</h3><p>Un texto breve para reenviar, adaptado al tono y nombre de tu estudio.</p></article>
+      <article class="card"><span class="num">2</span><h3>¿Qué perfiles alcanza?</h3><p>Perfiles de referencia construidos únicamente con campos que la app realmente calcula.</p></article>
+      <article class="card"><span class="num">3</span><h3>¿Cómo lo explico?</h3><p>Un texto breve para reenviar, con fuente, condiciones y límites explícitos.</p></article>
     </div>
+  </section>
+
+  <section>
+    <h2>Cómo se obtiene cada resultado</h2>
+    <p>La presentación comercial usa el mismo método publicado por CTP. No se inventan categorías para que una medida parezca relevante.</p>
+    <div class="method">
+      <div class="method-row"><span class="step">1</span><div><h3>Primero se verifica la vigencia</h3><p>Solo se trabaja con normas publicadas y aplicadas. Se registra el número de norma, la publicación, la entrada en vigencia y el enlace oficial.</p></div></div>
+      <div class="method-row"><span class="step">2</span><div><h3>Después se ejecutan perfiles reales</h3><p>Las reglas usan los datos que la app pregunta, como ocupación, zona, vivienda, transporte, ingresos y composición del hogar. Si falta un dato, no se atribuye el efecto.</p></div></div>
+      <div class="method-row"><span class="step">3</span><div><h3>El impacto se puntúa por dimensión</h3><p>Cada efecto recibe un nivel simétrico de −3 a +3 en catorce dimensiones de vida. La suma ubica la medida a favor, neutra o en contra para ese perfil.</p></div></div>
+      <div class="method-row"><span class="step">4</span><div><h3>La entrega conserva las advertencias</h3><p>Se distingue la norma de las estimaciones, se muestran fuente y fecha, y se aclara cuándo corresponde revisar el caso con un profesional.</p></div></div>
+    </div>
+    <p class="micro" style="margin-top:14px">El método completo, la escala y las limitaciones están publicados en <a href="/metodologia/">comotepega.com/metodologia</a>.</p>
   </section>
 
   <section id="muestra">
     <h2>Así se ve una entrega</h2>
-    <p>Ejemplo basado en una medida vigente del catálogo. La versión final se ajusta a los clientes que atiende cada estudio.</p>
+    <p>Muestra editorial basada en una medida vigente. Los perfiles siguientes son perfiles DEMO calculados con reglas reales de la app.</p>
     <article class="sample">
       <div class="sample-head">
         <div>
@@ -143,6 +170,11 @@
           <p>PyMEs que sumen personal desempleado, ex monotributista o ex empleado público entre el 1-may-2026 y el 30-abr-2027.</p>
         </div>
       </div>
+      <div class="profiles" aria-label="Comparación de perfiles DEMO">
+        <div class="profile"><strong>PyME que suma personal</strong><span>Ocupación declarada: PyME</span><span class="result positive">Trabajo +1</span></div>
+        <div class="profile"><strong>Persona buscando empleo</strong><span>Ocupación declarada: desempleado</span><span class="result positive">Trabajo +1</span></div>
+        <div class="profile"><strong>Monotributista que sigue facturando</strong><span>Ocupación declarada: monotributista</span><span class="result">Sin efecto actual</span></div>
+      </div>
       <div class="forward">
         <b>Texto reenviable de muestra</b>
         <p>Si estás evaluando incorporar personal, existe un régimen transitorio que reduce determinadas contribuciones patronales al 2% por hasta 48 meses. Aplica a altas realizadas hasta el 30 de abril de 2027 y bajo las condiciones previstas para la persona contratada. Antes de avanzar, revisemos si tu caso encuadra.</p>
@@ -157,7 +189,7 @@
 
   <section>
     <h2>Precio del piloto fundador</h2>
-    <p>Es una prueba paga de cuatro semanas. El objetivo es comprobar cuánto trabajo ahorra antes de desarrollar una plataforma.</p>
+    <p>Es una prueba paga de cuatro semanas. El objetivo es medir si el material se usa, cuánto trabajo evita y qué perfiles conviene cubrir antes de ampliar el servicio.</p>
     <div class="plans">
       <article class="plan">
         <h3>Profesional independiente</h3>
@@ -166,9 +198,9 @@
           <li>4 resúmenes semanales</li>
           <li>versión clara para reenviar</li>
           <li>fuentes oficiales enlazadas</li>
-          <li>un segmento principal de clientes</li>
+          <li>un perfil de referencia calculado</li>
         </ul>
-        <a class="btn secondary" href="mailto:lookatthismcfly@gmail.com?subject=Piloto%20CTP%20individual&amp;body=Hola%2C%20quiero%20consultar%20el%20piloto%20individual%20de%20CTP.%0A%0ANombre%3A%0ATipo%20de%20clientes%3A">Consultar</a>
+        <a class="btn secondary" href="mailto:hola@comotepega.com?subject=Piloto%20CTP%20individual&amp;body=Hola%2C%20quiero%20consultar%20el%20piloto%20individual%20de%20CTP.%0A%0ANombre%3A%0ATipo%20de%20clientes%3A">Consultar</a>
       </article>
       <article class="plan featured">
         <span class="pill">Para estudios</span>
@@ -177,10 +209,10 @@
         <ul>
           <li>todo lo anterior</li>
           <li>nombre o logotipo del estudio</li>
-          <li>hasta 3 segmentos de clientes</li>
+          <li>hasta 3 perfiles de referencia calculados</li>
           <li>llamada inicial de 20 minutos</li>
         </ul>
-        <a class="btn primary" href="mailto:lookatthismcfly@gmail.com?subject=Piloto%20CTP%20para%20estudio&amp;body=Hola%2C%20quiero%20consultar%20el%20piloto%20para%20estudios.%0A%0ANombre%3A%0AEstudio%3A%0ATipo%20de%20clientes%3A">Consultar un cupo →</a>
+        <a class="btn primary" href="mailto:hola@comotepega.com?subject=Piloto%20CTP%20para%20estudio&amp;body=Hola%2C%20quiero%20consultar%20el%20piloto%20para%20estudios.%0A%0ANombre%3A%0AEstudio%3A%0ATipo%20de%20clientes%3A">Consultar un cupo →</a>
       </article>
     </div>
   </section>
@@ -194,9 +226,9 @@
   </section>
 
   <section class="final">
-    <h2>Veamos si te ahorra una hora por semana</h2>
+    <h2>Veamos si te ahorra trabajo cada semana</h2>
     <p>Contanos qué tipo de clientes atendés. Si el formato no encaja con tu estudio, te lo decimos antes de cobrar.</p>
-    <a class="btn primary" href="mailto:lookatthismcfly@gmail.com?subject=Quiero%20probar%20CTP%20Alerta%20Profesional&amp;body=Hola%2C%20quiero%20ver%20si%20el%20piloto%20sirve%20para%20mi%20estudio.%0A%0ANombre%3A%0AEstudio%3A%0ATipo%20de%20clientes%3A">Consultar un cupo →</a>
+    <a class="btn primary" href="mailto:hola@comotepega.com?subject=Quiero%20probar%20CTP%20Alerta%20Profesional&amp;body=Hola%2C%20quiero%20ver%20si%20el%20piloto%20sirve%20para%20mi%20estudio.%0A%0ANombre%3A%0AEstudio%3A%0ATipo%20de%20clientes%3A">Consultar un cupo →</a>
   </section>
 
   <footer>
